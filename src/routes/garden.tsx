@@ -1,9 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
 
+import GardenPage from "../pages/GardenPage";
+
 export const Route = createFileRoute("/garden")({
-  component: About,
+  component: Garden,
 });
 
-function About() {
-  return <div className="p-2">Hello from garden!</div>;
+function Garden() {
+  return <GardenPage />;
 }

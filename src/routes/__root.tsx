@@ -1,20 +1,18 @@
-import { createRootRoute, Link, Outlet } from "@tanstack/react-router";
+import { createRootRoute, Outlet } from "@tanstack/react-router";
 import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
+
+import Navbar from "../components/Navbar";
+import Footer from "../components/Footer";
 
 const RootLayout = () => (
   <>
-    <div>
-      <Link to="/" className="[&.active]:font-bold">
-        Home
-      </Link>
-      <Link to="/garden" className="[&.active]:font-bold">
-        Garden
-      </Link>
-    </div>
-    <hr />
-    <div>
+    <Navbar />
+    <main className="pb-5 mb-5">
       <Outlet />
-    </div>
+    </main>
+
+    <Footer />
+
     <TanStackRouterDevtools />
   </>
 );

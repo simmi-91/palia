@@ -9,9 +9,15 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as WormfarmRouteImport } from './routes/wormfarm'
 import { Route as GardenRouteImport } from './routes/garden'
 import { Route as IndexRouteImport } from './routes/index'
 
+const WormfarmRoute = WormfarmRouteImport.update({
+  id: '/wormfarm',
+  path: '/wormfarm',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const GardenRoute = GardenRouteImport.update({
   id: '/garden',
   path: '/garden',
@@ -26,31 +32,42 @@ const IndexRoute = IndexRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/garden': typeof GardenRoute
+  '/wormfarm': typeof WormfarmRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/garden': typeof GardenRoute
+  '/wormfarm': typeof WormfarmRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/garden': typeof GardenRoute
+  '/wormfarm': typeof WormfarmRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/garden'
+  fullPaths: '/' | '/garden' | '/wormfarm'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/garden'
-  id: '__root__' | '/' | '/garden'
+  to: '/' | '/garden' | '/wormfarm'
+  id: '__root__' | '/' | '/garden' | '/wormfarm'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   GardenRoute: typeof GardenRoute
+  WormfarmRoute: typeof WormfarmRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/wormfarm': {
+      id: '/wormfarm'
+      path: '/wormfarm'
+      fullPath: '/wormfarm'
+      preLoaderRoute: typeof WormfarmRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/garden': {
       id: '/garden'
       path: '/garden'
@@ -71,6 +88,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   GardenRoute: GardenRoute,
+  WormfarmRoute: WormfarmRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { useState } from "react";
 import Clock from "./Clock";
+import UserIcon from "../features/user/UserIcon";
 
 const Navbar = () => {
   const [bgColor, setBgColor] = useState("");
@@ -49,28 +50,18 @@ const Navbar = () => {
           <span className="navbar-toggler-icon"></span>
         </button>
 
-        <div
-          className="collapse navbar-collapse flex-grow-0"
-          id="navbarNavDropdown"
-        >
-          <div className="d-flex flex-wrap">
-            <Link
-              to="/login"
-              className="px-2 m-1  text-nowrap bg-light text-black text-decoration-none rounded-pill border border-dark border-1"
-              activeProps={{ className: "text-white bg-dark fw-bold" }}
-            >
-              Login
-            </Link>
+        <div className="collapse navbar-collapse" id="navbarNavDropdown">
+          <div className="col d-flex flex-wrap justify-content-center">
             <Link
               to="/"
-              className="px-2 m-1  text-nowrap bg-light text-black text-decoration-none rounded-pill border border-dark border-1"
+              className="px-2 m-1 text-nowrap bg-light text-black text-decoration-none rounded-pill border border-dark border-1"
               activeProps={{ className: "text-white bg-dark fw-bold" }}
             >
               Home
             </Link>
             <Link
               to="/garden"
-              className="px-2 m-1  text-nowrap bg-light text-black text-decoration-none rounded-pill border border-dark border-1"
+              className="px-2 m-1 text-nowrap bg-light text-black text-decoration-none rounded-pill border border-dark border-1"
               activeProps={{ className: "text-white bg-dark fw-bold" }}
             >
               Garden
@@ -82,6 +73,10 @@ const Navbar = () => {
             >
               Worm Farm
             </Link>
+          </div>
+
+          <div className="col-12 col-sm-2 d-flex justify-content-end">
+            <UserIcon />
           </div>
         </div>
       </div>

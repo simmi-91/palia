@@ -10,12 +10,18 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as WormfarmRouteImport } from './routes/wormfarm'
+import { Route as LoginRouteImport } from './routes/login'
 import { Route as GardenRouteImport } from './routes/garden'
 import { Route as IndexRouteImport } from './routes/index'
 
 const WormfarmRoute = WormfarmRouteImport.update({
   id: '/wormfarm',
   path: '/wormfarm',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
 const GardenRoute = GardenRouteImport.update({
@@ -32,30 +38,34 @@ const IndexRoute = IndexRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/garden': typeof GardenRoute
+  '/login': typeof LoginRoute
   '/wormfarm': typeof WormfarmRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/garden': typeof GardenRoute
+  '/login': typeof LoginRoute
   '/wormfarm': typeof WormfarmRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/garden': typeof GardenRoute
+  '/login': typeof LoginRoute
   '/wormfarm': typeof WormfarmRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/garden' | '/wormfarm'
+  fullPaths: '/' | '/garden' | '/login' | '/wormfarm'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/garden' | '/wormfarm'
-  id: '__root__' | '/' | '/garden' | '/wormfarm'
+  to: '/' | '/garden' | '/login' | '/wormfarm'
+  id: '__root__' | '/' | '/garden' | '/login' | '/wormfarm'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   GardenRoute: typeof GardenRoute
+  LoginRoute: typeof LoginRoute
   WormfarmRoute: typeof WormfarmRoute
 }
 
@@ -66,6 +76,13 @@ declare module '@tanstack/react-router' {
       path: '/wormfarm'
       fullPath: '/wormfarm'
       preLoaderRoute: typeof WormfarmRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/garden': {
@@ -88,6 +105,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   GardenRoute: GardenRoute,
+  LoginRoute: LoginRoute,
   WormfarmRoute: WormfarmRoute,
 }
 export const routeTree = rootRouteImport

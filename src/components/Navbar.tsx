@@ -55,6 +55,13 @@ const Navbar = () => {
         >
           <div className="d-flex flex-wrap">
             <Link
+              to="/login"
+              className="px-2 m-1  text-nowrap bg-light text-black text-decoration-none rounded-pill border border-dark border-1"
+              activeProps={{ className: "text-white bg-dark fw-bold" }}
+            >
+              Login
+            </Link>
+            <Link
               to="/"
               className="px-2 m-1  text-nowrap bg-light text-black text-decoration-none rounded-pill border border-dark border-1"
               activeProps={{ className: "text-white bg-dark fw-bold" }}

@@ -39,25 +39,27 @@ const WormFarmPage = () => {
       setFilteredData([...sorted]);
     } else {
       let sorted = [...FoodsArr].sort((a, b) => {
+        let aObj = a.star ? a.star : a.base;
+        let bObj = b.star ? b.star : b.base;
         let aVal: number = defaultVal;
         let bVal: number = defaultVal;
 
         if (sortOn === "gold") {
-          aVal = a.base.goldValue ? a.base.goldValue : defaultVal;
-          bVal = b.base.goldValue ? b.base.goldValue : defaultVal;
+          aVal = aObj.goldValue ? aObj.goldValue : defaultVal;
+          bVal = bObj.goldValue ? bObj.goldValue : defaultVal;
         } else if (sortOn === "worm") {
-          aVal = a.base.worms.wormOutput ? a.base.worms.wormOutput : defaultVal;
-          bVal = b.base.worms.wormOutput ? b.base.worms.wormOutput : defaultVal;
+          aVal = aObj.worms.wormOutput ? aObj.worms.wormOutput : defaultVal;
+          bVal = bObj.worms.wormOutput ? bObj.worms.wormOutput : defaultVal;
         } else if (sortOn === "glowworms") {
-          aVal = a.base.glowworms.wormOutput
-            ? a.base.glowworms.wormOutput
+          aVal = aObj.glowworms.wormOutput
+            ? aObj.glowworms.wormOutput
             : defaultVal;
-          bVal = b.base.glowworms.wormOutput
-            ? b.base.glowworms.wormOutput
+          bVal = bObj.glowworms.wormOutput
+            ? bObj.glowworms.wormOutput
             : defaultVal;
         } else if (sortOn === "focus") {
-          aVal = a.base.focusAmount ? a.base.focusAmount : defaultVal;
-          bVal = b.base.focusAmount ? b.base.focusAmount : defaultVal;
+          aVal = aObj.focusAmount ? aObj.focusAmount : defaultVal;
+          bVal = bObj.focusAmount ? bObj.focusAmount : defaultVal;
         }
 
         if (sortDir === "asc") {

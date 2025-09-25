@@ -12,9 +12,8 @@ const RootLayout = () => (
     </main>
 
     <Footer />
-
-    <TanStackRouterDevtools />
   </>
 );
 
 export const Route = createRootRoute({ component: RootLayout });
+//<TanStackRouterDevtools />

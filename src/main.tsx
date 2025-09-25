@@ -18,6 +18,7 @@ declare module "@tanstack/react-router" {
   }
 }
 
+import "./main.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
 

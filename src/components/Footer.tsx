@@ -1,16 +1,26 @@
 import { selectAllLinks } from "../features/slices/WikiLinkSlice";
+import { textIcon } from "../app/icons/common";
 
 const Footer = () => {
   const linksArr = selectAllLinks();
   return (
-    <div className=" container-fluid position-fixed bottom-0 start-0 bg-light border-top border-dark">
-      <div className="row d-flex flex-wrap">
+    <div className=" container-fluid position-fixed bottom-0 start-0 bg-dark border-top border-dark ">
+      <div className="row d-flex flex-wrap text-light text-center">
         {linksArr.map((link) => (
-          <div key={link.site} className="col ">
-            <div className="text-nowrap">
-              <a href={link.url}>{link.site}</a>
+          <div key={link.site} className="col py-1 align-content-center">
+            <div className="text-s text-nowrap">
+              <a
+                href={link.url}
+                target="_blank"
+                className="text-decoration-none"
+              >
+                {link.logo ? textIcon(link.logo) : null} {link.site}
+              </a>
             </div>
-            <small className="d-none d-lg-block">{link.description}</small>
+
+            <div className="text-xs d-none d-lg-block">
+              {link.description ? link.description : null}
+            </div>
           </div>
         ))}
       </div>

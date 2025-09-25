@@ -82,16 +82,16 @@ const ProfitCard = () => {
     <>
       {data.map((item, i) => (
         <div key={i} className="card m-2 ">
-          <div className="row g-0">
-            <div className="col-md-3">
+          <div className="row g-0 text-s">
+            <div className="col-sm-3 col-md-2 align-content-center justify-content-center">
               <img
                 src={item.url}
                 alt={item.name}
                 className="img-fluid"
-                style={{ height: "150px" }}
+                style={{ height: "100px" }}
               />
             </div>
-            <div className="col-md-9 align-content-center">
+            <div className="col align-content-center">
               <h5 className="card-title">{item.name}</h5>
               <div className="card-text d-flex flex-wrap ">
                 {item.ingredients.map((ingredient) => (
@@ -101,7 +101,9 @@ const ProfitCard = () => {
                       src={ingredient.url}
                       alt={ingredient.name}
                     />
-                    <label>{ingredient.name}</label>
+                    <label className="d-none d-lg-inline">
+                      {ingredient.name}
+                    </label>
                   </div>
                 ))}
               </div>

@@ -25,7 +25,7 @@ const GardenPage = () => {
           <div className="row p-2">
             <div className="col">
               <img
-                src="/src/app/images/hage.png"
+                src="/src/assets/images/hage.png"
                 className=""
                 style={{ maxWidth: "100%" }}
               />

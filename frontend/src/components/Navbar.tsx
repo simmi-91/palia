@@ -65,6 +65,13 @@ const Navbar = () => {
                 Home
               </Link>
               <Link
+                to="/trade"
+                className="px-2 m-1 text-nowrap bg-light text-black text-decoration-none rounded-pill border border-dark border-1"
+                activeProps={{ className: "text-white bg-dark fw-bold" }}
+              >
+                Trade
+              </Link>
+              <Link
                 to="/garden"
                 className="px-2 m-1 text-nowrap bg-light text-black text-decoration-none rounded-pill border border-dark border-1"
                 activeProps={{ className: "text-white bg-dark fw-bold" }}
@@ -89,15 +96,15 @@ const Navbar = () => {
 
       {submenuItems.length > 0 && (
         <div className="border-top">
-          <div className="container-fluid d-flex flex-wrap gap-2 py-2 justify-content-center">
+          <div className="container-fluid d-flex gap-1 py-1 overflow-x-auto">
             {submenuItems.map((item: SubmenuItem) => (
               <a
                 key={item.href}
                 href={item.href}
-                className="px-2 text-nowrap text-decoration-none rounded-pill border border-dark border-1"
+                className="px-1 text-nowrap text-decoration-none rounded-pill border border-1 text-s"
                 style={{
                   color: colorMap[bgColor]?.text || "inherit",
-                  backgroundColor: "rgba(255,255,255,0.6)",
+                  backgroundColor: "rgba(255, 255, 255, 0.1)",
                 }}
               >
                 {item.label}

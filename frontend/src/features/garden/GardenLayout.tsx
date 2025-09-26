@@ -31,7 +31,7 @@ const GardenLayout = ({ cropArr }: { cropArr: CROP_Entry[] }) => {
   const seedElem = (crop: CROP_Entry | CROP_Entry_WithSeeds) => {
     const name = crop.name;
     const key = name.replace(/\s/, "_").toLowerCase();
-    const icon = textIcon(crop.seedicon);
+    const icon = textIcon(crop.seedicon, 40);
 
     return (
       <div key={key} title={name + " (" + crop.harvest + ")"} className="pe-2">
@@ -44,19 +44,11 @@ const GardenLayout = ({ cropArr }: { cropArr: CROP_Entry[] }) => {
   return (
     <div id="GardenLayout" className="card my-2 ">
       <div className="card-header">Self sustainable layout</div>
-      <div className="row p-2">
-        <div className="col">
-          <img
-            src="./images/hage.png"
-            className=""
-            style={{ maxWidth: "100%" }}
-          />
-        </div>
-
-        <div className="col ">
+      <div className="row p-2 flex-md-row-reverse">
+        <div className="col-sm-12 col-md-6">
           <div className="col d-flex flex-wrap">
             <a
-              className="fw-bold w-100"
+              className="fw-bold w-100 my-2"
               target="_blank"
               href="https://palia-garden-planner.vercel.app/?layout=v0.4_D-111-111-111_CR-AAAAAAAAA-PTCBkPTCBkP-BkPT.WCBkPTCBk-CBkPTCBkPTC-TCBkPTCBkPT-PTCBkPTCBkP-CPTBkCPT.YBkC-CBkPTCBkPTC-TCBkPBBBkBB_D30L37Cr0.C.P-CP-BkS3-TP3-PS2"
             >
@@ -74,7 +66,7 @@ const GardenLayout = ({ cropArr }: { cropArr: CROP_Entry[] }) => {
             {waterCrops && waterCrops.map((crop) => seedElem(crop))}
           </div>
 
-          <div className="coll d-flex flex-wrap">
+          <div className="coll d-flex flex-wrap mt-2">
             <b>Alternatives for WeedBlock crops: </b>
             {weedCrops && weedCrops.map((crop) => seedElem(crop))}
           </div>
@@ -85,32 +77,44 @@ const GardenLayout = ({ cropArr }: { cropArr: CROP_Entry[] }) => {
             <div title="WeedBlock Fertilizer">
               1
               {textIcon(
-                "https://palia.wiki.gg/images/WeedBlock_Fertilizer.png"
+                "https://palia.wiki.gg/images/WeedBlock_Fertilizer.png",
+                40
               )}
               on NE corner
             </div>
             <div title="HydratePro Fertilizer">
               1
               {textIcon(
-                "https://palia.wiki.gg/images/HydratePro_Fertilizer.png"
+                "https://palia.wiki.gg/images/HydratePro_Fertilizer.png",
+                40
               )}
               on SW corner
             </div>
             <div title="HydratePro Fertilizer">
               9
               {textIcon(
-                "https://palia.wiki.gg/images/HydratePro_Fertilizer.png"
+                "https://palia.wiki.gg/images/HydratePro_Fertilizer.png",
+                40
               )}
               on NW corner (Apples)
             </div>
             <div title="HydratePro Fertilizer">
               4
               {textIcon(
-                "https://palia.wiki.gg/images/HydratePro_Fertilizer.png"
+                "https://palia.wiki.gg/images/HydratePro_Fertilizer.png",
+                40
               )}
               on SE corner (x4 plot-crop)
             </div>
           </div>
+        </div>
+
+        <div className="col-sm-12 col-md-6">
+          <img
+            src="./images/hage.png"
+            className=""
+            style={{ maxWidth: "100%" }}
+          />
         </div>
       </div>
     </div>

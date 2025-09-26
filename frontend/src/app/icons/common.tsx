@@ -1,8 +1,14 @@
-export const textIcon = (src: string) => {
+export const textIcon = (src: string, size?: number) => {
+  const defaultSize = 20;
+  const iconSize = size ? size : defaultSize;
   return (
     <img
       src={src}
-      style={{ height: "20px", position: "relative", top: "-2px" }}
+      style={{
+        height: iconSize,
+        position: "relative",
+        top: "-2px",
+      }}
     />
   );
 };

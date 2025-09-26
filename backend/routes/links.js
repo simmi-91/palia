@@ -1,11 +1,10 @@
 import { Router } from "express";
-import { dbFruits } from "../db/index.js";
+import { dbLinks } from "../db/index.js";
 
 const router = Router();
 
-// Handles GET requests to /api/fruits
 router.get("/", (req, res) => {
-  res.json(dbFruits.data);
+  res.json(dbLinks.data);
 });
 
 export default router;

@@ -2,27 +2,38 @@ import { selectAllLinks } from "../features/slices/WikiLinkSlice";
 import { textIcon } from "../app/icons/common";
 
 const Footer = () => {
-  const linksArr = selectAllLinks();
+  const { data: linksArr, isLoading, isError, error } = selectAllLinks();
+
+  if (isLoading) {
+    return <div>Loading links...</div>;
+  }
+
+  if (isError) {
+    // TypeScript will infer 'error' as an Error object
+    return <div>Error loading data: {error.message}</div>;
+  }
+
   return (
     <div className=" container-fluid position-fixed bottom-0 start-0 bg-dark border-top border-dark ">
       <div className="row d-flex flex-wrap text-light text-center">
-        {linksArr.map((link) => (
-          <div key={link.site} className="col py-1 align-content-center">
-            <div className="text-s text-nowrap">
-              <a
-                href={link.url}
-                target="_blank"
-                className="text-decoration-none"
-              >
-                {link.logo ? textIcon(link.logo) : null} {link.site}
-              </a>
-            </div>
+        {linksArr &&
+          linksArr.map((link) => (
+            <div key={link.site} className="col py-1 align-content-center">
+              <div className="text-s text-nowrap">
+                <a
+                  href={link.url}
+                  target="_blank"
+                  className="text-decoration-none"
+                >
+                  {link.logo ? textIcon(link.logo) : null} {link.site}
+                </a>
+              </div>
 
-            <div className="text-xs d-none d-lg-block">
-              {link.description ? link.description : null}
+              <div className="text-xs d-none d-lg-block">
+                {link.description ? link.description : null}
+              </div>
             </div>
-          </div>
-        ))}
+          ))}
       </div>
     </div>
   );

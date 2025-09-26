@@ -1,4 +1,5 @@
-import { LINKS } from "../../app/shared/LINKS.ts";
+//import { LINKS } from "../../app/shared/LINKS.ts";
+import { useQuery, type UseQueryResult } from "@tanstack/react-query";
 
 export type LINKS_Entry = {
   site: string;
@@ -6,6 +7,21 @@ export type LINKS_Entry = {
   logo: string;
   description: string | null;
 };
-export const selectAllLinks = (): LINKS_Entry[] => {
-  return LINKS;
+
+const fetchLinks = async (): Promise<LINKS_Entry[]> => {
+  const response = await fetch(import.meta.env.VITE_BASEURL + "/api/links");
+  if (!response.ok) {
+    throw new Error("Network response was not ok");
+  }
+  const data: { links: LINKS_Entry[] } = await response.json();
+  return data.links;
+};
+
+export const selectAllLinks = (): UseQueryResult<LINKS_Entry[], Error> => {
+  const linkObj = useQuery({
+    queryKey: ["linksData"],
+    queryFn: fetchLinks,
+    staleTime: 1000 * 60 * 5,
+  });
+  return linkObj;
 };

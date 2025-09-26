@@ -19,6 +19,7 @@ export type Worm = {
 export type CROP_Entry = {
   name: string;
   icon: string;
+  seedicon: string;
   harvest: string;
   effect: string;
   plotSize: number;

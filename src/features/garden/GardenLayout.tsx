@@ -47,7 +47,7 @@ const GardenLayout = ({ cropArr }: { cropArr: CROP_Entry[] }) => {
       <div className="row p-2">
         <div className="col">
           <img
-            src="/src/assets/images/hage.png"
+            src="./images/hage.png"
             className=""
             style={{ maxWidth: "100%" }}
           />
@@ -57,6 +57,7 @@ const GardenLayout = ({ cropArr }: { cropArr: CROP_Entry[] }) => {
           <div className="col d-flex flex-wrap">
             <a
               className="fw-bold w-100"
+              target="_blank"
               href="https://palia-garden-planner.vercel.app/?layout=v0.4_D-111-111-111_CR-AAAAAAAAA-PTCBkPTCBkP-BkPT.WCBkPTCBk-CBkPTCBkPTC-TCBkPTCBkPT-PTCBkPTCBkP-CPTBkCPT.YBkC-CBkPTCBkPTC-TCBkPBBBkBB_D30L37Cr0.C.P-CP-BkS3-TP3-PS2"
             >
               Initial seed planting:

@@ -3,7 +3,7 @@ import { useAuth } from "../../context/AuthContext";
 
 const UserIcon = () => {
   const { user, profile, logOut } = useAuth();
-  //console.log(user, profile);
+  console.log(user, profile);
 
   const alertLogout = () => {
     if (confirm("Are you sure you want to log out?")) {

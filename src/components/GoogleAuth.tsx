@@ -7,7 +7,7 @@ import { useAuth } from "../context/AuthContext";
 
 function GoogleAuth(): ReactElement {
   // Use the state and functions from the context
-  const { user, profile, setUser, logOut } = useAuth();
+  const { profile, setUser, logOut } = useAuth();
 
   // The login flow only needs to set the user state/token
   const login = useGoogleLogin({

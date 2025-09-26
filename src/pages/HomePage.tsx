@@ -19,6 +19,7 @@ const HomePage = () => {
           Up to four item requests within a <b>real-world day</b>
         </li>
       </ul>
+      <a href="/games/palia_old"> Old Palia site</a>
     </div>
   );
 };

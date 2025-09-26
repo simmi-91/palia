@@ -18,8 +18,7 @@ function GoogleAuth(): ReactElement {
 
   return (
     <div>
-      <h2>React Google Login</h2>
-      <br />
+      <h2>Google Login</h2>
       <br />
       {profile ? (
         <div>

@@ -10,6 +10,8 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as WormfarmRouteImport } from './routes/wormfarm'
+import { Route as TradeRouteImport } from './routes/trade'
+import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as GardenRouteImport } from './routes/garden'
 import { Route as IndexRouteImport } from './routes/index'
@@ -17,6 +19,16 @@ import { Route as IndexRouteImport } from './routes/index'
 const WormfarmRoute = WormfarmRouteImport.update({
   id: '/wormfarm',
   path: '/wormfarm',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TradeRoute = TradeRouteImport.update({
+  id: '/trade',
+  path: '/trade',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProfileRoute = ProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LoginRoute = LoginRouteImport.update({
@@ -39,12 +51,16 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/garden': typeof GardenRoute
   '/login': typeof LoginRoute
+  '/profile': typeof ProfileRoute
+  '/trade': typeof TradeRoute
   '/wormfarm': typeof WormfarmRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/garden': typeof GardenRoute
   '/login': typeof LoginRoute
+  '/profile': typeof ProfileRoute
+  '/trade': typeof TradeRoute
   '/wormfarm': typeof WormfarmRoute
 }
 export interface FileRoutesById {
@@ -52,20 +68,31 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/garden': typeof GardenRoute
   '/login': typeof LoginRoute
+  '/profile': typeof ProfileRoute
+  '/trade': typeof TradeRoute
   '/wormfarm': typeof WormfarmRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/garden' | '/login' | '/wormfarm'
+  fullPaths: '/' | '/garden' | '/login' | '/profile' | '/trade' | '/wormfarm'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/garden' | '/login' | '/wormfarm'
-  id: '__root__' | '/' | '/garden' | '/login' | '/wormfarm'
+  to: '/' | '/garden' | '/login' | '/profile' | '/trade' | '/wormfarm'
+  id:
+    | '__root__'
+    | '/'
+    | '/garden'
+    | '/login'
+    | '/profile'
+    | '/trade'
+    | '/wormfarm'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   GardenRoute: typeof GardenRoute
   LoginRoute: typeof LoginRoute
+  ProfileRoute: typeof ProfileRoute
+  TradeRoute: typeof TradeRoute
   WormfarmRoute: typeof WormfarmRoute
 }
 
@@ -76,6 +103,20 @@ declare module '@tanstack/react-router' {
       path: '/wormfarm'
       fullPath: '/wormfarm'
       preLoaderRoute: typeof WormfarmRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/trade': {
+      id: '/trade'
+      path: '/trade'
+      fullPath: '/trade'
+      preLoaderRoute: typeof TradeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/profile': {
+      id: '/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof ProfileRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/login': {
@@ -106,6 +147,8 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   GardenRoute: GardenRoute,
   LoginRoute: LoginRoute,
+  ProfileRoute: ProfileRoute,
+  TradeRoute: TradeRoute,
   WormfarmRoute: WormfarmRoute,
 }
 export const routeTree = rootRouteImport

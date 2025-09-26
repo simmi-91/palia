@@ -6,10 +6,13 @@ import { GoogleOAuthProvider } from "@react-oauth/google";
 // Import the generated route tree
 import { routeTree } from "./routeTree.gen";
 
+// auth provider
+import { AuthProvider } from "./context/AuthContext";
+
 // Create a new router instance
 const router = createRouter({
   routeTree,
-  //basepath: "/games/palia_tmp",
+  basepath: "/games/palia",
 });
 
 // Register the router instance for type safety
@@ -29,9 +32,11 @@ if (!rootElement.innerHTML) {
   const root = createRoot(rootElement);
   root.render(
     <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
-      <StrictMode>
-        <RouterProvider router={router} />
-      </StrictMode>
+      <AuthProvider>
+        <StrictMode>
+          <RouterProvider router={router} />
+        </StrictMode>
+      </AuthProvider>
     </GoogleOAuthProvider>
   );
 }

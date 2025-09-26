@@ -1,3 +1,8 @@
+html {
+  scroll-padding-top: 150px;
+  scroll-behavior: smooth;
+}
+
 .text-s {
   font-size: small;
 }

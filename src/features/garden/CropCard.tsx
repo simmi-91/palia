@@ -23,7 +23,7 @@ const CropCard = ({
   const cropIcon = textIcon(crop.icon);
 
   return (
-    <div className="card m-2">
+    <div id="CropCard" className="card my-2">
       <h5 className="card-header d-flex ">
         <span className="px-2">{icoStar}</span>
         <span className="flex-fill">{crop.name}</span>

@@ -196,7 +196,7 @@ const WormFarmPage = () => {
 
   if (filteredData) {
     return (
-      <div className="container overflow-auto ">
+      <div className="container-fluid overflow-auto ">
         {filterBar()}
         {filteredData.map((entry, i) => foodRow(i, entry))}
       </div>

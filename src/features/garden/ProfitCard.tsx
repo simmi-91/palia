@@ -79,39 +79,44 @@ const ProfitCard = () => {
   ];
 
   return (
-    <>
-      {data.map((item, i) => (
-        <div key={i} className="card m-2 ">
-          <div className="row g-0 text-s">
-            <div className="col-sm-3 col-md-2 align-content-center justify-content-center">
-              <img
-                src={item.url}
-                alt={item.name}
-                className="img-fluid"
-                style={{ height: "100px" }}
-              />
-            </div>
-            <div className="col align-content-center">
-              <h5 className="card-title">{item.name}</h5>
-              <div className="card-text d-flex flex-wrap ">
-                {item.ingredients.map((ingredient) => (
-                  <div className="">
-                    <img
-                      style={{ height: "50px" }}
-                      src={ingredient.url}
-                      alt={ingredient.name}
-                    />
-                    <label className="d-none d-lg-inline">
-                      {ingredient.name}
-                    </label>
-                  </div>
-                ))}
+    <div id="ProfitCard" className="row">
+      <div className="d-flex flex-wrap gap-1 my-2">
+        {data.map((item, i) => (
+          <div key={i} className="card col">
+            <div className="row g-0 text-s">
+              <div
+                className="col-sm-3 col-md-2 d-flex justify-content-center"
+                style={{ minWidth: 80 }}
+              >
+                <img
+                  src={item.url}
+                  alt={item.name}
+                  className="img-fluid m-auto"
+                  style={{ maxHeight: 100 }}
+                />
+              </div>
+              <div className="col text-center">
+                <h5 className="card-title">{item.name}</h5>
+                <div className="card-text d-flex flex-wrap justify-content-center">
+                  {item.ingredients.map((ingredient, idx) => (
+                    <div key={i + "_" + idx} className="">
+                      <img
+                        style={{ height: 50 }}
+                        src={ingredient.url}
+                        alt={ingredient.name}
+                      />
+                      <label className="d-none d-lg-inline">
+                        {ingredient.name}
+                      </label>
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      ))}
-    </>
+        ))}
+      </div>
+    </div>
   );
 };
 export default ProfitCard;

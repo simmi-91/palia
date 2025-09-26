@@ -75,7 +75,7 @@ const ProfitTable = ({
   };
 
   return (
-    <div className="container overflow-x-auto">
+    <div id="ProfitTable" className="container-fluid overflow-x-auto card ">
       <table className="table table-striped table-hover">
         <thead>
           <tr>

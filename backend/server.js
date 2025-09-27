@@ -1,15 +1,17 @@
 import express from "express";
 import cors from "cors";
+import "dotenv/config";
 
-import { initializeDatabases } from "./db/index.js";
 import apiRouter from "./routes/index.js";
 
 async function main() {
-  await initializeDatabases();
   const app = express();
 
-  const corsOptions = { origin: "http://localhost:5173" };
+  const FRONTEND_ORIGIN = process.env.FRONTEND_URL || "http://localhost:5173";
+  const corsOptions = { origin: FRONTEND_ORIGIN };
   app.use(cors(corsOptions));
+
+  app.use(express.json());
 
   const PORT = 8080;
 

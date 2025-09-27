@@ -1,10 +1,11 @@
 import { Router } from "express";
-import { dbLinks } from "../db/index.js";
+import db from "../db_links.js";
 
 const router = Router();
 
-router.get("/", (req, res) => {
-  res.json(dbLinks.data);
+router.get("/", async (req, res) => {
+  const links = await db.getAllLinks();
+  res.json(links);
 });
 
 export default router;

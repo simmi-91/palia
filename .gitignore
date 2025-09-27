@@ -11,7 +11,7 @@ node_modules
 dist
 dist-ssr
 *.local
-.env
+.env*
 .tanstack
 
 # Editor directories and files
@@ -26,3 +26,6 @@ dist-ssr
 *.sw?
 
 .cursorignore
+
+#db-changes
+backend/*.json

@@ -1,0 +1,66 @@
+name: Deploy Palia Server
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "server/**"
+  workflow_dispatch: # Allows manual trigger from GitHub UI
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Deploy server files
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          source: "server/*"
+          target: "/tmp/palia-deploy-server"
+          strip_components: 1 # Removes 'server' from path
+          rm: true # Clean target directory first
+
+      - name: Execute deployment script on server
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          script: |
+            # Navigate to server location
+            cd /var/www/games/server/
+
+            # Remove old backup if exists
+            if [ -d "palia_old" ]; then
+              sudo rm -rf palia_old
+              echo "Removed palia_old"
+            fi
+
+            # Rename current to old (if exists)
+            if [ -d "palia" ]; then
+              sudo mv palia palia_old
+              echo "Renamed palia to palia_old"
+            fi
+
+            # Move new server files from temp location
+            sudo mv /tmp/palia-deploy-server palia
+
+            # Install dependencies
+            cd palia
+            sudo npm ci --production
+
+            # Set proper permissions
+            sudo chown -R www-data:www-data /var/www/games/server/palia
+            sudo chmod -R 755 /var/www/games/server/palia
+
+            # Restart server (using PM2 - we'll set this up)
+            sudo pm2 restart palia || sudo pm2 start server.js --name palia
+
+            echo "Server deployment complete!"
+            sudo pm2 status

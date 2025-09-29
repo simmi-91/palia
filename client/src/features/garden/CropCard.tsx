@@ -9,7 +9,7 @@ import type {
   Seed,
   Preserve,
   Worm,
-} from "../../app/types/GardenTypes";
+} from "../../app/types/gardenTypes";
 import { textIcon, icoCoin, icoStar } from "../../app/icons/common";
 import { calcWormProfit, calcProductProfit } from "../../utils/calculations";
 

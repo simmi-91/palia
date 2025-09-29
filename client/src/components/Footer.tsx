@@ -2,19 +2,30 @@ import { selectAllLinks } from "../features/slices/WikiLinkSlice";
 import { textIcon } from "../app/icons/common";
 
 const Footer = () => {
+  const footerClasses =
+    "container-fluid position-fixed bottom-0 start-0 bg-dark border-top border-dark ";
   const { data: linksArr, isLoading, isError, error } = selectAllLinks();
 
   if (isLoading) {
-    return <div>Loading links...</div>;
+    return (
+      <div className={footerClasses + " text-center"}>
+        <div className="spinner-border text-light" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </div>
+      </div>
+    );
   }
 
   if (isError) {
-    // TypeScript will infer 'error' as an Error object
-    return <div>Error loading data: {error.message}</div>;
+    return (
+      <div className={footerClasses + " text-center"}>
+        <div className="text-danger">Error loading data: {error.message}</div>
+      </div>
+    );
   }
 
   return (
-    <div className=" container-fluid position-fixed bottom-0 start-0 bg-dark border-top border-dark ">
+    <div className={footerClasses}>
       <div className="row d-flex flex-wrap text-light text-center">
         {linksArr &&
           linksArr.map((link) => (

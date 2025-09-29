@@ -1,4 +1,4 @@
-import type { CROP_Entry } from "~/app/types/GardenTypes";
+import type { CROP_Entry } from "~/app/types/gardenTypes";
 
 export const CROPS: CROP_Entry[] = [
   {

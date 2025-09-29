@@ -1,4 +1,4 @@
-import type { Preserve, Seed, Worm } from "../app/types/GardenTypes";
+import type { Preserve, Seed, Worm } from "../app/types/gardenTypes";
 import type React from "react";
 import { icoCoin } from "../app/icons/common";
 

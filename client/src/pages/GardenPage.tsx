@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { selectAllCrops } from "../features/slices/GardenSlice";
-import type { CROP_Entry } from "../app/types/GardenTypes";
+import type { CROP_Entry } from "../app/types/gardenTypes";
 import { useSubmenu } from "../context/SubmenuContext";
 
 import ProfitTable from "../features/garden/ProfitTable";

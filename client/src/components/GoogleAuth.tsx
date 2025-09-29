@@ -9,9 +9,7 @@ function GoogleAuth(): ReactElement {
   // Use the state and functions from the context
   const { profile, setUser, logOut } = useAuth();
 
-  // The login flow only needs to set the user state/token
   const login = useGoogleLogin({
-    // onSuccess now uses the setUser function from the context
     onSuccess: (codeResponse) => setUser(codeResponse),
     onError: (error: unknown) => console.error("Login Failed:", error),
   });
@@ -24,11 +22,10 @@ function GoogleAuth(): ReactElement {
         <div>
           <img src={profile.picture} alt="user image" />
           <h3>User Logged in</h3>
-          <p>Name: {profile.name}</p>
+          <p>Name: {profile.given_name}</p>
           <p>Email Address: {profile.email}</p>
           <br />
           <br />
-          {/* Call the context logOut function */}
           <button onClick={logOut}>Log out</button>
         </div>
       ) : (

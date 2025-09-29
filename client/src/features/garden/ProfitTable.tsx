@@ -1,4 +1,4 @@
-import type { CROP_Entry } from "../../app/types/GardenTypes";
+import type { CROP_Entry } from "../../app/types/gardenTypes";
 import {
   calcProductProfit,
   calcWormProfit,

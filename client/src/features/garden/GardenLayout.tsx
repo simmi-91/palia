@@ -1,5 +1,5 @@
 import { textIcon } from "../../app/icons/common";
-import type { CROP_Entry } from "../../app/types/GardenTypes";
+import type { CROP_Entry } from "../../app/types/gardenTypes";
 
 type CROP_Entry_WithSeeds = CROP_Entry & {
   numSeeds: number;

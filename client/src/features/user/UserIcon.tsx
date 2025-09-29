@@ -3,20 +3,21 @@ import { useAuth } from "../../context/AuthContext";
 
 const UserIcon = () => {
   const { user, profile, logOut } = useAuth();
-  console.log(user, profile);
+  console.log("user", user, "profile", profile);
 
   const alertLogout = () => {
     if (confirm("Are you sure you want to log out?")) {
       logOut();
     }
   };
+
   return (
     <>
       {profile ? (
         <div className="d-flex justify-content-end">
           <div>
             <img
-              alt={profile.given_name ? profile.given_name : profile.name}
+              alt={profile.given_name}
               src={profile.picture}
               className="rounded-circle border border-2 border-dark "
               style={{ maxHeight: 50 }}
@@ -26,9 +27,7 @@ const UserIcon = () => {
             />
           </div>
           <div className=" mx-2 row ">
-            <div className="row fw-bold fs-5">
-              {profile?.given_name ? profile?.given_name : profile.name}
-            </div>
+            <div className="row fw-bold fs-5">{profile.given_name}</div>
             <Link
               to="/profile"
               className="text-nowrap text-decoration-none p-0 text-dark"

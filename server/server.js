@@ -1,10 +1,16 @@
-const path = require("path");
-require("dotenv").config({
-  path: path.join(__dirname, "../.env.palia"), // Goes up one level from /var/www/games/server/palia/
-});
-
 import express from "express";
 import cors from "cors";
+
+import dotenv from "dotenv";
+import { fileURLToPath } from "url";
+import path from "path";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+dotenv.config({
+  path: path.join(__dirname, "../.env.palia"),
+});
 
 import apiRouter from "./routes/index.js";
 

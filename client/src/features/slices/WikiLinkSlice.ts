@@ -9,7 +9,7 @@ export type LINKS_Entry = {
 };
 
 const fetchLinks = async (): Promise<LINKS_Entry[]> => {
-  const response = await fetch(import.meta.env.VITE_BASEURL + "/api/links");
+  const response = await fetch(import.meta.env.VITE_API_URL + "/links");
   if (!response.ok) {
     throw new Error("Network response was not ok");
   }

@@ -27,6 +27,9 @@ async function main() {
 
   app.use("/palia", apiRouter);
 
+  app.get("/palia/", (req, res) => {
+    res.send("Welcome to the backend API.");
+  });
   /*app.get("/palia/", (req, res) => {
     res.send("Welcome to the backend API.");
   });*/

@@ -26,6 +26,12 @@ jobs:
         working-directory: ./client
         run: npm ci
 
+      - name: Create production environment file
+        working-directory: ./client
+        run: |
+          echo "VITE_GOOGLE_CLIENT_ID=${{ secrets.VITE_GOOGLE_CLIENT_ID }}" > .env.production
+          echo "VITE_BASEURL=${{ secrets.VITE_BASEURL }}" >> .env.production
+
       - name: Build React app
         working-directory: ./client
         run: npm run build

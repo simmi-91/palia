@@ -25,14 +25,15 @@ async function main() {
 
   const PORT = 8080;
 
-  app.use("/api", apiRouter);
+  app.use("/palia", apiRouter);
 
-  app.get("/", (req, res) => {
+  /*app.get("/palia/", (req, res) => {
     res.send("Welcome to the backend API.");
-  });
+  });*/
 
   app.listen(PORT, () => {
     console.log(`Server has started on port ${PORT}`);
+    console.log(`Allowing CORS traffic from: ${FRONTEND_ORIGIN}`);
   });
 }
 

@@ -89,7 +89,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           const googleProfile: GoogleProfile = await profileResponse.json();
 
           const checkResponse = await fetch(
-            import.meta.env.VITE_BASEURL + "/api/users/check",
+            import.meta.env.VITE_API_URL + "/users/check",
             {
               method: "POST",
               headers: { "Content-Type": "application/json" },
@@ -117,7 +117,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
               };
 
               const registerResponse = await fetch(
-                import.meta.env.VITE_BASEURL + "/api/users/register",
+                import.meta.env.VITE_API_URL + "/users/register",
                 {
                   method: "POST",
                   headers: { "Content-Type": "application/json" },

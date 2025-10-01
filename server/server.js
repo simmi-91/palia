@@ -30,9 +30,6 @@ async function main() {
   app.get("/palia/", (req, res) => {
     res.send("Welcome to the backend API.");
   });
-  /*app.get("/palia/", (req, res) => {
-    res.send("Welcome to the backend API.");
-  });*/
 
   app.listen(PORT, () => {
     console.log(`Server has started on port ${PORT}`);

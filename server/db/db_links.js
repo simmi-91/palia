@@ -24,7 +24,7 @@ if (process.env.DB_HOST) {
 } else {
   console.log("Using LowDB for local development.");
 
-  const adapterLinks = new JSONFile("links.json");
+  const adapterLinks = new JSONFile("../json_db/links.json");
   const lowdb = new Low(adapterLinks, { links: [] });
 
   await lowdb.read();

@@ -66,7 +66,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   // --- Profile Fetching, DB Check, and Registration Logic ---
-
   useEffect(() => {
     if (user?.access_token) {
       const checkAndRegisterUser = async () => {
@@ -101,14 +100,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
           if (checkData.exists) {
             setProfile(googleProfile);
-            console.log("User successfully logged in and is registered.");
           } else {
             const shouldRegister = window.confirm(
               `The email ${googleProfile.email} is not registered. Do you want to register now?`
             );
 
             if (shouldRegister) {
-              // 3. User Registers: Send data including the Google ID
+              // User Registers: Send data including the Google ID
               const registrationData: RegistrationData = {
                 id: googleProfile.id,
                 email: googleProfile.email,
@@ -130,14 +128,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
               if (registerResult.success) {
                 setProfile(googleProfile);
-                console.log("Registration successful!");
               } else {
                 console.error("Registration failed:", registerResult.message);
                 logOut();
               }
             } else {
               // Registration declined: Log out to clear state/token
-              console.log("Registration declined by user. Logging out.");
               logOut();
             }
           }

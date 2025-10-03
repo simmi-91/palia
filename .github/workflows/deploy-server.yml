@@ -59,8 +59,9 @@ jobs:
             sudo chown -R www-data:www-data /var/www/games/server/palia
             sudo chmod -R 755 /var/www/games/server/palia
 
-            # Restart server (using PM2 - we'll set this up)
-            sudo pm2 restart palia || sudo pm2 start server.js --name palia
+            # Restart server
+            USER=${{ secrets.DEPLOY_RUN_AS_USER }}
+            sudo -u $USER pm2 restart palia || sudo -u $USER pm2 start server.js --name palia 
 
             echo "Server deployment complete!"
-            sudo pm2 status
+            sudo -u $USER pm2 status

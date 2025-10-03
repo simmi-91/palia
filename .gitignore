@@ -28,4 +28,4 @@ dist-ssr
 .cursorignore
 
 #lowdb-changes
-server/db/*.json
+server/json_db/

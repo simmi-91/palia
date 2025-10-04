@@ -21,12 +21,16 @@ const createDB = async () => {
         },
         createUser: async (profile) => {
           await lowdb.read();
+
+          const pictureValue =
+            profile.picture === undefined ? null : profile.picture;
+
           lowdb.data.users.push({
             id: Date.now(), // Simple ID for local
             google_id: profile.id,
             email: profile.email,
             given_name: profile.given_name,
-            picture: profile.picture,
+            picture: pictureValue,
           });
           await lowdb.write();
         },
@@ -44,11 +48,15 @@ const createDB = async () => {
         createUser: async (profile) => {
           const sql =
             "INSERT INTO users (google_id, email, given_name, picture) VALUES (?, ?, ?, ?)";
+
+          const pictureValue =
+            profile.picture === undefined ? null : profile.picture;
+
           const values = [
-            profile.google_id,
+            profile.id,
             profile.email,
             profile.given_name,
-            profile.picture,
+            pictureValue,
           ];
           await pool.execute(sql, values);
         },

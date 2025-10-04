@@ -40,7 +40,7 @@ const createDB = async () => {
       db = {
         getAllLinks: async () => {
           const [rows] = await pool.query("SELECT * FROM links");
-          return rows;
+          return { links: rows };
         },
         addLink: async (newLink) => {
           const sql =

@@ -25,9 +25,9 @@ router.post("/check", async (req, res) => {
 
   const existingUser = await db.getUserByEmail(email);
   if (existingUser) {
-    res.status(200).send({ message: "User logged in", user: existingUser });
+    res.status(200).send({ message: "User logged in", exists: true });
   } else {
-    res.status(200).send({ message: "User not exist" });
+    res.status(200).send({ message: "User not exist", exists: false });
   }
 });
 

@@ -1,16 +1,22 @@
 import { Router } from "express";
-import db from "../db/db_users.js";
+import { createDB } from "../db/db_users.js"; // Import createDB
 
 const router = Router();
 
 router.get("/", async (req, res) => {
-  //await db.getAllUsers()
-  //res.json(dbUsers.data);
+  res.send("Users API.");
 });
 
 router.post("/check", async (req, res) => {
-  const { email, given_name, picture, id } = req.body;
+  let db;
+  try {
+    db = await createDB();
+  } catch {
+    console.error("Database connection failed for users.");
+    return res.status(503).json({ error: "Database service unavailable" });
+  }
 
+  const { email } = req.body;
   if (!email) {
     return res
       .status(400)
@@ -18,21 +24,23 @@ router.post("/check", async (req, res) => {
   }
 
   const existingUser = await db.getUserByEmail(email);
-
   if (existingUser) {
     res.status(200).send({ message: "User logged in", user: existingUser });
   } else {
-    const newProfile = { email, given_name, picture, id };
-    await db.createUser(newProfile);
-    res
-      .status(201)
-      .send({ message: "User created and logged in", user: newProfile });
+    res.status(200).send({ message: "User not exist" });
   }
 });
 
 router.post("/register", async (req, res) => {
-  const { id, email, given_name, picture } = req.body;
+  let db;
+  try {
+    db = await createDB();
+  } catch {
+    console.error("Database connection failed for users.");
+    return res.status(503).json({ error: "Database service unavailable" });
+  }
 
+  const { id, email, given_name, picture } = req.body;
   if (!id || !email || !given_name) {
     return res
       .status(400)
@@ -46,16 +54,9 @@ router.post("/register", async (req, res) => {
       .json({ success: false, message: "User already registered" });
   }
 
-  const userToSave = {
-    id,
-    email,
-    given_name,
-    picture,
-    registeredOn: new Date().toISOString(),
-  };
-
-  await db.createUser(userToSave);
-  res.status(201).json({ success: true, user: userToSave });
+  const newProfile = { email, given_name, picture, id };
+  await db.createUser(newProfile);
+  res.status(201).json({ success: true, user: newProfile });
 });
 
 export default router;

@@ -54,7 +54,11 @@ const createDB = async () => {
             `;
 
           const [rows] = await pool.query(sql);
-          return rows;
+
+          return rows.map((row) => ({
+            ...row,
+            howToObtain: JSON.parse(row.howToObtain),
+          }));
         },
       };
     }

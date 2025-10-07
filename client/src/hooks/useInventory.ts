@@ -1,19 +1,7 @@
 import { useState, useCallback } from "react";
-import type { GoogleProfile, UserInventoryItem } from "../app/types/userTypes"; // Adjust path
+import type { GoogleProfile, UserInventoryItem } from "../app/types/userTypes";
+import { debounce } from "../utils/debounce";
 
-// Utility function (can be moved to a utils file if used elsewhere)
-const debounce = <T extends (...args: any[]) => any>(
-  func: T,
-  delay: number
-): T => {
-  let timeout: ReturnType<typeof setTimeout> | undefined;
-  return ((...args: Parameters<T>) => {
-    clearTimeout(timeout);
-    timeout = setTimeout(() => func(...args), delay);
-  }) as T;
-};
-
-// Function for the actual DB call (not exported, for internal use only)
 const callApiUpdate = async (
   profileId: string,
   category: string,
@@ -41,7 +29,6 @@ export const useInventory = (profile: GoogleProfile | null) => {
   // Debounced API Update function
   const debouncedApiUpdate = useCallback(
     debounce((...args: Parameters<typeof callApiUpdate>) => {
-      // Check for profile ID here to ensure we don't call the API if logged out
       if (profileId) {
         callApiUpdate(
           profileId,
@@ -49,7 +36,7 @@ export const useInventory = (profile: GoogleProfile | null) => {
         );
       }
     }, 500),
-    [profileId] // Re-create if profileId changes (user logs in/out)
+    [profileId]
   );
 
   const loadInventory = useCallback(async () => {

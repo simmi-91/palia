@@ -9,13 +9,12 @@ export type LINKS_Entry = {
 };
 
 const fetchLinks = async (): Promise<LINKS_Entry[]> => {
-  console.log(import.meta.env.VITE_API_URL);
   const response = await fetch(import.meta.env.VITE_API_URL + "/links");
   if (!response.ok) {
     throw new Error("Network response was not ok");
   }
-  const data: { links: LINKS_Entry[] } = await response.json();
-  return data.links;
+  const data: LINKS_Entry[] = await response.json();
+  return data;
 };
 
 export const selectAllLinks = (): UseQueryResult<LINKS_Entry[], Error> => {

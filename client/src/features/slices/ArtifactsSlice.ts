@@ -6,8 +6,8 @@ const fetchArtifacts = async (): Promise<ARTIFACT_Entry[]> => {
   if (!response.ok) {
     throw new Error("Network response was not ok");
   }
-  const data: { artifacts: ARTIFACT_Entry[] } = await response.json();
-  return data.artifacts;
+  const data: ARTIFACT_Entry[] = await response.json();
+  return data;
 };
 
 export const selectAllArtifacts = (): UseQueryResult<

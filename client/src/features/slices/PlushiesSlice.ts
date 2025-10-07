@@ -6,8 +6,8 @@ const fetchPlushies = async (): Promise<PLUSHIES_Entry[]> => {
   if (!response.ok) {
     throw new Error("Network response was not ok");
   }
-  const data: { plushies: PLUSHIES_Entry[] } = await response.json();
-  return data.plushies;
+  const data: PLUSHIES_Entry[] = await response.json();
+  return data;
 };
 
 export const selectAllPlushies = (): UseQueryResult<

@@ -3,7 +3,6 @@ import {
   useContext,
   useState,
   useEffect,
-  useCallback,
   type ReactNode,
 } from "react";
 import { googleLogout, type TokenResponse } from "@react-oauth/google";
@@ -12,7 +11,6 @@ import type {
   AuthContextType,
   GoogleProfile,
   RegistrationData,
-  UserInventoryItem,
 } from "../app/types/userTypes";
 
 import { useInventory } from "../hooks/useInventory";

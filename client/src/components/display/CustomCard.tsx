@@ -15,6 +15,37 @@ type CustomCardProps = {
   category: string; // Passed from parent (e.g., 'artifacts', 'plushies')
 };
 
+const getMultiListProps = (
+  data: ARTIFACT_Entry | PLUSHIES_Entry
+): { title: string; list: Multilist_entry[] }[] => {
+  const multiListProperties: { title: string; list: Multilist_entry[] }[] = [];
+  for (const key in data) {
+    if (Object.prototype.hasOwnProperty.call(data, key)) {
+      const value = data[key as keyof typeof data];
+      if (Array.isArray(value)) {
+        if (value.length > 0) {
+          const isMultiList =
+            typeof value[0] === "object" &&
+            value[0] !== null &&
+            "title" in value[0];
+
+          if (isMultiList) {
+            const title = key
+              .replace(/([A-Z])/g, " $1")
+              .replace(/^./, (str) => str.toUpperCase());
+
+            multiListProperties.push({
+              title: title,
+              list: value as Multilist_entry[],
+            });
+          }
+        }
+      }
+    }
+  }
+  return multiListProperties;
+};
+
 const CustomCard: React.FC<CustomCardProps> = ({ dataObject, category }) => {
   const id = dataObject.id;
   const name = dataObject.name;
@@ -26,9 +57,6 @@ const CustomCard: React.FC<CustomCardProps> = ({ dataObject, category }) => {
     (item) => item.itemId === dataObject.id && item.category === category
   );
   const currentAmount = currentItem ? currentItem.amount : 0;
-  if (profile) {
-    console.log(inventory);
-  }
 
   const maxAmount = 999;
   const handleIncrement = () => {
@@ -51,30 +79,31 @@ const CustomCard: React.FC<CustomCardProps> = ({ dataObject, category }) => {
 
   const rarity = "rarity" in dataObject ? dataObject.rarity : "";
 
+  const multilist = getMultiListProps(dataObject);
   let hasMultiList = false;
-  if ("howToObtain" in dataObject) {
+  if (multilist && multilist.length > 0) {
     hasMultiList = true;
   }
 
   const multiTagBlock = () => {
-    return <></>;
-    /*return (
+    return (
       <div className="col">
-        
-        <b className="text-s">{dataObject.multiListTitle}:</b>
-        <div className="d-flex flex-wrap">
-          {Array.isArray(dataObject.multiListArr) &&
-            dataObject.multiListArr.length > 0 &&
-            dataObject.multiListArr.map((item) => (
-              <Tag
-                key={`${id}-${item.url}`}
-                text={item.title}
-                title={item.category}
-              />
-            ))}
-        </div>
+        {multilist.map((cat) => (
+          <div className="row">
+            <b className="text-s">{cat.title}:</b>
+            <div className="d-flex flex-wrap">
+              {cat.list.map((listItem) => (
+                <Tag
+                  key={`${id}-${listItem.url}`}
+                  text={listItem.title}
+                  title={listItem.category}
+                />
+              ))}
+            </div>
+          </div>
+        ))}
       </div>
-    );*/
+    );
   };
 
   const inventoryBlock = () => {
@@ -140,7 +169,7 @@ const CustomCard: React.FC<CustomCardProps> = ({ dataObject, category }) => {
             <h5 className="card-title">{name}</h5>
             <div>{rarity && <RarityTag id={rarity} />}</div>
 
-            {showInventoryControls && (
+            {!hasMultiList && showInventoryControls && (
               <div className="">{inventoryBlock()}</div>
             )}
           </div>
@@ -149,14 +178,17 @@ const CustomCard: React.FC<CustomCardProps> = ({ dataObject, category }) => {
           </div>
         </div>
 
-        {/*hasMultiList && (
+        {hasMultiList && showInventoryControls && (
           <div className="row">
-            {
-              //multiTagBlock()
-            }
+            <div className="col-12 col-md-6 ">{multiTagBlock()}</div>
             <div className="col-12 col-md-6 ">{inventoryBlock()}</div>
           </div>
-        )*/}
+        )}
+        {hasMultiList && !showInventoryControls && (
+          <div className="row">
+            <div className="col">{multiTagBlock()}</div>
+          </div>
+        )}
       </div>
     </div>
   );

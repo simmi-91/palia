@@ -25,7 +25,10 @@ const PlushiesPage = () => {
   return (
     <div className="container-fluid ">
       <div className="row d-flex g-2 my-2">
-        {data && data.map((item) => <CustomCard dataObject={item} />)}
+        {data &&
+          data.map((item) => (
+            <CustomCard category="plushies" key={item.id} dataObject={item} />
+          ))}
       </div>
     </div>
   );

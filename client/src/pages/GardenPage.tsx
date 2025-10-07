@@ -11,16 +11,16 @@ import GardenLayout from "../features/garden/GardenLayout";
 const GardenPage = () => {
   const cropArr = selectAllCrops();
   const [activeCrop, setActiveCrop] = useState<CROP_Entry | null>(null);
-  const { setItems, clearItems } = useSubmenu();
+  const { setSubmenuItems, clearSubmenuItems } = useSubmenu();
 
   useEffect(() => {
-    setItems([
-      { label: "Quick Overview", href: "#ProfitCard" },
-      { label: "Profit Table", href: "#ProfitTable" },
-      { label: "Garden Layout", href: "#GardenLayout" },
+    setSubmenuItems([
+      { label: "# Quick Overview", href: "#ProfitCard" },
+      { label: "# Profit Table", href: "#ProfitTable" },
+      { label: "# Garden Layout", href: "#GardenLayout" },
     ]);
-    return () => clearItems();
-  }, [setItems, clearItems]);
+    return () => clearSubmenuItems();
+  }, [setSubmenuItems, clearSubmenuItems]);
 
   if (cropArr) {
     return (

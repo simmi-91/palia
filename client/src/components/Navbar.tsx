@@ -72,6 +72,13 @@ const Navbar = () => {
                 Trade
               </Link>
               <Link
+                to="/wiki"
+                className="px-2 m-1 text-nowrap bg-light text-black text-decoration-none rounded-pill border border-dark border-1"
+                activeProps={{ className: "text-white bg-dark fw-bold" }}
+              >
+                Items Wiki
+              </Link>
+              <Link
                 to="/garden"
                 className="px-2 m-1 text-nowrap bg-light text-black text-decoration-none rounded-pill border border-dark border-1"
                 activeProps={{ className: "text-white bg-dark fw-bold" }}
@@ -96,19 +103,27 @@ const Navbar = () => {
 
       {submenuItems.length > 0 && (
         <div className="border-top">
-          <div className="container-fluid d-flex gap-1 py-1 overflow-x-auto">
+          <div className="container-fluid d-flex gap-1 py-1 overflow-x-auto justify-content-center">
             {submenuItems.map((item: SubmenuItem) => (
-              <a
+              <Link
                 key={item.href}
-                href={item.href}
+                to={item.href}
                 className="px-1 text-nowrap text-decoration-none rounded-pill border border-1 text-s"
+                activeProps={{
+                  className:
+                    "px-1 text-nowrap text-decoration-none rounded-pill border border-1 text-s fw-bold",
+                  style: {
+                    color: colorMap[bgColor]?.text || "inherit",
+                    backgroundColor: "rgba(255, 255, 255, 0.6)",
+                  },
+                }}
                 style={{
                   color: colorMap[bgColor]?.text || "inherit",
-                  backgroundColor: "rgba(255, 255, 255, 0.1)",
+                  backgroundColor: "rgba(255, 255, 255, 0.3)",
                 }}
               >
                 {item.label}
-              </a>
+              </Link>
             ))}
           </div>
         </div>

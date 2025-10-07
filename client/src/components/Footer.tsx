@@ -3,12 +3,12 @@ import { textIcon } from "../app/icons/common";
 
 const Footer = () => {
   const footerClasses =
-    "container-fluid position-fixed bottom-0 start-0 bg-dark border-top border-dark ";
+    "container-fluid z-3 position-fixed bottom-0 start-0 bg-dark border-top border-dark text-center ";
   const { data: linksArr, isLoading, isError, error } = selectAllLinks();
 
   if (isLoading) {
     return (
-      <div className={footerClasses + " text-center"}>
+      <div className={footerClasses}>
         <div className="spinner-border text-light" role="status">
           <span className="visually-hidden">Loading...</span>
         </div>
@@ -18,7 +18,7 @@ const Footer = () => {
 
   if (isError) {
     return (
-      <div className={footerClasses + " text-center"}>
+      <div className={footerClasses}>
         <div className="text-danger">Error loading data: {error.message}</div>
       </div>
     );

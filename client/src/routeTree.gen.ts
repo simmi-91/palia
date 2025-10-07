@@ -10,15 +10,24 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as WormfarmRouteImport } from './routes/wormfarm'
+import { Route as WikiRouteImport } from './routes/wiki'
 import { Route as TradeRouteImport } from './routes/trade'
 import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as GardenRouteImport } from './routes/garden'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as WikiIndexRouteImport } from './routes/wiki/index'
+import { Route as WikiPlushiesRouteImport } from './routes/wiki/plushies'
+import { Route as WikiArtifactsRouteImport } from './routes/wiki/artifacts'
 
 const WormfarmRoute = WormfarmRouteImport.update({
   id: '/wormfarm',
   path: '/wormfarm',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const WikiRoute = WikiRouteImport.update({
+  id: '/wiki',
+  path: '/wiki',
   getParentRoute: () => rootRouteImport,
 } as any)
 const TradeRoute = TradeRouteImport.update({
@@ -46,6 +55,21 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const WikiIndexRoute = WikiIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => WikiRoute,
+} as any)
+const WikiPlushiesRoute = WikiPlushiesRouteImport.update({
+  id: '/plushies',
+  path: '/plushies',
+  getParentRoute: () => WikiRoute,
+} as any)
+const WikiArtifactsRoute = WikiArtifactsRouteImport.update({
+  id: '/artifacts',
+  path: '/artifacts',
+  getParentRoute: () => WikiRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -53,7 +77,11 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/profile': typeof ProfileRoute
   '/trade': typeof TradeRoute
+  '/wiki': typeof WikiRouteWithChildren
   '/wormfarm': typeof WormfarmRoute
+  '/wiki/artifacts': typeof WikiArtifactsRoute
+  '/wiki/plushies': typeof WikiPlushiesRoute
+  '/wiki/': typeof WikiIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -62,6 +90,9 @@ export interface FileRoutesByTo {
   '/profile': typeof ProfileRoute
   '/trade': typeof TradeRoute
   '/wormfarm': typeof WormfarmRoute
+  '/wiki/artifacts': typeof WikiArtifactsRoute
+  '/wiki/plushies': typeof WikiPlushiesRoute
+  '/wiki': typeof WikiIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -70,13 +101,36 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/profile': typeof ProfileRoute
   '/trade': typeof TradeRoute
+  '/wiki': typeof WikiRouteWithChildren
   '/wormfarm': typeof WormfarmRoute
+  '/wiki/artifacts': typeof WikiArtifactsRoute
+  '/wiki/plushies': typeof WikiPlushiesRoute
+  '/wiki/': typeof WikiIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/garden' | '/login' | '/profile' | '/trade' | '/wormfarm'
+  fullPaths:
+    | '/'
+    | '/garden'
+    | '/login'
+    | '/profile'
+    | '/trade'
+    | '/wiki'
+    | '/wormfarm'
+    | '/wiki/artifacts'
+    | '/wiki/plushies'
+    | '/wiki/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/garden' | '/login' | '/profile' | '/trade' | '/wormfarm'
+  to:
+    | '/'
+    | '/garden'
+    | '/login'
+    | '/profile'
+    | '/trade'
+    | '/wormfarm'
+    | '/wiki/artifacts'
+    | '/wiki/plushies'
+    | '/wiki'
   id:
     | '__root__'
     | '/'
@@ -84,7 +138,11 @@ export interface FileRouteTypes {
     | '/login'
     | '/profile'
     | '/trade'
+    | '/wiki'
     | '/wormfarm'
+    | '/wiki/artifacts'
+    | '/wiki/plushies'
+    | '/wiki/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -93,6 +151,7 @@ export interface RootRouteChildren {
   LoginRoute: typeof LoginRoute
   ProfileRoute: typeof ProfileRoute
   TradeRoute: typeof TradeRoute
+  WikiRoute: typeof WikiRouteWithChildren
   WormfarmRoute: typeof WormfarmRoute
 }
 
@@ -103,6 +162,13 @@ declare module '@tanstack/react-router' {
       path: '/wormfarm'
       fullPath: '/wormfarm'
       preLoaderRoute: typeof WormfarmRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/wiki': {
+      id: '/wiki'
+      path: '/wiki'
+      fullPath: '/wiki'
+      preLoaderRoute: typeof WikiRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/trade': {
@@ -140,8 +206,43 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/wiki/': {
+      id: '/wiki/'
+      path: '/'
+      fullPath: '/wiki/'
+      preLoaderRoute: typeof WikiIndexRouteImport
+      parentRoute: typeof WikiRoute
+    }
+    '/wiki/plushies': {
+      id: '/wiki/plushies'
+      path: '/plushies'
+      fullPath: '/wiki/plushies'
+      preLoaderRoute: typeof WikiPlushiesRouteImport
+      parentRoute: typeof WikiRoute
+    }
+    '/wiki/artifacts': {
+      id: '/wiki/artifacts'
+      path: '/artifacts'
+      fullPath: '/wiki/artifacts'
+      preLoaderRoute: typeof WikiArtifactsRouteImport
+      parentRoute: typeof WikiRoute
+    }
   }
 }
+
+interface WikiRouteChildren {
+  WikiArtifactsRoute: typeof WikiArtifactsRoute
+  WikiPlushiesRoute: typeof WikiPlushiesRoute
+  WikiIndexRoute: typeof WikiIndexRoute
+}
+
+const WikiRouteChildren: WikiRouteChildren = {
+  WikiArtifactsRoute: WikiArtifactsRoute,
+  WikiPlushiesRoute: WikiPlushiesRoute,
+  WikiIndexRoute: WikiIndexRoute,
+}
+
+const WikiRouteWithChildren = WikiRoute._addFileChildren(WikiRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
@@ -149,6 +250,7 @@ const rootRouteChildren: RootRouteChildren = {
   LoginRoute: LoginRoute,
   ProfileRoute: ProfileRoute,
   TradeRoute: TradeRoute,
+  WikiRoute: WikiRouteWithChildren,
   WormfarmRoute: WormfarmRoute,
 }
 export const routeTree = rootRouteImport

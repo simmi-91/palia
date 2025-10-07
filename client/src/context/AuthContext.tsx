@@ -97,7 +97,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           );
 
           const checkData: { exists: boolean } = await checkResponse.json();
-
           if (checkData.exists) {
             setProfile(googleProfile);
           } else {

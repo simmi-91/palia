@@ -10,8 +10,8 @@ export type SubmenuItem = { label: string; href: string };
 
 type SubmenuContextValue = {
   submenuItems: SubmenuItem[];
-  setItems: (items: SubmenuItem[]) => void;
-  clearItems: () => void;
+  setSubmenuItems: (items: SubmenuItem[]) => void;
+  clearSubmenuItems: () => void;
 };
 
 const SubmenuContext = createContext<SubmenuContextValue | undefined>(
@@ -23,17 +23,17 @@ export const SubmenuProvider: React.FC<{ children: React.ReactNode }> = ({
 }) => {
   const [submenuItems, updateItems] = useState<SubmenuItem[]>([]);
 
-  const setItems = useCallback((newItems: SubmenuItem[]) => {
+  const setSubmenuItems = useCallback((newItems: SubmenuItem[]) => {
     updateItems(newItems);
   }, []);
 
-  const clearItems = useCallback(() => {
+  const clearSubmenuItems = useCallback(() => {
     updateItems([]);
   }, []);
 
   const value = useMemo(
-    () => ({ submenuItems, setItems, clearItems }),
-    [submenuItems, setItems, clearItems]
+    () => ({ submenuItems, setSubmenuItems, clearSubmenuItems }),
+    [submenuItems, setSubmenuItems, clearSubmenuItems]
   );
 
   return (

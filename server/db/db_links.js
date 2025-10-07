@@ -11,7 +11,7 @@ const createDB = async () => {
   if (dbHost) {
     if (dbHost === "lowdb") {
       const adapterLinks = new JSONFile("json_db/links.json");
-      const lowdb = new Low(adapterLinks, { links: [] });
+      const lowdb = new Low(adapterLinks, []);
 
       await lowdb.read();
       db = {
@@ -22,7 +22,7 @@ const createDB = async () => {
         addLink: async (newLink) => {
           await lowdb.read();
 
-          const links = lowdb.data.links;
+          const links = lowdb.data;
           const newId =
             links.length > 0 ? Math.max(...links.map((l) => l.id || 0)) + 1 : 1;
           links.push({
@@ -40,7 +40,7 @@ const createDB = async () => {
       db = {
         getAllLinks: async () => {
           const [rows] = await pool.query("SELECT * FROM links");
-          return { links: rows };
+          return rows;
         },
         addLink: async (newLink) => {
           const sql =

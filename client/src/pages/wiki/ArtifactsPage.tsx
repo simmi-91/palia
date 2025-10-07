@@ -1,5 +1,4 @@
 import { selectAllArtifacts } from "../../features/slices/ArtifactsSlice";
-
 import CustomCard from "../../components/display/CustomCard";
 
 const ArtifactsPage = () => {
@@ -27,14 +26,7 @@ const ArtifactsPage = () => {
       <div className="row d-flex g-2 my-2">
         {data &&
           data.map((item) => (
-            <CustomCard
-              id={item.id}
-              title={item.title}
-              rarity={"4"}
-              description=""
-              imgsrc={item.image}
-              url={item.url}
-            />
+            <CustomCard category="artifacts" key={item.id} dataObject={item} />
           ))}
       </div>
     </div>

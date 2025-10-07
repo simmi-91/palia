@@ -1,42 +1,80 @@
 import Tag from "./Tag";
 import RarityTag from "./RarityTag";
 import missingImg from "../../assets/images/missing.png";
-import type { Multilist_entry } from "../../app/types/types";
 
-const CustomCard = (props: {
-  id: string;
-  title: string;
-  rarity?: string;
-  description: string;
-  imgsrc: string;
-  url: string;
-  multiListTitle?: string;
-  multiListArr?: Multilist_entry[];
-}) => {
-  const strKey = props.id;
+import { useAuth } from "../../context/AuthContext";
+
+import type {
+  Multilist_entry,
+  ARTIFACT_Entry,
+  PLUSHIES_Entry,
+} from "../../app/types/types";
+
+type CustomCardProps = {
+  dataObject: ARTIFACT_Entry | PLUSHIES_Entry;
+  category: string; // Passed from parent (e.g., 'artifacts', 'plushies')
+};
+
+const CustomCard: React.FC<CustomCardProps> = ({ dataObject, category }) => {
+  const id = dataObject.id;
+  const name = dataObject.name;
+  const url = dataObject.url;
+
+  const { profile, inventory, updateInventoryAmount } = useAuth();
+
+  const currentItem = inventory?.find(
+    (item) => item.itemId === dataObject.id && item.category === category
+  );
+  const currentAmount = currentItem ? currentItem.amount : 0;
+  if (profile) {
+    console.log(inventory);
+  }
+
+  const maxAmount = 999;
+  const handleIncrement = () => {
+    // You might want to enforce a max amount here (e.g., max: 999)
+    updateInventoryAmount(category, id, currentAmount + 1);
+  };
+
+  const handleDecrement = () => {
+    if (currentAmount > 0) {
+      updateInventoryAmount(category, id, currentAmount - 1);
+    }
+  };
+
+  const showInventoryControls = !!profile;
 
   let imgurl = missingImg;
-  if (props.imgsrc && props.imgsrc != "") {
-    imgurl = `https://palia.wiki.gg${props.imgsrc}`;
+  if ("image" in dataObject && dataObject.image && dataObject.image != "") {
+    imgurl = `https://palia.wiki.gg${dataObject.image}`;
+  }
+
+  const rarity = "rarity" in dataObject ? dataObject.rarity : "";
+
+  let hasMultiList = false;
+  if ("howToObtain" in dataObject) {
+    hasMultiList = true;
   }
 
   const multiTagBlock = () => {
-    return (
+    return <></>;
+    /*return (
       <div className="col">
-        <b className="text-s">{props.multiListTitle}:</b>
+        
+        <b className="text-s">{dataObject.multiListTitle}:</b>
         <div className="d-flex flex-wrap">
-          {Array.isArray(props.multiListArr) &&
-            props.multiListArr.length > 0 &&
-            props.multiListArr.map((item) => (
+          {Array.isArray(dataObject.multiListArr) &&
+            dataObject.multiListArr.length > 0 &&
+            dataObject.multiListArr.map((item) => (
               <Tag
-                key={`${strKey}-${item.url}`}
+                key={`${id}-${item.url}`}
                 text={item.title}
                 title={item.category}
               />
             ))}
         </div>
       </div>
-    );
+    );*/
   };
 
   const inventoryBlock = () => {
@@ -52,6 +90,8 @@ const CustomCard = (props: {
               width: 40,
               height: 40,
             }}
+            onClick={handleDecrement}
+            disabled={currentAmount <= 0}
           >
             -
           </button>
@@ -65,6 +105,8 @@ const CustomCard = (props: {
               height: 40,
               background: "rgba(225, 225, 225, 0.3",
             }}
+            value={currentAmount}
+            readOnly
           ></input>
           <button
             type="button"
@@ -74,6 +116,8 @@ const CustomCard = (props: {
               width: 40,
               height: 40,
             }}
+            onClick={handleIncrement}
+            disabled={currentAmount >= maxAmount}
           >
             +
           </button>
@@ -83,7 +127,7 @@ const CustomCard = (props: {
   };
 
   return (
-    <div key={strKey} className="col-12 col-sm-6 col-lg-4 col-xl-3 d-flex">
+    <div key={id} className="col-12 col-sm-6 col-lg-4 col-xl-3 d-flex">
       <div
         className="container border border-1 rounded-3"
         style={{
@@ -93,55 +137,28 @@ const CustomCard = (props: {
       >
         <div className="row py-1">
           <div className="col d-flex row flex-column">
-            <h5 className="card-title">{props.title}</h5>
-            <div>{props.rarity && <RarityTag id={props.rarity} />}</div>
-            <div className="">{props.description}</div>
-            {!props.multiListTitle && (
+            <h5 className="card-title">{name}</h5>
+            <div>{rarity && <RarityTag id={rarity} />}</div>
+
+            {showInventoryControls && (
               <div className="">{inventoryBlock()}</div>
             )}
           </div>
-          <div className={props.multiListTitle ? "col-3" : "col-4 col-md-5"}>
+          <div className={hasMultiList ? "col-3" : "col-4 col-md-5"}>
             <img src={imgurl} style={{ maxWidth: "100%" }} />
           </div>
         </div>
 
-        {props.multiListTitle && (
+        {/*hasMultiList && (
           <div className="row">
-            {multiTagBlock()}
+            {
+              //multiTagBlock()
+            }
             <div className="col-12 col-md-6 ">{inventoryBlock()}</div>
           </div>
-        )}
+        )*/}
       </div>
     </div>
   );
 };
 export default CustomCard;
-/*
-        <div className="row">
-          <div className="col">
-            <h5 className="card-title">{props.title}</h5>
-            <div className="">
-              {props.rarity && <RarityTag id={props.rarity} />}
-            </div>
-            <div className="card-body text-wrap text-break ">
-              {props.description}
-            </div>
-          </div>
-
-          <div className="col-3">
-            {props.imgsrc && (
-              <img
-                src={`https://palia.wiki.gg${props.imgsrc}`}
-                className="p-1"
-                style={{ width: 100 }}
-              />
-            )}
-          </div>
-        </div>
-
-        <div className="row">
-          <div className="col"></div>
-          <div className="col">buttons</div>
-        </div>
-
-*/

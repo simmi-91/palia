@@ -1,18 +1,21 @@
-// context/AuthContext.tsx
-
 import {
   createContext,
   useContext,
   useState,
   useEffect,
+  useCallback,
   type ReactNode,
 } from "react";
 import { googleLogout, type TokenResponse } from "@react-oauth/google";
+
 import type {
   AuthContextType,
   GoogleProfile,
   RegistrationData,
+  UserInventoryItem,
 } from "../app/types/userTypes";
+
+import { useInventory } from "../hooks/useInventory";
 
 // --- Context and Hook ---
 
@@ -148,7 +151,26 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   }, [user]);
 
-  const contextValue: AuthContextType = { user, profile, setUser, logOut };
+  // --- Inventory hook ---
+  const { inventory, loadInventory, updateInventoryAmount } =
+    useInventory(profile);
+
+  useEffect(() => {
+    if (profile) {
+      loadInventory();
+    }
+  }, [profile, loadInventory]);
+
+  //const contextValue: AuthContextType = { user, profile, setUser, logOut };
+  const contextValue: AuthContextType = {
+    user,
+    profile,
+    setUser,
+    logOut,
+    inventory,
+    loadInventory,
+    updateInventoryAmount,
+  };
 
   return (
     <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>

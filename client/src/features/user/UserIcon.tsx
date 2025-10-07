@@ -2,8 +2,7 @@ import { Link } from "@tanstack/react-router";
 import { useAuth } from "../../context/AuthContext";
 
 const UserIcon = () => {
-  const { user, profile, logOut } = useAuth();
-  console.log("user", user, "profile", profile);
+  const { profile, logOut } = useAuth();
 
   const alertLogout = () => {
     if (confirm("Are you sure you want to log out?")) {

@@ -22,8 +22,6 @@ const ProfitTable = ({
   };
 
   const tRow = (i: number, crop: CROP_Entry) => {
-    //console.log(crop.name, crop.starPrice, crop);
-
     const seedProfit = calcProductProfit(
       crop.starPrice,
       crop.seed,

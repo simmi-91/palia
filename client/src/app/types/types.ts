@@ -21,14 +21,14 @@ export type FOOD_entry = {
 };
 
 export type ARTIFACT_Entry = {
-  id: string;
-  title: string;
+  id: number;
+  name: string;
   url: string;
   image: string;
 };
 
 export type PLUSHIES_Entry = {
-  id: string;
+  id: number;
   name: string;
   url: string;
   image: string;

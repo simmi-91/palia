@@ -25,19 +25,7 @@ const PlushiesPage = () => {
   return (
     <div className="container-fluid ">
       <div className="row d-flex g-2 my-2">
-        {data &&
-          data.map((item) => (
-            <CustomCard
-              id={item.id}
-              title={item.name}
-              rarity={item.rarity}
-              description=""
-              imgsrc={item.image}
-              url={item.url}
-              multiListTitle={"How to obtain"}
-              multiListArr={item.howToObtain}
-            />
-          ))}
+        {data && data.map((item) => <CustomCard dataObject={item} />)}
       </div>
     </div>
   );

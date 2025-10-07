@@ -49,7 +49,6 @@ const getMultiListProps = (
 const CustomCard: React.FC<CustomCardProps> = ({ dataObject, category }) => {
   const id = dataObject.id;
   const name = dataObject.name;
-  const url = dataObject.url;
 
   const { profile, inventory, updateInventoryAmount } = useAuth();
 

@@ -48,7 +48,7 @@ const createDB = async () => {
             LEFT JOIN
                 how_to_obtain_entity e ON l.how_to_obtain_id = e.id
             GROUP BY
-                p.id, p.image, p.name, p.url, p.rarity -- Group by all non-aggregated columns from the main plushies table
+                p.id, p.image, p.name, p.url, p.rarity
             ORDER BY
                 p.id
             `;

@@ -29,6 +29,7 @@ const createDB = async () => {
 
           return frontendInventory.filter((item) => item.amount > 0);
         },
+
         update: async (profileId, category, itemId, amount) => {
           await lowdb.read();
 
@@ -53,26 +54,75 @@ const createDB = async () => {
 
           await lowdb.write();
         },
+
+        getTradeable: async (profileId) => {
+          await lowdb.read();
+          const inventory = lowdb.data.filter(
+            (item) => item.userId !== profileId
+          );
+          const frontendInventory = inventory.map((item) => ({
+            category: item.category,
+            itemId: item.itemId,
+            amount: item.amount,
+          }));
+
+          return frontendInventory.filter((item) => item.amount > 0);
+        },
       };
     } else {
       const pool = initializePool();
       db = {
         getAll: async (profileId) => {
           const [rows] = await pool.query(
-            "SELECT category,item_id,amount FROM user_inventory WHERE email = ?",
+            "SELECT category,itemId,amount FROM user_inventory WHERE email = ?",
             [profileId]
           );
           return rows;
         },
+
         update: async (profileId, category, itemId, amount) => {
           const sql = `
-            INSERT INTO user_inventory (user_id, category, item_id, amount) 
+            INSERT INTO user_inventory (user_id, category, itemId, amount) 
             VALUES (?, ?, ?, ?)
             ON DUPLICATE KEY UPDATE 
                 amount = VALUES(amount);
           `;
           const values = [profileId, category, itemId, amount];
           await pool.execute(sql, values);
+        },
+
+        getTradeable: async (profileId) => {
+          const [rows] = await pool.query(
+            `
+              SELECT
+                  category,
+                  itemId,
+                  SUM(
+                      CASE
+                          WHEN amount > 1 THEN amount - 1
+                          ELSE 0
+                      END
+                  ) AS amount
+              FROM 
+                  user_inventory
+              WHERE 
+                  user_id != ? 
+              GROUP BY 
+                  category, 
+                  itemId
+              HAVING 
+                  amount > 0
+            `,
+            [profileId]
+          );
+
+          const frontendInventory = rows.map((item) => ({
+            category: item.category,
+            itemId: item.itemId,
+            amount: item.amount,
+          }));
+
+          return frontendInventory;
         },
       };
     }

@@ -24,6 +24,20 @@ router.get("/:profileId", async (req, res) => {
   res.json(data);
 });
 
+router.get("/tradeable/:profileId", async (req, res) => {
+  const { profileId } = req.params;
+  let db;
+  try {
+    db = await createDB();
+  } catch {
+    console.error("Database connection failed for inventory.");
+    return res.status(503).json({ error: "Database service unavailable" });
+  }
+
+  const data = await db.getTradeable(profileId);
+  res.json(data);
+});
+
 router.post("/", async (req, res) => {
   const { profileId, category, itemId, amount } = req.body;
   if (

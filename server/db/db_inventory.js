@@ -74,7 +74,7 @@ const createDB = async () => {
       db = {
         getAll: async (profileId) => {
           const [rows] = await pool.query(
-            "SELECT category,item_id,amount FROM user_inventory WHERE google_id = ?",
+            "SELECT category,item_id,amount FROM user_inventory WHERE user_id = ?",
             [profileId]
           );
           return rows;

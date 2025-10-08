@@ -7,11 +7,7 @@ import {
 } from "react";
 import { googleLogout, type TokenResponse } from "@react-oauth/google";
 
-import type {
-  AuthContextType,
-  GoogleProfile,
-  RegistrationData,
-} from "../app/types/userTypes";
+import type { AuthContextType, GoogleProfile } from "../app/types/userTypes";
 
 import { useInventory } from "../hooks/useInventory";
 
@@ -107,7 +103,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
             if (shouldRegister) {
               // User Registers: Send data including the Google ID
-              const registrationData: RegistrationData = {
+              const GoogleProfile: GoogleProfile = {
                 id: googleProfile.id,
                 email: googleProfile.email,
                 given_name: googleProfile.given_name,
@@ -119,7 +115,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
                 {
                   method: "POST",
                   headers: { "Content-Type": "application/json" },
-                  body: JSON.stringify(registrationData),
+                  body: JSON.stringify(GoogleProfile),
                 }
               );
 

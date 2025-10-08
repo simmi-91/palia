@@ -21,12 +21,11 @@ const callApiUpdate = async (
 };
 
 export const useInventory = (profile: GoogleProfile | null) => {
-  const [inventory, setInventory] = useState<UserInventoryItem[] | null>(null);
+  const [inventory, setInventory] = useState<UserInventoryItem[]>([]);
 
   // Use a stable profile ID for the debounced function dependency
   const profileId = profile?.id;
 
-  // Debounced API Update function
   const debouncedApiUpdate = useCallback(
     debounce((...args: Parameters<typeof callApiUpdate>) => {
       if (profileId) {
@@ -59,7 +58,7 @@ export const useInventory = (profile: GoogleProfile | null) => {
     newAmount: number
   ) => {
     setInventory((prevInventory) => {
-      if (!prevInventory) return null;
+      if (!prevInventory) return [];
       const existingIndex = prevInventory.findIndex(
         (item) => item.itemId === itemId && item.category === category
       );
@@ -76,7 +75,6 @@ export const useInventory = (profile: GoogleProfile | null) => {
       return newInventory.filter((item) => item.amount > 0);
     });
 
-    // Pass the profile ID as the first argument, which the debounced function expects.
     if (profileId) {
       debouncedApiUpdate(profileId, category, itemId, newAmount);
     }

@@ -21,3 +21,14 @@ export const selectAllPlushies = (): UseQueryResult<
   });
   return query;
 };
+
+export const selectPlushById = (
+  itemId: number
+): UseQueryResult<PLUSHIES_Entry | undefined, Error> => {
+  return useQuery({
+    queryKey: ["PlushiesData"],
+    queryFn: fetchPlushies,
+    staleTime: 1000 * 60 * 5,
+    select: (data) => data.find((item) => item.id === itemId),
+  });
+};

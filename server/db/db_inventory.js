@@ -74,7 +74,7 @@ const createDB = async () => {
       db = {
         getAll: async (profileId) => {
           const [rows] = await pool.query(
-            "SELECT category,itemId,amount FROM user_inventory WHERE email = ?",
+            "SELECT category,item_id,amount FROM user_inventory WHERE google_id = ?",
             [profileId]
           );
           return rows;
@@ -82,7 +82,7 @@ const createDB = async () => {
 
         update: async (profileId, category, itemId, amount) => {
           const sql = `
-            INSERT INTO user_inventory (user_id, category, itemId, amount) 
+            INSERT INTO user_inventory (user_id, category, item_id, amount) 
             VALUES (?, ?, ?, ?)
             ON DUPLICATE KEY UPDATE 
                 amount = VALUES(amount);
@@ -96,7 +96,7 @@ const createDB = async () => {
             `
               SELECT
                   category,
-                  itemId,
+                  item_id,
                   SUM(
                       CASE
                           WHEN amount > 1 THEN amount - 1
@@ -109,7 +109,7 @@ const createDB = async () => {
                   user_id != ? 
               GROUP BY 
                   category, 
-                  itemId
+                  item_id
               HAVING 
                   amount > 0
             `,
@@ -118,7 +118,7 @@ const createDB = async () => {
 
           const frontendInventory = rows.map((item) => ({
             category: item.category,
-            itemId: item.itemId,
+            itemId: item.item_id,
             amount: item.amount,
           }));
 

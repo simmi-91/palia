@@ -21,3 +21,14 @@ export const selectAllArtifacts = (): UseQueryResult<
   });
   return query;
 };
+
+export const selectArtifactById = (
+  itemId: number
+): UseQueryResult<ARTIFACT_Entry | undefined, Error> => {
+  return useQuery({
+    queryKey: ["ArtifactsData"],
+    queryFn: fetchArtifacts,
+    staleTime: 1000 * 60 * 5,
+    select: (data) => data.find((item) => item.id === itemId),
+  });
+};

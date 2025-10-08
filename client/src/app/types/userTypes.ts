@@ -1,12 +1,5 @@
 import { type TokenResponse } from "@react-oauth/google";
 
-export type RegistrationData = {
-  id: string;
-  email: string;
-  given_name: string;
-  picture: string;
-};
-
 export type GoogleProfile = {
   id: string;
   email: string;
@@ -20,12 +13,16 @@ export type UserInventoryItem = {
   amount: number;
 };
 
+export interface CombinedInventoryItem extends UserInventoryItem {
+  userId?: number;
+}
+
 export type AuthContextType = {
   user: TokenResponse | null;
   profile: GoogleProfile | null;
   setUser: (token: TokenResponse | null) => void;
   logOut: () => void;
-  inventory: UserInventoryItem[] | null;
+  inventory: UserInventoryItem[] | [];
   loadInventory: () => Promise<void>;
   updateInventoryAmount: (
     category: string,

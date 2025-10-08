@@ -34,7 +34,7 @@ const Footer = () => {
                 <a
                   href={link.url}
                   target="_blank"
-                  className="text-decoration-none"
+                  className="text-decoration-none text-light"
                 >
                   {link.logo ? textIcon(link.logo) : null} {link.site}
                 </a>

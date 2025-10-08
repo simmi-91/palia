@@ -1,9 +1,9 @@
 import { Link } from "@tanstack/react-router";
 import { useState } from "react";
 import Clock from "./Clock";
-import UserIcon from "../features/user/UserIcon";
-import { useSubmenu } from "../context/SubmenuContext";
-import type { SubmenuItem } from "../context/SubmenuContext";
+import UserIcon from "./UserIcon";
+import { useSubmenu, type SubmenuItem } from "../context/SubmenuContext";
+import { useAuth } from "../context/AuthContext";
 
 const Navbar = () => {
   const [bgColor, setBgColor] = useState("");
@@ -16,6 +16,11 @@ const Navbar = () => {
 
   const { submenuItems } = useSubmenu();
 
+  const { profile } = useAuth();
+
+  const menuBtnClasses =
+    "px-2 m-1 text-nowrap bg-light text-black text-decoration-none rounded-pill border border-dark align-content-center";
+
   return (
     <div
       className=" sticky-top"
@@ -24,9 +29,9 @@ const Navbar = () => {
       }}
     >
       <nav className="navbar navbar-expand-md">
-        <div className="container-fluid">
+        <div className="container-fluid ">
           <div
-            className="navbar-brand d-inline-flex"
+            className="navbar-brand d-inline-flex flex-grow-1 "
             style={{
               color: colorMap[bgColor]?.text,
             }}
@@ -41,6 +46,10 @@ const Navbar = () => {
                 Palia
               </Link>
             </h2>
+          </div>
+
+          <div className=" d-flex d-md-none mx-1">
+            <UserIcon />
           </div>
 
           <button
@@ -59,42 +68,45 @@ const Navbar = () => {
             <div className="col d-flex flex-wrap justify-content-center">
               <Link
                 to="/"
-                className="px-2 m-1 text-nowrap bg-light text-black text-decoration-none rounded-pill border border-dark border-1"
+                className={menuBtnClasses}
                 activeProps={{ className: "text-white bg-dark fw-bold" }}
               >
                 Home
               </Link>
-              <Link
-                to="/trade"
-                className="px-2 m-1 text-nowrap bg-light text-black text-decoration-none rounded-pill border border-dark border-1"
-                activeProps={{ className: "text-white bg-dark fw-bold" }}
-              >
-                Trade
-              </Link>
+              {profile && (
+                <Link
+                  to="/trade"
+                  className={menuBtnClasses}
+                  activeProps={{ className: "text-white bg-dark fw-bold" }}
+                >
+                  Trade
+                </Link>
+              )}
+
               <Link
                 to="/wiki"
-                className="px-2 m-1 text-nowrap bg-light text-black text-decoration-none rounded-pill border border-dark border-1"
+                className={menuBtnClasses}
                 activeProps={{ className: "text-white bg-dark fw-bold" }}
               >
                 Items Wiki
               </Link>
               <Link
                 to="/garden"
-                className="px-2 m-1 text-nowrap bg-light text-black text-decoration-none rounded-pill border border-dark border-1"
+                className={menuBtnClasses}
                 activeProps={{ className: "text-white bg-dark fw-bold" }}
               >
                 Garden
               </Link>
               <Link
                 to="/wormfarm"
-                className="px-2 m-1 text-nowrap bg-light text-black text-decoration-none rounded-pill border border-dark border-1"
+                className={menuBtnClasses}
                 activeProps={{ className: "text-white bg-dark fw-bold" }}
               >
                 Worm Farm
               </Link>
             </div>
 
-            <div className="col-12 col-sm-2 d-flex justify-content-end">
+            <div className=" d-none d-md-flex mx-1">
               <UserIcon />
             </div>
           </div>
@@ -132,3 +144,9 @@ const Navbar = () => {
   );
 };
 export default Navbar;
+/*
+
+            <div className="col-12 col-sm-2 d-flex justify-content-end">
+              <UserIcon />
+            </div>
+            */

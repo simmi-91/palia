@@ -1,9 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
+import ProfilePage from "../pages/ProfilePage";
 
 export const Route = createFileRoute("/profile")({
-  component: Profilepage,
+  component: Profile,
 });
 
-function Profilepage() {
-  return <div className=" card m-4 p-2">profile</div>;
+function Profile() {
+  return <ProfilePage />;
 }

@@ -37,7 +37,7 @@ const InventoryItemDisplay: React.FC<InventoryItemDisplayProps> = ({
       : "No users offering this item";
 
   return (
-    <div key={item.itemId} className="col-6 col-md-3 col-lg-3 col-xxl-2">
+    <div key={item.itemId} className="col-6 col-md-3 col-lg-3 col-xxl-2 d-flex">
       <div
         className="rounded border border-dark"
         style={{
@@ -69,7 +69,7 @@ const InventoryItemDisplay: React.FC<InventoryItemDisplayProps> = ({
             </div>
             {itemObject?.image ? (
               <img
-                src={`https://palia.wiki.gg${itemObject.image}`}
+                src={itemObject.image}
                 style={{ maxHeight: "100px", maxWidth: "100%" }}
               />
             ) : (

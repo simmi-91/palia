@@ -73,7 +73,7 @@ const CustomCard: React.FC<CustomCardProps> = ({ dataObject, category }) => {
 
   let imgurl = missingImg;
   if ("image" in dataObject && dataObject.image && dataObject.image != "") {
-    imgurl = `https://palia.wiki.gg${dataObject.image}`;
+    imgurl = dataObject.image;
   }
 
   const rarity = "rarity" in dataObject ? dataObject.rarity : "";

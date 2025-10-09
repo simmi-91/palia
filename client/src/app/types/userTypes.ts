@@ -8,13 +8,20 @@ export type GoogleProfile = {
 };
 
 export type UserInventoryItem = {
-  itemId: number;
   category: string; // e.g., 'artifacts', 'plushies'
+  itemId: number;
   amount: number;
 };
+export type RawTradeItem = {
+  category: string;
+  itemId: number;
+  amount: number;
+  userId: string;
+  userName: string;
+};
 
-export interface CombinedInventoryItem extends UserInventoryItem {
-  userId?: number;
+export interface TradeDisplayItem extends RawTradeItem {
+  offeringUsers: string[];
 }
 
 export type AuthContextType = {

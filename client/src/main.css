@@ -9,3 +9,7 @@ html {
 .text-xs {
   font-size: x-small;
 }
+
+.start-70 {
+  left: 70% !important;
+}

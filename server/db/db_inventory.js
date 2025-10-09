@@ -61,6 +61,8 @@ const createDB = async () => {
             (item) => item.userId !== profileId
           );
           const frontendInventory = inventory.map((item) => ({
+            userId: item.userId,
+            userName: item.userName,
             category: item.category,
             itemId: item.itemId,
             amount: item.amount,
@@ -101,29 +103,26 @@ const createDB = async () => {
         getTradeable: async (profileId) => {
           const [rows] = await pool.query(
             `
-              SELECT
-                  category,
-                  item_id,
-                  SUM(
-                      CASE
-                          WHEN amount > 1 THEN amount - 1
-                          ELSE 0
-                      END
-                  ) AS amount
-              FROM 
-                  user_inventory
-              WHERE 
-                  user_id != ? 
-              GROUP BY 
-                  category, 
-                  item_id
-              HAVING 
-                  amount > 0
+            SELECT
+                ui.user_id,
+                u.given_name,
+                ui.category,
+                ui.item_id,
+                GREATEST(ui.amount - 1, 0) AS amount
+            FROM 
+                user_inventory ui
+            JOIN
+                users u ON ui.user_id = u.google_id 
+            WHERE 
+                ui.user_id != ? 
+                AND ui.amount > 1
             `,
             [profileId]
           );
 
           const frontendInventory = rows.map((item) => ({
+            userId: item.user_id,
+            userName: item.given_name,
             category: item.category,
             itemId: item.item_id,
             amount: item.amount,

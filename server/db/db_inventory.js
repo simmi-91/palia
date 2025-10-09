@@ -77,7 +77,14 @@ const createDB = async () => {
             "SELECT category,item_id,amount FROM user_inventory WHERE user_id = ?",
             [profileId]
           );
-          return rows;
+
+          const frontendInventory = rows.map((item) => ({
+            category: item.category,
+            itemId: item.item_id,
+            amount: item.amount,
+          }));
+
+          return frontendInventory;
         },
 
         update: async (profileId, category, itemId, amount) => {

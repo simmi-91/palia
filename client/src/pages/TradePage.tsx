@@ -26,7 +26,7 @@ const groupTradeOffers = (
 
   rawTradeInventory.forEach((item) => {
     if (item.amount <= 0) return;
-    const { category, itemId, amount, userId, userName } = item;
+    const { category, itemId, amount, userName } = item;
 
     if (!acc[category]) {
       acc[category] = [];

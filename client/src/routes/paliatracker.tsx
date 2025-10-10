@@ -107,6 +107,7 @@ function ImportTracker() {
       })
       .filter((item: UserInventoryItem) => item !== null);
 
+    console.log(mappedArtifacts, rawArtifacts);
     if (mappedArtifacts && mappedArtifacts.length === rawArtifacts.length) {
       setExtractedFileContent(JSON.stringify(mappedArtifacts, null, 2));
       setTimeout(async () => {

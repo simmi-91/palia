@@ -24,6 +24,12 @@ const PlushiesPage = () => {
 
   return (
     <div className="container-fluid ">
+      <div className="row d-flex my-1 ">
+        <div className="col">
+          <div>Can be traded at booths available in The Underground.</div>
+        </div>
+      </div>
+
       <div className="row d-flex g-2 my-2">
         {data &&
           data.map((item) => (

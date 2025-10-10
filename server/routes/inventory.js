@@ -66,4 +66,29 @@ router.post("/", async (req, res) => {
   }
 });
 
+router.post("/bulk-update", async (req, res) => {
+  const { profileId, items } = req.body;
+  if (!profileId || !Array.isArray(items)) {
+    return res
+      .status(400)
+      .json({ error: "Missing required fields or invalid format." });
+  }
+
+  let db;
+  try {
+    db = await createDB();
+  } catch {
+    console.error("Database connection failed for bulk update.");
+    return res.status(503).json({ error: "Database service unavailable" });
+  }
+
+  try {
+    const data = await db.bulkUpdate(profileId, items);
+    return res.status(200).json(data);
+  } catch (error) {
+    console.error("Error performing bulk update:", error);
+    return res.status(500).json({ error: "Failed to perform bulk update." });
+  }
+});
+
 export default router;

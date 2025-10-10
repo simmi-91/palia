@@ -138,7 +138,11 @@ const createDB = async () => {
                 amount = VALUES(amount);
           `;
           const values = [profileId, category, itemId, amount];
-          await pool.execute(sql, values);
+
+          const [result] = await pool.execute(sql, values);
+          const insertedOrUpdatedCount =
+            result.affectedRows - result.changedRows;
+          return { success: true, count: insertedOrUpdatedCount };
         },
 
         bulkUpdate: async (profileId, items) => {
@@ -157,7 +161,10 @@ const createDB = async () => {
               amount = VALUES(amount);
           `;
 
-          await pool.execute(sql, values);
+          const [result] = await pool.execute(sql, values);
+          const insertedOrUpdatedCount =
+            result.affectedRows - result.changedRows;
+          return { success: true, count: insertedOrUpdatedCount };
         },
 
         getTradeable: async (profileId) => {

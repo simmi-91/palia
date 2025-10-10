@@ -14,9 +14,11 @@ const callApiUpdate = async (
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ profileId, category, itemId, amount }),
     });
-    if (response.ok) {
-      return await response.json();
+    if (!response.ok) {
+      const errorData = await response.json();
+      return { success: false, error: errorData.message || "Unknown error" };
     }
+    return await response.json();
   } catch (error) {
     console.error("Failed to update inventory on DB:", error);
     return { success: false, count: 0, error: error };
@@ -28,7 +30,7 @@ const callApiBulkUpdate = async (
   items: Array<{ category: string; itemId: number; amount: number }>
 ): Promise<{ success: boolean; count?: number; error?: any }> => {
   try {
-    const checkResponse = await fetch(
+    const response = await fetch(
       import.meta.env.VITE_API_URL + "/inventory/bulk-update",
       {
         method: "POST",
@@ -36,11 +38,11 @@ const callApiBulkUpdate = async (
         body: JSON.stringify({ profileId, items }),
       }
     );
-    if (!checkResponse.ok) {
-      const errorData = await checkResponse.json();
+    if (!response.ok) {
+      const errorData = await response.json();
       return { success: false, error: errorData.message || "Unknown error" };
     }
-    return await checkResponse.json();
+    return await response.json();
   } catch (error) {
     console.error("Failed to bulk update inventory on DB:", error);
     return { success: false, count: 0, error: error };

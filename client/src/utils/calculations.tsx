@@ -103,3 +103,14 @@ export function calcWormProfit(
     );
   }
 }
+
+export const parseHarvestString = (harvest: string | number): number => {
+  if (typeof harvest === "number") {
+    return harvest;
+  }
+  const numbers = harvest.match(/\d+/g);
+  if (numbers) {
+    return numbers.reduce((sum, num) => sum + parseInt(num), 0);
+  }
+  return 0;
+};

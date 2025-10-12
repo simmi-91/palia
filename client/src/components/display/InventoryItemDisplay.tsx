@@ -39,11 +39,11 @@ const InventoryItemDisplay: React.FC<InventoryItemDisplayProps> = ({
   return (
     <div key={item.itemId} className="col-6 col-md-3 col-lg-3 col-xxl-2 d-flex">
       <div
-        className="rounded border border-dark"
+        className="rounded border border-dark  flex-fill"
         style={{
           opacity: numOpacity,
           background:
-            "linear-gradient(180deg,rgba(226, 229, 233, 1) 0%, rgba(226, 229, 233, 0.9) 40%, rgba(59, 59, 59, 0.5) 100%",
+            "linear-gradient(180deg,rgba(226, 229, 233, 1) 0%, rgba(226, 229, 233, 0.9) 40%, rgba(59, 59, 59, 0.4) 100%",
         }}
       >
         {isItemLoading ? (

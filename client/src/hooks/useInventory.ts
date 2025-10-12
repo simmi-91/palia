@@ -9,21 +9,48 @@ const callApiUpdate = async (
   amount: number
 ) => {
   try {
-    await fetch(import.meta.env.VITE_API_URL + "/inventory/", {
+    const response = await fetch(import.meta.env.VITE_API_URL + "/inventory/", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ profileId, category, itemId, amount }),
     });
+    if (!response.ok) {
+      const errorData = await response.json();
+      return { success: false, error: errorData.message || "Unknown error" };
+    }
+    return await response.json();
   } catch (error) {
     console.error("Failed to update inventory on DB:", error);
-    // In a real app, you would handle a persistent error state here
+    return { success: false, count: 0, error: error };
+  }
+};
+
+const callApiBulkUpdate = async (
+  profileId: string,
+  items: Array<{ category: string; itemId: number; amount: number }>
+): Promise<{ success: boolean; count?: number; error?: any }> => {
+  try {
+    const response = await fetch(
+      import.meta.env.VITE_API_URL + "/inventory/bulk-update",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ profileId, items }),
+      }
+    );
+    if (!response.ok) {
+      const errorData = await response.json();
+      return { success: false, error: errorData.message || "Unknown error" };
+    }
+    return await response.json();
+  } catch (error) {
+    console.error("Failed to bulk update inventory on DB:", error);
+    return { success: false, count: 0, error: error };
   }
 };
 
 export const useInventory = (profile: GoogleProfile | null) => {
   const [inventory, setInventory] = useState<UserInventoryItem[]>([]);
-
-  // Use a stable profile ID for the debounced function dependency
   const profileId = profile?.id;
 
   const debouncedApiUpdate = useCallback(
@@ -52,11 +79,11 @@ export const useInventory = (profile: GoogleProfile | null) => {
     }
   }, [profileId]);
 
-  const updateInventoryAmount = (
-    category: string,
-    itemId: number,
-    newAmount: number
-  ) => {
+  const updateInventoryAmount = ({
+    category,
+    itemId,
+    amount,
+  }: UserInventoryItem) => {
     setInventory((prevInventory) => {
       if (!prevInventory) return [];
       const existingIndex = prevInventory.findIndex(
@@ -66,23 +93,36 @@ export const useInventory = (profile: GoogleProfile | null) => {
       const newInventory =
         existingIndex > -1
           ? prevInventory.map((item, index) =>
-              index === existingIndex ? { ...item, amount: newAmount } : item
+              index === existingIndex ? { ...item, amount: amount } : item
             )
-          : newAmount > 0
-            ? [...prevInventory, { itemId, category, amount: newAmount }]
+          : amount > 0
+            ? [...prevInventory, { itemId, category, amount }]
             : prevInventory;
 
       return newInventory.filter((item) => item.amount > 0);
     });
 
     if (profileId) {
-      debouncedApiUpdate(profileId, category, itemId, newAmount);
+      debouncedApiUpdate(profileId, category, itemId, amount);
     }
   };
+
+  const bulkUpdateInventory = useCallback(
+    async (items: UserInventoryItem[]) => {
+      if (!profileId) return { success: false, count: 0 };
+      const result = await callApiBulkUpdate(profileId, items);
+      if (result.success) {
+        await loadInventory();
+      }
+      return result;
+    },
+    [profileId, loadInventory]
+  );
 
   return {
     inventory,
     loadInventory,
     updateInventoryAmount,
+    bulkUpdateInventory,
   };
 };

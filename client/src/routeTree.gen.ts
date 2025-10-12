@@ -13,6 +13,7 @@ import { Route as WormfarmRouteImport } from './routes/wormfarm'
 import { Route as WikiRouteImport } from './routes/wiki'
 import { Route as TradeRouteImport } from './routes/trade'
 import { Route as ProfileRouteImport } from './routes/profile'
+import { Route as PaliatrackerRouteImport } from './routes/paliatracker'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as GardenRouteImport } from './routes/garden'
 import { Route as IndexRouteImport } from './routes/index'
@@ -38,6 +39,11 @@ const TradeRoute = TradeRouteImport.update({
 const ProfileRoute = ProfileRouteImport.update({
   id: '/profile',
   path: '/profile',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PaliatrackerRoute = PaliatrackerRouteImport.update({
+  id: '/paliatracker',
+  path: '/paliatracker',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LoginRoute = LoginRouteImport.update({
@@ -75,6 +81,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/garden': typeof GardenRoute
   '/login': typeof LoginRoute
+  '/paliatracker': typeof PaliatrackerRoute
   '/profile': typeof ProfileRoute
   '/trade': typeof TradeRoute
   '/wiki': typeof WikiRouteWithChildren
@@ -87,6 +94,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/garden': typeof GardenRoute
   '/login': typeof LoginRoute
+  '/paliatracker': typeof PaliatrackerRoute
   '/profile': typeof ProfileRoute
   '/trade': typeof TradeRoute
   '/wormfarm': typeof WormfarmRoute
@@ -99,6 +107,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/garden': typeof GardenRoute
   '/login': typeof LoginRoute
+  '/paliatracker': typeof PaliatrackerRoute
   '/profile': typeof ProfileRoute
   '/trade': typeof TradeRoute
   '/wiki': typeof WikiRouteWithChildren
@@ -113,6 +122,7 @@ export interface FileRouteTypes {
     | '/'
     | '/garden'
     | '/login'
+    | '/paliatracker'
     | '/profile'
     | '/trade'
     | '/wiki'
@@ -125,6 +135,7 @@ export interface FileRouteTypes {
     | '/'
     | '/garden'
     | '/login'
+    | '/paliatracker'
     | '/profile'
     | '/trade'
     | '/wormfarm'
@@ -136,6 +147,7 @@ export interface FileRouteTypes {
     | '/'
     | '/garden'
     | '/login'
+    | '/paliatracker'
     | '/profile'
     | '/trade'
     | '/wiki'
@@ -149,6 +161,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   GardenRoute: typeof GardenRoute
   LoginRoute: typeof LoginRoute
+  PaliatrackerRoute: typeof PaliatrackerRoute
   ProfileRoute: typeof ProfileRoute
   TradeRoute: typeof TradeRoute
   WikiRoute: typeof WikiRouteWithChildren
@@ -183,6 +196,13 @@ declare module '@tanstack/react-router' {
       path: '/profile'
       fullPath: '/profile'
       preLoaderRoute: typeof ProfileRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/paliatracker': {
+      id: '/paliatracker'
+      path: '/paliatracker'
+      fullPath: '/paliatracker'
+      preLoaderRoute: typeof PaliatrackerRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/login': {
@@ -248,6 +268,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   GardenRoute: GardenRoute,
   LoginRoute: LoginRoute,
+  PaliatrackerRoute: PaliatrackerRoute,
   ProfileRoute: ProfileRoute,
   TradeRoute: TradeRoute,
   WikiRoute: WikiRouteWithChildren,

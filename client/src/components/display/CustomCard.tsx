@@ -59,13 +59,24 @@ const CustomCard: React.FC<CustomCardProps> = ({ dataObject, category }) => {
 
   const maxAmount = 999;
   const handleIncrement = () => {
-    // You might want to enforce a max amount here (e.g., max: 999)
-    updateInventoryAmount(category, id, currentAmount + 1);
+    const item = {
+      category: category,
+      itemId: id,
+      amount: currentAmount + 1,
+    };
+    if (currentAmount < 99) {
+      updateInventoryAmount(item);
+    }
   };
 
   const handleDecrement = () => {
+    const item = {
+      category: category,
+      itemId: id,
+      amount: currentAmount - 1,
+    };
     if (currentAmount > 0) {
-      updateInventoryAmount(category, id, currentAmount - 1);
+      updateInventoryAmount(item);
     }
   };
 
@@ -91,13 +102,27 @@ const CustomCard: React.FC<CustomCardProps> = ({ dataObject, category }) => {
           <div className="row">
             <b className="text-s">{cat.title}:</b>
             <div className="d-flex flex-wrap">
-              {cat.list.map((listItem) => (
-                <Tag
-                  key={`${id}-${listItem.url}`}
-                  text={listItem.title}
-                  title={listItem.category}
-                />
-              ))}
+              {cat.list.map((listItem) => {
+                let icon = "";
+                if (listItem.category === "Bug Catching") {
+                  icon = "bi-bug-fill";
+                } else if (listItem.category === "Fishing") {
+                  icon = "bi-droplet-fill";
+                } else if (listItem.category === "Hunting") {
+                  icon = "bi-heart-arrow";
+                } else if (listItem.category === "Rummage Pile") {
+                  icon = "bi-virus";
+                }
+
+                return (
+                  <Tag
+                    key={`${id}-${listItem.url}`}
+                    text={listItem.title}
+                    title={listItem.category}
+                    icon={icon}
+                  />
+                );
+              })}
             </div>
           </div>
         ))}
@@ -154,6 +179,18 @@ const CustomCard: React.FC<CustomCardProps> = ({ dataObject, category }) => {
     );
   };
 
+  let wikiUrl = dataObject.url || "";
+  let baseUrl = "";
+  try {
+    if (wikiUrl) {
+      const url = new URL(wikiUrl);
+      baseUrl = url.origin;
+    }
+  } catch (error) {
+    console.error("Invalid URL format:", wikiUrl, error);
+    baseUrl = "";
+  }
+
   return (
     <div key={id} className="col-12 col-sm-6 col-lg-4 col-xl-3 d-flex">
       <div
@@ -165,7 +202,20 @@ const CustomCard: React.FC<CustomCardProps> = ({ dataObject, category }) => {
       >
         <div className="row py-1">
           <div className="col d-flex row flex-column">
-            <h5 className="card-title">{name}</h5>
+            <h5 className="card-title">
+              {baseUrl ? (
+                <a
+                  href={dataObject.url}
+                  target={category}
+                  title={`Go to wiki page, ${baseUrl}`}
+                  className="text-black text-decoration-none link-primary"
+                >
+                  {name}
+                </a>
+              ) : (
+                name
+              )}
+            </h5>
             <div>{rarity && <RarityTag id={rarity} />}</div>
 
             {!hasMultiList && showInventoryControls && (

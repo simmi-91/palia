@@ -146,8 +146,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   }, [user]);
 
   // --- Inventory hook ---
-  const { inventory, loadInventory, updateInventoryAmount } =
-    useInventory(profile);
+  const {
+    inventory,
+    loadInventory,
+    updateInventoryAmount,
+    bulkUpdateInventory,
+  } = useInventory(profile);
 
   useEffect(() => {
     if (profile) {
@@ -163,7 +167,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     logOut,
     inventory,
     loadInventory,
-    updateInventoryAmount,
+    updateInventoryAmount: (item) => updateInventoryAmount(item),
+    bulkUpdateInventory,
   };
 
   return (

@@ -55,6 +55,47 @@ const createDB = async () => {
           await lowdb.write();
         },
 
+        bulkUpdate: async (profileId, items) => {
+          await lowdb.read(); // 1. Read the data once
+
+          const otherUsersInventory = lowdb.data.filter(
+            (item) => item.userId !== profileId
+          );
+          let userInventory = lowdb.data.filter(
+            (item) => item.userId === profileId
+          );
+
+          const userInventoryMap = new Map();
+          userInventory.forEach((item, index) => {
+            const key = `${item.category}:${item.itemId}`;
+            userInventoryMap.set(key, index);
+          });
+
+          items.forEach((newItem) => {
+            const key = `${newItem.category}:${newItem.itemId}`;
+            const existingIndex = userInventoryMap.get(key);
+
+            if (existingIndex !== undefined) {
+              userInventory[existingIndex].amount = newItem.amount;
+            } else if (newItem.amount > 0) {
+              userInventory.push({
+                userId: profileId,
+                category: newItem.category,
+                itemId: newItem.itemId,
+                amount: newItem.amount,
+              });
+            }
+          });
+
+          const updatedUserInventory = userInventory.filter(
+            (item) => item.amount > 0
+          );
+          lowdb.data = [...otherUsersInventory, ...updatedUserInventory];
+
+          await lowdb.write();
+          return { success: true, count: items.length };
+        },
+
         getTradeable: async (profileId) => {
           await lowdb.read();
           const inventory = lowdb.data.filter(
@@ -97,7 +138,33 @@ const createDB = async () => {
                 amount = VALUES(amount);
           `;
           const values = [profileId, category, itemId, amount];
-          await pool.execute(sql, values);
+
+          const [result] = await pool.execute(sql, values);
+          const insertedOrUpdatedCount =
+            result.affectedRows - result.changedRows;
+          return { success: true, count: insertedOrUpdatedCount };
+        },
+
+        bulkUpdate: async (profileId, items) => {
+          const placeholders = [];
+          const values = [];
+          items.forEach((item) => {
+            placeholders.push("(?, ?, ?, ?)");
+            values.push(profileId, item.category, item.itemId, item.amount);
+          });
+
+          const sql = `
+          INSERT INTO user_inventory (user_id, category, item_id, amount) 
+          VALUES 
+              ${placeholders.join(", ")} 
+          ON DUPLICATE KEY UPDATE 
+              amount = VALUES(amount);
+          `;
+
+          const [result] = await pool.execute(sql, values);
+          const insertedOrUpdatedCount =
+            result.affectedRows - result.changedRows;
+          return { success: true, count: insertedOrUpdatedCount };
         },
 
         getTradeable: async (profileId) => {

@@ -86,7 +86,7 @@ const listInventory = (
   };
 
   return (
-    <div className="col border">
+    <div className="col">
       {Object.keys(inventory).map((category) => (
         <div key={category} className="">
           <h4 className="text-capitalize">{category}</h4>
@@ -177,18 +177,23 @@ const TradePage = ({
       <div className="row">
         <h2>Trading Post</h2>
       </div>
+
       <div className="row">
-        <div className="col">
-          <h3>I have:</h3>
+        <div className="col  border-end ">
+          <h3 className="border-bottom">I have:</h3>
           <div className="row">
             {listInventory(groupedUserInventory, false, null)}
           </div>
         </div>
 
         <div className="col text-center">
-          <h3>Others have:</h3>
+          <h3 className="border-bottom">Others have:</h3>
           <div className="row">
-            {listInventory(groupedTradeInventory, true, groupedUserInventory)}
+            {Object.keys(groupedTradeInventory).length > 0 ? (
+              listInventory(groupedTradeInventory, true, groupedUserInventory)
+            ) : (
+              <div>There are no other users with registered items</div>
+            )}
           </div>
         </div>
       </div>

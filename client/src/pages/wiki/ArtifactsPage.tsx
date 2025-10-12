@@ -23,7 +23,12 @@ const ArtifactsPage = () => {
 
   return (
     <div className="container-fluid ">
-      <div className="row d-flex g-2 my-2">
+      <div className="row d-flex my-1 ">
+        <div className="col">
+          <div>Can be traded at booths available at the Elderwood Central</div>
+        </div>
+      </div>
+      <div className="row d-flex g-2 my-1">
         {data &&
           data.map((item) => (
             <CustomCard category="artifacts" key={item.id} dataObject={item} />

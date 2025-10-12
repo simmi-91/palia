@@ -3,6 +3,7 @@ const Tag = (props: {
   title?: string;
   href?: string;
   bgColor?: string;
+  icon?: string;
 }) => {
   const defaultBgColor = "#e5e7eb";
 
@@ -11,9 +12,10 @@ const Tag = (props: {
   return (
     <span
       title={props.title}
-      className="rounded-pill opacity-75 px-2 py-0 me-1 mb-1 text-s text-break"
+      className="rounded-pill opacity-75 px-2 py-0 me-1 mb-1 text-s text-break text-center"
       style={{ backgroundColor: useBgColor, color: useTxtColor }}
     >
+      {props.icon && <i className={props.icon + " bi me-1"}></i>}
       {props.text}
     </span>
   );

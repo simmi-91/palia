@@ -21,11 +21,7 @@ const createDB = async () => {
         },
       };
     } else {
-      const sql = `
-        SELECT 
-        id, name, image, url
-        FROM artifacts`;
-
+      const sql = `SELECT id, name, image, url FROM artifacts`;
       const pool = initializePool();
       db = {
         getAll: async () => {

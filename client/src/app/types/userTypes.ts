@@ -31,9 +31,8 @@ export type AuthContextType = {
   logOut: () => void;
   inventory: UserInventoryItem[] | [];
   loadInventory: () => Promise<void>;
-  updateInventoryAmount: (
-    category: string,
-    itemId: number,
-    newAmount: number
-  ) => void;
+  updateInventoryAmount: (item: UserInventoryItem) => void;
+  bulkUpdateInventory: (
+    items: Array<{ category: string; itemId: number; amount: number }>
+  ) => Promise<{ success: boolean; count?: number; error?: any }>;
 };

@@ -1,12 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
 import { useAuth } from "../context/AuthContext";
-import { selectAllArtifacts } from "../features/slices/ArtifactsSlice";
-import { type UserInventoryItem } from "../app/types/userTypes";
 
-import artifactMap, {
-  type artifactMapType,
-} from "../features/trackerMapping/artifactMap";
+import { selectAllArtifacts } from "../features/slices/ArtifactsSlice";
+import { selectAllPlushies } from "../features/slices/PlushiesSlice";
+
+import { mapItems } from "../features/trackerMapping/mainMapper";
 
 export const Route = createFileRoute("/paliatracker")({
   component: ImportTracker,
@@ -19,6 +18,11 @@ function ImportTracker() {
     isLoading: LoadArtifact,
     isError: ErrArtifact,
   } = selectAllArtifacts();
+  const {
+    data: plushiesData,
+    isLoading: LoadPlushies,
+    isError: ErrPlushies,
+  } = selectAllPlushies();
 
   const [selectedFile, setSelectedFile] = useState<File | undefined>();
   const [uploadStatus, setUploadStatus] = useState("");
@@ -72,67 +76,64 @@ function ImportTracker() {
     reader.readAsText(selectedFile);
   };
 
-  const extractArtifacts = async () => {
+  const extractData = async (category: string) => {
     setExtraxtionMsgType("info");
-
     const json = JSON.parse(fileContent);
-    const rawArtifacts = json.trackedArtifact;
-    setExtractedFileContent(JSON.stringify(rawArtifacts, null, 2));
 
-    if (!artifactData) {
-      setUploadStatus("Artifact data not yet loaded. Please wait.");
+    let databaseData;
+    let rawJsonData;
+
+    if (category === "artifacts") {
+      databaseData = artifactData;
+      rawJsonData = json.trackedArtifact;
+    } else if (category === "plushies") {
+      databaseData = plushiesData;
+      rawJsonData = json.trackedPlush;
+    } else {
+      setExtractedFileContent("");
+      setExtraxtionMsgType("warning");
+      setExtraxtionMsg("category not defined for extraction");
       return;
     }
-    const nameToItemMap = new Map(
-      artifactData.map((artifact) => [artifact.name, artifact])
-    );
 
-    const mappedArtifacts: UserInventoryItem[] = rawArtifacts
-      .map((item: { key: string; amount: number }) => {
-        const rawArtifactName =
-          artifactMap[item.key as keyof artifactMapType] || item.key;
+    if (rawJsonData && rawJsonData) {
+      const mappedData = mapItems(
+        category,
+        databaseData,
+        rawJsonData,
+        setUploadStatus
+      );
 
-        const artifactEntry = nameToItemMap.get(rawArtifactName);
-
-        if (artifactEntry) {
-          return {
-            category: "artifacts",
-            itemId: artifactEntry.id,
-            amount: item.amount,
-          };
-        }
-        return null;
-      })
-      .filter((item: UserInventoryItem) => item !== null);
-
-    if (mappedArtifacts && mappedArtifacts.length === rawArtifacts.length) {
-      setExtractedFileContent(JSON.stringify(mappedArtifacts, null, 2));
-      setTimeout(async () => {
-        if (
-          confirm(
-            "Do you want to update your current artifact inventory with this new data?"
-          )
-        ) {
-          const result = await bulkUpdateInventory(mappedArtifacts);
-
-          if (result.success) {
-            setExtraxtionMsgType("success");
-            setExtraxtionMsg(
-              `Artifacts imported successfully. ${result.count} items were updated or inserted.`
-            );
-          } else {
-            setExtraxtionMsgType("danger");
-            setExtraxtionMsg(
-              `Upload failed: ${result.error || "An unknown error occurred."}`
-            );
+      if (mappedData && mappedData.length > 0) {
+        setExtractedFileContent(JSON.stringify(mappedData, null, 2));
+        setTimeout(async () => {
+          let msg = `Do you want to update your current ${category} inventory from this file? \n\nFile only includes if it is "obtained" and not amount. \nIf it is found in the file, your inventory is set to 1 for that item.`;
+          if (category === "artifacts") {
+            msg = `Do you want to update your current artifact inventory with this new data?`;
           }
-        } else {
-          setExtraxtionMsgType("info");
-          setExtraxtionMsg(`Update of inventory aborted.`);
-        }
-      }, 100);
+          if (confirm(msg)) {
+            const result = await bulkUpdateInventory(mappedData);
+            if (result.success) {
+              setExtraxtionMsgType("success");
+              setExtraxtionMsg(
+                `Plushies imported successfully. ${result.count} items were updated or inserted.`
+              );
+            } else {
+              setExtraxtionMsgType("danger");
+              setExtraxtionMsg(
+                `Upload failed: ${result.error || "An unknown error occurred."}`
+              );
+            }
+          } else {
+            setExtraxtionMsgType("info");
+            setExtraxtionMsg(`Update of inventory aborted.`);
+          }
+        }, 100);
+      } else {
+        setExtractedFileContent(`failed to map ${category}`);
+      }
     } else {
-      setExtractedFileContent("failed to map artifacts");
+      // failed
     }
   };
 
@@ -188,8 +189,8 @@ function ImportTracker() {
               />
               <div className="d-flex flex-wrap">
                 <button
-                  className="btn btn-secondary shadow-sm m-1"
-                  onClick={extractArtifacts}
+                  className="btn btn-primary shadow-sm m-1"
+                  onClick={() => extractData("artifacts")}
                   disabled={
                     profile && artifactData && fileContent ? false : true
                   }
@@ -201,6 +202,23 @@ function ImportTracker() {
                       ? "Failed getting artifacts"
                       : !LoadArtifact && !ErrArtifact && artifactData
                         ? "Extract artifacts"
+                        : null}
+                </button>
+
+                <button
+                  className="btn btn-primary shadow-sm m-1"
+                  onClick={() => extractData("plushies")}
+                  disabled={
+                    profile && plushiesData && fileContent ? false : true
+                  }
+                >
+                  <i className="bi bi-file-earmark-code me-1"></i>
+                  {LoadPlushies
+                    ? "Loading plushies.."
+                    : ErrPlushies
+                      ? "Failed getting plushies"
+                      : !LoadPlushies && !ErrPlushies && plushiesData
+                        ? "Extract plushies"
                         : null}
                 </button>
               </div>
@@ -216,7 +234,7 @@ function ImportTracker() {
             <div
               className={
                 (extraxtionMsgType
-                  ? `bg-${extraxtionMsgType} text-light`
+                  ? `bg-${extraxtionMsgType} text-dark`
                   : " text-dark") + " rounded p-2"
               }
             >

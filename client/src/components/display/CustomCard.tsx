@@ -7,12 +7,9 @@ import { useAuth } from "../../context/AuthContext";
 
 import type {
   Multilist_entry,
-  ArtifactEntry,
   PlushiesEntry,
   CatchableEntry,
-  BugsEntry,
   FishEntry,
-  PotatoPodEntry,
   StickerEntry,
   MainItemEntry,
 } from "../../app/types/wikiTypes";

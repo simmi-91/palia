@@ -293,7 +293,7 @@ const CustomCard: React.FC<CustomCardProps> = ({
                         );
                       }
                     })
-                  : bait}
+                  : null}
               </div>
             )}
 

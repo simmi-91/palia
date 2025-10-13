@@ -25,7 +25,11 @@ router.post("/check", async (req, res) => {
 
   const existingUser = await db.getUserByEmail(email);
   if (existingUser) {
-    res.status(200).send({ message: "User logged in", exists: true });
+    res.status(200).send({
+      message: "User logged in",
+      exists: true,
+      isAdmin: existingUser.admin,
+    });
   } else {
     res.status(200).send({ message: "User not exist", exists: false });
   }
@@ -56,7 +60,9 @@ router.post("/register", async (req, res) => {
 
   const newProfile = { email, given_name, picture, id };
   await db.createUser(newProfile);
-  res.status(201).json({ success: true, user: newProfile });
+  res
+    .status(201)
+    .json({ success: true, user: { ...newProfile, isAdmin: false } });
 });
 
 export default router;

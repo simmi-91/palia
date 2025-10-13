@@ -5,6 +5,7 @@ export type GoogleProfile = {
   email: string;
   given_name: string;
   picture: string;
+  isAdmin?: boolean; // Add the admin flag here
 };
 
 export type UserInventoryItem = {

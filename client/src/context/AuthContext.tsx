@@ -31,15 +31,26 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     const storedUser = localStorage.getItem("googleAuthUser");
     if (storedUser) {
-      // Note: A real app should validate token expiration here
-      setUserState(JSON.parse(storedUser));
+      const userWithTimestamp = JSON.parse(storedUser);
+      const { issuedAt, ...userToken } = userWithTimestamp;
+      const expiresInMs = userToken.expires_in * 1000;
+      const expirationTime = issuedAt + expiresInMs;
+      if (Date.now() < expirationTime) {
+        setUserState(userToken);
+      } else {
+        console.log("Token expired. Logging out.");
+        logOut();
+      }
     }
   }, []);
 
   const setUser = (token: TokenResponse | null) => {
     setUserState(token);
     if (token) {
-      localStorage.setItem("googleAuthUser", JSON.stringify(token));
+      localStorage.setItem(
+        "googleAuthUser",
+        JSON.stringify({ ...token, issuedAt: Date.now() })
+      );
     } else {
       localStorage.removeItem("googleAuthUser");
     }
@@ -93,9 +104,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             }
           );
 
-          const checkData: { exists: boolean } = await checkResponse.json();
+          const checkData: { exists: boolean; isAdmin?: boolean } =
+            await checkResponse.json();
           if (checkData.exists) {
-            setProfile(googleProfile);
+            setProfile({
+              ...googleProfile,
+              isAdmin: checkData.isAdmin || false,
+            });
           } else {
             const shouldRegister = window.confirm(
               `The email ${googleProfile.email} is not registered. Do you want to register now?`
@@ -119,11 +134,17 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
                 }
               );
 
-              const registerResult: { success: boolean; message?: string } =
-                await registerResponse.json();
+              const registerResult: {
+                success: boolean;
+                message?: string;
+                user?: { isAdmin: boolean };
+              } = await registerResponse.json();
 
               if (registerResult.success) {
-                setProfile(googleProfile);
+                setProfile({
+                  ...googleProfile,
+                  isAdmin: registerResult.user?.isAdmin || false,
+                });
               } else {
                 console.error("Registration failed:", registerResult.message);
                 logOut();

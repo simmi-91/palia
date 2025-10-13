@@ -31,6 +31,8 @@ const createDB = async () => {
             email: profile.email,
             given_name: profile.given_name,
             picture: pictureValue,
+            created_at: Date.now(),
+            admin: false,
           });
           await lowdb.write();
         },
@@ -47,7 +49,7 @@ const createDB = async () => {
         },
         createUser: async (profile) => {
           const sql =
-            "INSERT INTO users (google_id, email, given_name, picture) VALUES (?, ?, ?, ?)";
+            "INSERT INTO users (google_id, email, given_name, picture, created_at, admin) VALUES (?, ?, ?, ?, NOW(), ?)";
 
           const pictureValue =
             profile.picture === undefined ? null : profile.picture;
@@ -57,6 +59,7 @@ const createDB = async () => {
             profile.email,
             profile.given_name,
             pictureValue,
+            false,
           ];
           await pool.execute(sql, values);
         },

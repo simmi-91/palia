@@ -28,8 +28,8 @@ const Navbar = () => {
         backgroundColor: colorMap[bgColor]?.bg,
       }}
     >
-      <nav className="navbar navbar-expand-md">
-        <div className="container-fluid ">
+      <nav className="navbar navbar-expand-md p-0 p-md-1">
+        <div className="container-fluid">
           <div
             className="navbar-brand d-inline-flex flex-grow-1 "
             style={{
@@ -53,7 +53,7 @@ const Navbar = () => {
           </div>
 
           <button
-            className="navbar-toggler"
+            className="navbar-toggler ms-1"
             type="button"
             data-bs-toggle="collapse"
             data-bs-target="#navbarNavDropdown"
@@ -82,14 +82,6 @@ const Navbar = () => {
                   Trade
                 </Link>
               )}
-
-              <Link
-                to="/wiki"
-                className={menuBtnClasses}
-                activeProps={{ className: "text-white bg-dark fw-bold" }}
-              >
-                Items Wiki
-              </Link>
               <Link
                 to="/garden"
                 className={menuBtnClasses}
@@ -103,6 +95,14 @@ const Navbar = () => {
                 activeProps={{ className: "text-white bg-dark fw-bold" }}
               >
                 Worm Farm
+              </Link>
+
+              <Link
+                to="/wiki"
+                className={menuBtnClasses}
+                activeProps={{ className: "text-white bg-dark fw-bold" }}
+              >
+                Items Wiki
               </Link>
             </div>
 

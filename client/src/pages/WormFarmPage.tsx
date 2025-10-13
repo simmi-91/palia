@@ -13,20 +13,32 @@ import {
 const WormFarmPage = () => {
   const FoodsArr = selectAllFoods();
 
+  const [searchName, setSearchName] = useState("");
   const [sortOn, setSortOn] = useState("");
   const [sortDir, setSortDir] = useState("desc");
   const [filteredData, setFilteredData] = useState([...FoodsArr]);
+  const [suggestions, setSuggestions] = useState<FOOD_entry[]>([]);
 
   const filterFoods = () => {
     let defaultVal = -999;
+    let data = [...FoodsArr];
+
+    if (searchName) {
+      data = data.filter((food) =>
+        food.food.toLowerCase().includes(searchName.toLowerCase())
+      );
+      setSuggestions(data.slice(0, 10));
+    } else {
+      setSuggestions([]);
+    }
 
     if (sortOn === "") {
-      setFilteredData([...FoodsArr]);
+      setFilteredData([...data]);
       return;
     }
 
     if (sortOn === "name") {
-      let sorted = [...FoodsArr].sort((a, b) => {
+      let sorted = [...data].sort((a, b) => {
         let aVal = a.food;
         let bVal = b.food;
 
@@ -38,7 +50,7 @@ const WormFarmPage = () => {
       });
       setFilteredData([...sorted]);
     } else {
-      let sorted = [...FoodsArr].sort((a, b) => {
+      let sorted = [...data].sort((a, b) => {
         let aObj = a.star ? a.star : a.base;
         let bObj = b.star ? b.star : b.base;
         let aVal: number = defaultVal;
@@ -76,11 +88,30 @@ const WormFarmPage = () => {
     if (FoodsArr.length > 0) {
       filterFoods();
     }
-  }, [sortOn, sortDir]);
+  }, [sortOn, sortDir, searchName]);
 
   const filterBar = () => {
     return (
       <div className="row my-2 g-2">
+        <div className="col-sm">
+          <div className="form-floating">
+            <input
+              type="text"
+              className="form-control"
+              id="searchName"
+              placeholder="Search by name..."
+              value={searchName}
+              onChange={(e) => setSearchName(e.target.value)}
+              list="suggestionsList"
+            />
+            <label htmlFor="searchName">Search by name...</label>
+            <datalist id="suggestionsList">
+              {suggestions.map((food) => (
+                <option key={food.food} value={food.food} />
+              ))}
+            </datalist>
+          </div>
+        </div>
         <div className="col-sm">
           <div className="form-floating">
             <select

@@ -2,13 +2,13 @@ import { useState, useEffect } from "react";
 
 const getPhase = (hours: number) => {
   if (hours >= 3 && hours < 6) {
-    return { text: "Dawn", icon: "☀️" };
+    return { text: "Dawn", icon: "☀️", bIcon: "bi-sunrise" };
   } else if (hours >= 6 && hours < 18) {
-    return { text: "Day", icon: "🌞" };
+    return { text: "Day", icon: "🌞", bIcon: "bi-brightness-high-fill" };
   } else if (hours >= 18 && hours < 21) {
-    return { text: "Dusk", icon: "🌇" };
+    return { text: "Dusk", icon: "🌇", bIcon: "bi-sunset" };
   } else {
-    return { text: "Night", icon: "🌙" };
+    return { text: "Night", icon: "🌙", bIcon: "bi-moon-stars-fill" };
   }
 };
 
@@ -45,7 +45,12 @@ const Clock = ({ setBgColor }: { setBgColor: (text: string) => void }) => {
   return (
     <div className="">
       <div className="fs-4">
-        {phase.icon} {Math.floor(virtualTime).toString().padStart(2, "0")}:
+        {phase.bIcon ? (
+          <i className={`mx-1 bi ${phase.bIcon}`}></i>
+        ) : (
+          phase.icon
+        )}
+        {Math.floor(virtualTime).toString().padStart(2, "0")}:
         {virtualMinutes.toString().padStart(2, "0")}
       </div>
       <div className="fs-6 text-center">{phase.text}</div>

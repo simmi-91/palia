@@ -1,8 +1,8 @@
-import { selectAllPlushies } from "../../features/slices/PlushiesSlice";
+import { selectAllPotatoPods } from "../../features/slices/PotatoPodsSlice";
 import CustomCard from "../../components/display/CustomCard";
 
-const PlushiesPage = () => {
-  const { data, isLoading, isError, error } = selectAllPlushies();
+const PotatoPodsPage = () => {
+  const { data, isLoading, isError, error } = selectAllPotatoPods();
   if (isLoading) {
     return (
       <div className={" text-center"}>
@@ -33,7 +33,7 @@ const PlushiesPage = () => {
         {data &&
           data.map((item) => (
             <CustomCard
-              category="plushies"
+              category="potatopods"
               key={item.id}
               dataObject={item}
               isTradeable={true}
@@ -43,4 +43,4 @@ const PlushiesPage = () => {
     </div>
   );
 };
-export default PlushiesPage;
+export default PotatoPodsPage;

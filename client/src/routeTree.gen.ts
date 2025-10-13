@@ -18,7 +18,11 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as GardenRouteImport } from './routes/garden'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as WikiIndexRouteImport } from './routes/wiki/index'
+import { Route as WikiStickersRouteImport } from './routes/wiki/stickers'
+import { Route as WikiPotatopodsRouteImport } from './routes/wiki/potatopods'
 import { Route as WikiPlushiesRouteImport } from './routes/wiki/plushies'
+import { Route as WikiFishRouteImport } from './routes/wiki/fish'
+import { Route as WikiBugsRouteImport } from './routes/wiki/bugs'
 import { Route as WikiArtifactsRouteImport } from './routes/wiki/artifacts'
 
 const WormfarmRoute = WormfarmRouteImport.update({
@@ -66,9 +70,29 @@ const WikiIndexRoute = WikiIndexRouteImport.update({
   path: '/',
   getParentRoute: () => WikiRoute,
 } as any)
+const WikiStickersRoute = WikiStickersRouteImport.update({
+  id: '/stickers',
+  path: '/stickers',
+  getParentRoute: () => WikiRoute,
+} as any)
+const WikiPotatopodsRoute = WikiPotatopodsRouteImport.update({
+  id: '/potatopods',
+  path: '/potatopods',
+  getParentRoute: () => WikiRoute,
+} as any)
 const WikiPlushiesRoute = WikiPlushiesRouteImport.update({
   id: '/plushies',
   path: '/plushies',
+  getParentRoute: () => WikiRoute,
+} as any)
+const WikiFishRoute = WikiFishRouteImport.update({
+  id: '/fish',
+  path: '/fish',
+  getParentRoute: () => WikiRoute,
+} as any)
+const WikiBugsRoute = WikiBugsRouteImport.update({
+  id: '/bugs',
+  path: '/bugs',
   getParentRoute: () => WikiRoute,
 } as any)
 const WikiArtifactsRoute = WikiArtifactsRouteImport.update({
@@ -87,7 +111,11 @@ export interface FileRoutesByFullPath {
   '/wiki': typeof WikiRouteWithChildren
   '/wormfarm': typeof WormfarmRoute
   '/wiki/artifacts': typeof WikiArtifactsRoute
+  '/wiki/bugs': typeof WikiBugsRoute
+  '/wiki/fish': typeof WikiFishRoute
   '/wiki/plushies': typeof WikiPlushiesRoute
+  '/wiki/potatopods': typeof WikiPotatopodsRoute
+  '/wiki/stickers': typeof WikiStickersRoute
   '/wiki/': typeof WikiIndexRoute
 }
 export interface FileRoutesByTo {
@@ -99,7 +127,11 @@ export interface FileRoutesByTo {
   '/trade': typeof TradeRoute
   '/wormfarm': typeof WormfarmRoute
   '/wiki/artifacts': typeof WikiArtifactsRoute
+  '/wiki/bugs': typeof WikiBugsRoute
+  '/wiki/fish': typeof WikiFishRoute
   '/wiki/plushies': typeof WikiPlushiesRoute
+  '/wiki/potatopods': typeof WikiPotatopodsRoute
+  '/wiki/stickers': typeof WikiStickersRoute
   '/wiki': typeof WikiIndexRoute
 }
 export interface FileRoutesById {
@@ -113,7 +145,11 @@ export interface FileRoutesById {
   '/wiki': typeof WikiRouteWithChildren
   '/wormfarm': typeof WormfarmRoute
   '/wiki/artifacts': typeof WikiArtifactsRoute
+  '/wiki/bugs': typeof WikiBugsRoute
+  '/wiki/fish': typeof WikiFishRoute
   '/wiki/plushies': typeof WikiPlushiesRoute
+  '/wiki/potatopods': typeof WikiPotatopodsRoute
+  '/wiki/stickers': typeof WikiStickersRoute
   '/wiki/': typeof WikiIndexRoute
 }
 export interface FileRouteTypes {
@@ -128,7 +164,11 @@ export interface FileRouteTypes {
     | '/wiki'
     | '/wormfarm'
     | '/wiki/artifacts'
+    | '/wiki/bugs'
+    | '/wiki/fish'
     | '/wiki/plushies'
+    | '/wiki/potatopods'
+    | '/wiki/stickers'
     | '/wiki/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -140,7 +180,11 @@ export interface FileRouteTypes {
     | '/trade'
     | '/wormfarm'
     | '/wiki/artifacts'
+    | '/wiki/bugs'
+    | '/wiki/fish'
     | '/wiki/plushies'
+    | '/wiki/potatopods'
+    | '/wiki/stickers'
     | '/wiki'
   id:
     | '__root__'
@@ -153,7 +197,11 @@ export interface FileRouteTypes {
     | '/wiki'
     | '/wormfarm'
     | '/wiki/artifacts'
+    | '/wiki/bugs'
+    | '/wiki/fish'
     | '/wiki/plushies'
+    | '/wiki/potatopods'
+    | '/wiki/stickers'
     | '/wiki/'
   fileRoutesById: FileRoutesById
 }
@@ -233,11 +281,39 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof WikiIndexRouteImport
       parentRoute: typeof WikiRoute
     }
+    '/wiki/stickers': {
+      id: '/wiki/stickers'
+      path: '/stickers'
+      fullPath: '/wiki/stickers'
+      preLoaderRoute: typeof WikiStickersRouteImport
+      parentRoute: typeof WikiRoute
+    }
+    '/wiki/potatopods': {
+      id: '/wiki/potatopods'
+      path: '/potatopods'
+      fullPath: '/wiki/potatopods'
+      preLoaderRoute: typeof WikiPotatopodsRouteImport
+      parentRoute: typeof WikiRoute
+    }
     '/wiki/plushies': {
       id: '/wiki/plushies'
       path: '/plushies'
       fullPath: '/wiki/plushies'
       preLoaderRoute: typeof WikiPlushiesRouteImport
+      parentRoute: typeof WikiRoute
+    }
+    '/wiki/fish': {
+      id: '/wiki/fish'
+      path: '/fish'
+      fullPath: '/wiki/fish'
+      preLoaderRoute: typeof WikiFishRouteImport
+      parentRoute: typeof WikiRoute
+    }
+    '/wiki/bugs': {
+      id: '/wiki/bugs'
+      path: '/bugs'
+      fullPath: '/wiki/bugs'
+      preLoaderRoute: typeof WikiBugsRouteImport
       parentRoute: typeof WikiRoute
     }
     '/wiki/artifacts': {
@@ -252,13 +328,21 @@ declare module '@tanstack/react-router' {
 
 interface WikiRouteChildren {
   WikiArtifactsRoute: typeof WikiArtifactsRoute
+  WikiBugsRoute: typeof WikiBugsRoute
+  WikiFishRoute: typeof WikiFishRoute
   WikiPlushiesRoute: typeof WikiPlushiesRoute
+  WikiPotatopodsRoute: typeof WikiPotatopodsRoute
+  WikiStickersRoute: typeof WikiStickersRoute
   WikiIndexRoute: typeof WikiIndexRoute
 }
 
 const WikiRouteChildren: WikiRouteChildren = {
   WikiArtifactsRoute: WikiArtifactsRoute,
+  WikiBugsRoute: WikiBugsRoute,
+  WikiFishRoute: WikiFishRoute,
   WikiPlushiesRoute: WikiPlushiesRoute,
+  WikiPotatopodsRoute: WikiPotatopodsRoute,
+  WikiStickersRoute: WikiStickersRoute,
   WikiIndexRoute: WikiIndexRoute,
 }
 

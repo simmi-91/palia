@@ -1,8 +1,8 @@
-import { selectAllPlushies } from "../../features/slices/PlushiesSlice";
+import { selectAllStickers } from "../../features/slices/StickerSlice";
 import CustomCard from "../../components/display/CustomCard";
 
-const PlushiesPage = () => {
-  const { data, isLoading, isError, error } = selectAllPlushies();
+const StickersPage = () => {
+  const { data, isLoading, isError, error } = selectAllStickers();
   if (isLoading) {
     return (
       <div className={" text-center"}>
@@ -25,7 +25,9 @@ const PlushiesPage = () => {
     <div className="container-fluid ">
       <div className="row d-flex my-1 ">
         <div className="col">
-          <div>Can be traded at booths available in the Underground.</div>
+          <div>
+            Can be traded at Sticker Trading Kiosk available in the Underground.
+          </div>
         </div>
       </div>
 
@@ -33,7 +35,7 @@ const PlushiesPage = () => {
         {data &&
           data.map((item) => (
             <CustomCard
-              category="plushies"
+              category="stickers"
               key={item.id}
               dataObject={item}
               isTradeable={true}
@@ -43,4 +45,4 @@ const PlushiesPage = () => {
     </div>
   );
 };
-export default PlushiesPage;
+export default StickersPage;

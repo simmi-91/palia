@@ -6,7 +6,7 @@ import {
   useState,
 } from "react";
 
-export type SubmenuItem = { label: string; href: string };
+export type SubmenuItem = { label: string; href: string; icon?: string };
 
 type SubmenuContextValue = {
   submenuItems: SubmenuItem[];

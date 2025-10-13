@@ -11,8 +11,28 @@ function WikiLayout() {
 
   useEffect(() => {
     setSubmenuItems([
-      { label: "Artifacts", href: "/wiki/artifacts" },
-      { label: "Plushies", href: "/wiki/plushies" },
+      { label: "Bugs", href: "/wiki/bugs", icon: "bi-clipboard-heart" },
+      { label: "Fish", href: "/wiki/fish", icon: "bi-clipboard-heart" },
+      {
+        label: "Artifacts",
+        href: "/wiki/artifacts",
+        icon: "bi-arrow-left-right",
+      },
+      {
+        label: "Plushies",
+        href: "/wiki/plushies",
+        icon: "bi-arrow-left-right",
+      },
+      {
+        label: "Potato Pods",
+        href: "/wiki/potatopods",
+        icon: "bi-arrow-left-right",
+      },
+      {
+        label: "Stickers",
+        href: "/wiki/stickers",
+        icon: "bi-arrow-left-right",
+      },
     ]);
 
     return () => clearSubmenuItems();

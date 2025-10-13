@@ -1,6 +1,7 @@
 import Tag from "./Tag";
 import RarityTag from "./RarityTag";
 import missingImg from "../../assets/images/missing.png";
+import { icoWorm, icoGlowWorm } from "../../app/icons/common";
 
 import { useAuth } from "../../context/AuthContext";
 
@@ -8,19 +9,28 @@ import type {
   Multilist_entry,
   ArtifactEntry,
   PlushiesEntry,
+  CatchableEntry,
+  BugsEntry,
+  FishEntry,
+  PotatoPodEntry,
+  StickerEntry,
+  MainItemEntry,
 } from "../../app/types/wikiTypes";
 
 type CustomCardProps = {
-  dataObject: ArtifactEntry | PlushiesEntry;
+  dataObject: MainItemEntry;
   category: string; // Passed from parent (e.g., 'artifacts', 'plushies')
+  isTradeable: boolean;
 };
 
 const getMultiListProps = (
-  data: ArtifactEntry | PlushiesEntry
+  data: MainItemEntry
 ): { title: string; list: Multilist_entry[] }[] => {
   const multiListProperties: { title: string; list: Multilist_entry[] }[] = [];
   for (const key in data) {
-    if (Object.prototype.hasOwnProperty.call(data, key)) {
+    if (key === "bait") {
+      //skip
+    } else if (Object.prototype.hasOwnProperty.call(data, key)) {
       const value = data[key as keyof typeof data];
       if (Array.isArray(value)) {
         if (value.length > 0) {
@@ -46,7 +56,11 @@ const getMultiListProps = (
   return multiListProperties;
 };
 
-const CustomCard: React.FC<CustomCardProps> = ({ dataObject, category }) => {
+const CustomCard: React.FC<CustomCardProps> = ({
+  dataObject,
+  category,
+  isTradeable,
+}) => {
   const id = dataObject.id;
   const name = dataObject.name;
 
@@ -57,14 +71,47 @@ const CustomCard: React.FC<CustomCardProps> = ({ dataObject, category }) => {
   );
   const currentAmount = currentItem ? currentItem.amount : 0;
 
-  const maxAmount = 999;
+  const showInventoryControls = isTradeable && profile;
+  const showFavoriteControls = !isTradeable && profile;
+
+  let imgurl = missingImg;
+  if ("image" in dataObject && dataObject.image && dataObject.image != "") {
+    imgurl = dataObject.image;
+  }
+
+  const rarity =
+    "rarity" in dataObject
+      ? (dataObject as CatchableEntry | PlushiesEntry | StickerEntry).rarity
+      : 0;
+
+  const bait = "bait" in dataObject ? (dataObject as FishEntry).bait : "";
+
+  const multilist = getMultiListProps(dataObject);
+  let hasMultiList = false;
+  if (multilist && multilist.length > 0) {
+    hasMultiList = true;
+  }
+
+  let wikiUrl = dataObject.url || "";
+  let baseUrl = "";
+  try {
+    if (wikiUrl) {
+      const url = new URL(wikiUrl);
+      baseUrl = url.origin;
+    }
+  } catch (error) {
+    console.error("Invalid URL format:", wikiUrl, error);
+    baseUrl = "";
+  }
+
+  const maxAmount = 99;
   const handleIncrement = () => {
     const item = {
       category: category,
       itemId: id,
       amount: currentAmount + 1,
     };
-    if (currentAmount < 99) {
+    if (currentAmount < maxAmount) {
       updateInventoryAmount(item);
     }
   };
@@ -80,29 +127,23 @@ const CustomCard: React.FC<CustomCardProps> = ({ dataObject, category }) => {
     }
   };
 
-  const showInventoryControls = !!profile;
-
-  let imgurl = missingImg;
-  if ("image" in dataObject && dataObject.image && dataObject.image != "") {
-    imgurl = dataObject.image;
-  }
-
-  const rarity = "rarity" in dataObject ? dataObject.rarity : "";
-
-  const multilist = getMultiListProps(dataObject);
-  let hasMultiList = false;
-  if (multilist && multilist.length > 0) {
-    hasMultiList = true;
-  }
+  const handleFavorite = () => {
+    const item = {
+      category: category,
+      itemId: id,
+      favorite: 0,
+    };
+    console.log("handleFavorite", item);
+  };
 
   const multiTagBlock = () => {
     return (
-      <div className="col">
+      <div className="col d-flex">
         {multilist.map((cat) => (
           <div className="row">
             <b className="text-s">{cat.title}:</b>
             <div className="d-flex flex-wrap">
-              {cat.list.map((listItem) => {
+              {cat.list.map((listItem, idx) => {
                 let icon = "";
                 if (listItem.category === "Bug Catching") {
                   icon = "bi-bug-fill";
@@ -116,7 +157,7 @@ const CustomCard: React.FC<CustomCardProps> = ({ dataObject, category }) => {
 
                 return (
                   <Tag
-                    key={`${id}-${listItem.url}`}
+                    key={`${id}-${listItem.url}-${idx}`}
                     text={listItem.title}
                     title={listItem.category}
                     icon={icon}
@@ -179,17 +220,26 @@ const CustomCard: React.FC<CustomCardProps> = ({ dataObject, category }) => {
     );
   };
 
-  let wikiUrl = dataObject.url || "";
-  let baseUrl = "";
-  try {
-    if (wikiUrl) {
-      const url = new URL(wikiUrl);
-      baseUrl = url.origin;
-    }
-  } catch (error) {
-    console.error("Invalid URL format:", wikiUrl, error);
-    baseUrl = "";
-  }
+  const favoriteBlock = () => {
+    return (
+      <>
+        <div className="input-group mb-1 flex-nowrap">
+          <button
+            type="button"
+            className="btn btn-outline-secondary rounded fw-bold"
+            style={{
+              minWidth: 40,
+              width: 40,
+              height: 40,
+            }}
+            onClick={handleFavorite}
+          >
+            <i className="bi bi-star"></i>
+          </button>
+        </div>
+      </>
+    );
+  };
 
   return (
     <div key={id} className="col-12 col-sm-6 col-lg-4 col-xl-3 d-flex">
@@ -216,7 +266,39 @@ const CustomCard: React.FC<CustomCardProps> = ({ dataObject, category }) => {
                 name
               )}
             </h5>
-            <div>{rarity && <RarityTag id={rarity} />}</div>
+
+            {rarity > 0 && (
+              <div>
+                <RarityTag number={rarity} />
+              </div>
+            )}
+            {bait && (
+              <div>
+                {Array.isArray(bait)
+                  ? bait.map((item) => {
+                      if (item.title === "Worm") {
+                        return (
+                          <span
+                            title={item.title}
+                            className=" rounded-circle opacity-75 px-1 py-1 text-s bg-dark"
+                          >
+                            {icoWorm}
+                          </span>
+                        );
+                      } else if (item.title === "Glow Worm") {
+                        return (
+                          <span
+                            title={item.title}
+                            className=" rounded-circle opacity-75 px-1 py-1 text-s bg-dark"
+                          >
+                            {icoGlowWorm}
+                          </span>
+                        );
+                      }
+                    })
+                  : bait}
+              </div>
+            )}
 
             {!hasMultiList && showInventoryControls && (
               <div className="">{inventoryBlock()}</div>
@@ -235,8 +317,12 @@ const CustomCard: React.FC<CustomCardProps> = ({ dataObject, category }) => {
         )}
         {hasMultiList && !showInventoryControls && (
           <div className="row">
-            <div className="col">{multiTagBlock()}</div>
+            <div className="col d-flex flex-wrap">{multiTagBlock()}</div>
           </div>
+        )}
+
+        {showFavoriteControls && (
+          <div className=" visually-hidden">{favoriteBlock()}</div>
         )}
       </div>
     </div>

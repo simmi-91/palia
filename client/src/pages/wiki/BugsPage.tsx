@@ -1,8 +1,8 @@
-import { selectAllPlushies } from "../../features/slices/PlushiesSlice";
+import { selectAllBugs } from "../../features/slices/BugsSlice";
 import CustomCard from "../../components/display/CustomCard";
 
-const PlushiesPage = () => {
-  const { data, isLoading, isError, error } = selectAllPlushies();
+const BugsPage = () => {
+  const { data, isLoading, isError, error } = selectAllBugs();
   if (isLoading) {
     return (
       <div className={" text-center"}>
@@ -25,7 +25,7 @@ const PlushiesPage = () => {
     <div className="container-fluid ">
       <div className="row d-flex my-1 ">
         <div className="col">
-          <div>Can be traded at booths available in the Underground.</div>
+          <div></div>
         </div>
       </div>
 
@@ -33,14 +33,14 @@ const PlushiesPage = () => {
         {data &&
           data.map((item) => (
             <CustomCard
-              category="plushies"
+              category="bugs"
               key={item.id}
               dataObject={item}
-              isTradeable={true}
+              isTradeable={false}
             />
           ))}
       </div>
     </div>
   );
 };
-export default PlushiesPage;
+export default BugsPage;

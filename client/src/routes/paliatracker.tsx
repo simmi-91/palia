@@ -4,6 +4,8 @@ import { useAuth } from "../context/AuthContext";
 
 import { selectAllArtifacts } from "../features/slices/ArtifactsSlice";
 import { selectAllPlushies } from "../features/slices/PlushiesSlice";
+import { selectAllPotatoPods } from "../features/slices/PotatoPodsSlice";
+import { selectAllStickers } from "../features/slices/StickerSlice";
 
 import { mapItems } from "../features/trackerMapping/mainMapper";
 
@@ -18,11 +20,24 @@ function ImportTracker() {
     isLoading: LoadArtifact,
     isError: ErrArtifact,
   } = selectAllArtifacts();
+
   const {
     data: plushiesData,
     isLoading: LoadPlushies,
     isError: ErrPlushies,
   } = selectAllPlushies();
+
+  const {
+    data: podData,
+    isLoading: LoadPods,
+    isError: ErrPod,
+  } = selectAllPotatoPods();
+
+  const {
+    data: stickerData,
+    isLoading: LoadSticker,
+    isError: ErrSticker,
+  } = selectAllStickers();
 
   const [selectedFile, setSelectedFile] = useState<File | undefined>();
   const [uploadStatus, setUploadStatus] = useState("");
@@ -89,10 +104,16 @@ function ImportTracker() {
     } else if (category === "plushies") {
       databaseData = plushiesData;
       rawJsonData = json.trackedPlush;
+    } else if (category === "potatopods") {
+      databaseData = podData;
+      rawJsonData = json.trackedFurniture;
+    } else if (category === "stickers") {
+      databaseData = stickerData;
+      rawJsonData = json.trackedStickers;
     } else {
       setExtractedFileContent("");
       setExtraxtionMsgType("warning");
-      setExtraxtionMsg("category not defined for extraction");
+      setExtraxtionMsg(`category ${category} not defined for extraction`);
       return;
     }
 
@@ -108,7 +129,7 @@ function ImportTracker() {
         setExtractedFileContent(JSON.stringify(mappedData, null, 2));
         setTimeout(async () => {
           let msg = `Do you want to update your current ${category} inventory from this file? \n\nFile only includes if it is "obtained" and not amount. \nIf it is found in the file, your inventory is set to 1 for that item.`;
-          if (category === "artifacts") {
+          if (category === "artifacts" || category === "stickers") {
             msg = `Do you want to update your current artifact inventory with this new data?`;
           }
           if (confirm(msg)) {
@@ -197,11 +218,11 @@ function ImportTracker() {
                 >
                   <i className="bi bi-file-earmark-code me-1"></i>
                   {LoadArtifact
-                    ? "Loading artifacts.."
+                    ? "Loading Artifacts..."
                     : ErrArtifact
-                      ? "Failed getting artifacts"
+                      ? "Failed getting Artifacts"
                       : !LoadArtifact && !ErrArtifact && artifactData
-                        ? "Extract artifacts"
+                        ? "Extract Artifacts"
                         : null}
                 </button>
 
@@ -214,11 +235,45 @@ function ImportTracker() {
                 >
                   <i className="bi bi-file-earmark-code me-1"></i>
                   {LoadPlushies
-                    ? "Loading plushies.."
+                    ? "Loading Plushies..."
                     : ErrPlushies
-                      ? "Failed getting plushies"
+                      ? "Failed getting Plushies"
                       : !LoadPlushies && !ErrPlushies && plushiesData
-                        ? "Extract plushies"
+                        ? "Extract Plushies"
+                        : null}
+                </button>
+
+                <button
+                  className="btn btn-primary shadow-sm m-1"
+                  onClick={() => extractData("potatopods")}
+                  disabled={
+                    profile && plushiesData && fileContent ? false : true
+                  }
+                >
+                  <i className="bi bi-file-earmark-code me-1"></i>
+                  {LoadPods
+                    ? "Loading Potato Pods..."
+                    : ErrPod
+                      ? "Failed getting Potato Pods"
+                      : !LoadPods && !ErrPod && podData
+                        ? "Extract Potato Pods"
+                        : null}
+                </button>
+
+                <button
+                  className="btn btn-primary shadow-sm m-1"
+                  onClick={() => extractData("stickers")}
+                  disabled={
+                    profile && plushiesData && fileContent ? false : true
+                  }
+                >
+                  <i className="bi bi-file-earmark-code me-1"></i>
+                  {LoadSticker
+                    ? "Loading Stickers..."
+                    : ErrSticker
+                      ? "Failed getting Stickers"
+                      : !LoadSticker && !ErrSticker && stickerData
+                        ? "Extract Stickers"
                         : null}
                 </button>
               </div>

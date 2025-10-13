@@ -1,6 +1,7 @@
 import { type UserInventoryItem } from "../../app/types/userTypes";
 
 import artifactMap, { type artifactMapType } from "./artifactMap";
+import stickerMap, { type stickersMapType } from "./stickerMap";
 import { convertAnniversaryToOrdinal } from "./plushiesMap";
 
 type DatabaseItem = {
@@ -8,7 +9,7 @@ type DatabaseItem = {
   name: string;
 };
 
-type RawDataItemArtifact = {
+type RawKeyDataItem = {
   key: string;
   amount: number;
 };
@@ -20,7 +21,7 @@ type RawDataItem = {
 export const mapItems = (
   category: string,
   databaseData: DatabaseItem[] | undefined,
-  rawJsonData: RawDataItemArtifact[] | RawDataItem[],
+  rawJsonData: RawKeyDataItem[] | RawDataItem[],
   setUploadStatus: (status: string) => void
 ): UserInventoryItem[] | null => {
   if (!databaseData) {
@@ -31,15 +32,21 @@ export const mapItems = (
   const nameToItemMap = new Map(
     databaseData.map((item: DatabaseItem) => [item.name, item])
   );
+  console.log(nameToItemMap);
 
   const mappedData: UserInventoryItem[] = rawJsonData
-    .map((item: RawDataItemArtifact | RawDataItem) => {
+    .map((item: RawKeyDataItem | RawDataItem) => {
       let nameToMap = "";
       let amount = 0;
 
       if (category === "artifacts" && "key" in item) {
         nameToMap = artifactMap[item.key as keyof artifactMapType] || item.key;
         amount = item.amount;
+      } else if (category === "stickers" && "key" in item) {
+        nameToMap = stickerMap[item.key as keyof stickersMapType] || item.key;
+        amount = item.amount;
+
+        console.log(nameToMap);
       } else if (category !== "artifacts" && "obtained" in item) {
         nameToMap = item.name;
         amount = item.obtained ? 1 : 0;

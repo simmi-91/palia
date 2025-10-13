@@ -15,7 +15,6 @@ const Navbar = () => {
   };
 
   const { submenuItems } = useSubmenu();
-
   const { profile } = useAuth();
 
   const menuBtnClasses =
@@ -73,15 +72,7 @@ const Navbar = () => {
               >
                 Home
               </Link>
-              {profile && (
-                <Link
-                  to="/trade"
-                  className={menuBtnClasses}
-                  activeProps={{ className: "text-white bg-dark fw-bold" }}
-                >
-                  Trade
-                </Link>
-              )}
+
               <Link
                 to="/garden"
                 className={menuBtnClasses}
@@ -89,6 +80,7 @@ const Navbar = () => {
               >
                 Garden
               </Link>
+
               <Link
                 to="/wormfarm"
                 className={menuBtnClasses}
@@ -104,6 +96,16 @@ const Navbar = () => {
               >
                 Items Wiki
               </Link>
+
+              {profile && (
+                <Link
+                  to="/trade"
+                  className={menuBtnClasses}
+                  activeProps={{ className: "text-white bg-dark fw-bold" }}
+                >
+                  Trade
+                </Link>
+              )}
             </div>
 
             <div className=" d-none d-md-flex mx-1">
@@ -115,7 +117,7 @@ const Navbar = () => {
 
       {submenuItems.length > 0 && (
         <div className="border-top">
-          <div className="container-fluid d-flex gap-1 py-1 overflow-x-auto justify-content-center">
+          <div className="container-fluid d-flex gap-1 py-1 overflow-x-auto  justify-content-md-center">
             {submenuItems.map((item: SubmenuItem) => (
               <Link
                 key={item.href}
@@ -134,6 +136,7 @@ const Navbar = () => {
                   backgroundColor: "rgba(255, 255, 255, 0.3)",
                 }}
               >
+                {item.icon && <i className={`bi ${item.icon} pe-1`}></i>}
                 {item.label}
               </Link>
             ))}
@@ -144,9 +147,3 @@ const Navbar = () => {
   );
 };
 export default Navbar;
-/*
-
-            <div className="col-12 col-sm-2 d-flex justify-content-end">
-              <UserIcon />
-            </div>
-            */

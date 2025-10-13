@@ -84,38 +84,46 @@ const listInventory = (
       (userItem) => userItem.itemId === itemId && userItem.amount > 0
     );
   };
+  console.log(inventory);
 
   return (
     <div className="col">
-      {Object.keys(inventory).map((category) => (
-        <div key={category} className="">
-          <h4 className="text-capitalize">{category}</h4>
-          <div className="row g-1 py-2 d-flex flex-wrap justify-content-center">
-            {inventory[category].map((item) => {
-              const displayItem = item as TradeDisplayItem;
-              let offeringUsers = isTradeColumn
-                ? displayItem.offeringUsers || []
-                : [];
+      {Object.keys(inventory).map((category) => {
+        const filteredItems = inventory[category].filter(
+          (item) => item.amount > 1
+        );
+        if (filteredItems.length === 0) return null;
 
-              let opacity = 1;
-              if (isTradeColumn) {
-                if (userHasItem(displayItem.category, displayItem.itemId)) {
-                  opacity = 0.5;
+        return (
+          <div key={category} className="">
+            <h4 className="text-capitalize">{category}</h4>
+            <div className="row g-1 py-2 d-flex flex-wrap justify-content-center">
+              {filteredItems.map((item) => {
+                const displayItem = item as TradeDisplayItem;
+                let offeringUsers = isTradeColumn
+                  ? displayItem.offeringUsers || []
+                  : [];
+
+                let opacity = 1;
+                if (isTradeColumn) {
+                  if (userHasItem(displayItem.category, displayItem.itemId)) {
+                    opacity = 0.5;
+                  }
                 }
-              }
 
-              return (
-                <InventoryItemDisplay
-                  key={item.itemId}
-                  item={displayItem}
-                  opacity={opacity}
-                  offeringUsers={offeringUsers}
-                />
-              );
-            })}
+                return (
+                  <InventoryItemDisplay
+                    key={item.itemId}
+                    item={displayItem}
+                    opacity={opacity}
+                    offeringUsers={offeringUsers}
+                  />
+                );
+              })}
+            </div>
           </div>
-        </div>
-      ))}
+        );
+      })}
     </div>
   );
 };

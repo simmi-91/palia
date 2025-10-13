@@ -10,7 +10,7 @@ const createDB = async () => {
 
   if (dbHost) {
     if (dbHost === "lowdb") {
-      const adapter = new JSONFile("json_db/bugs.json");
+      const adapter = new JSONFile("json_db/fish.json");
       const lowdb = new Low(adapter, []);
 
       await lowdb.read();

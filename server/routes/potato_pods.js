@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { createDB } from "../db_wiki/potato_pods.js";
+import { createDB } from "../db_wiki/db_potato_pods.js";
 
 const router = Router();
 

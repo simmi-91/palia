@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { createDB } from "../db_wiki/db_artifacts.js";
+import { createDB } from "../db_wiki/db_bugs.js";
 
 const router = Router();
 
@@ -8,12 +8,12 @@ router.get("/", async (req, res) => {
   try {
     db = await createDB();
   } catch {
-    console.error("Database connection failed for artifacts.");
+    console.error("Database connection failed for bugs.");
     return res.status(503).json({ error: "Database service unavailable" });
   }
 
-  const artifacts = await db.getAll();
-  res.json(artifacts);
+  const bugs = await db.getAll();
+  res.json(bugs);
 });
 
 export default router;

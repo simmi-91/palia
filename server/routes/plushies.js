@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { createDB } from "../db/db_plushies.js";
+import { createDB } from "../db_wiki/db_plushies.js";
 
 const router = Router();
 

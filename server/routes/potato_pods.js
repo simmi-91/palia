@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { createDB } from "../db_wiki/db_artifacts.js";
+import { createDB } from "../db_wiki/potato_pods.js";
 
 const router = Router();
 
@@ -8,12 +8,12 @@ router.get("/", async (req, res) => {
   try {
     db = await createDB();
   } catch {
-    console.error("Database connection failed for artifacts.");
+    console.error("Database connection failed for potato pods.");
     return res.status(503).json({ error: "Database service unavailable" });
   }
 
-  const artifacts = await db.getAll();
-  res.json(artifacts);
+  const pods = await db.getAll();
+  res.json(pods);
 });
 
 export default router;

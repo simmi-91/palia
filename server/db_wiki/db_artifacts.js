@@ -1,6 +1,6 @@
 import { Low } from "lowdb";
 import { JSONFile } from "lowdb/node";
-import { initializePool, initializeDbHost } from "./db_connections.js";
+import { initializePool, initializeDbHost } from "../db/db_connections.js";
 
 let db;
 const createDB = async () => {

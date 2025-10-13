@@ -21,7 +21,7 @@ const createDB = async () => {
         },
       };
     } else {
-      const sql = `SELECT id, name, image, url, chat_message FROM stickers`;
+      const sql = `SELECT id, name, image, url, chat_message AS chatMessage FROM stickers`;
       const pool = initializePool();
       db = {
         getAll: async () => {

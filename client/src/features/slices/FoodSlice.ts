@@ -1,6 +1,6 @@
 import { FOOD } from "../../app/shared/FOOD";
-import { type FOOD_entry } from "../../app/types/types";
+import { type FoodEntry } from "../../app/types/types";
 
-export const selectAllFoods = (): FOOD_entry[] => {
+export const selectAllFoods = (): FoodEntry[] => {
   return FOOD;
 };

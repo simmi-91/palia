@@ -1,11 +1,11 @@
 import { type UseQueryResult } from "@tanstack/react-query";
-import type { ARTIFACT_Entry, PLUSHIES_Entry } from "../app/types/types";
+import type { ArtifactEntry, PlushiesEntry } from "../app/types/wikiTypes";
 import { selectArtifactById } from "../features/slices/ArtifactsSlice";
 import { selectPlushById } from "../features/slices/PlushiesSlice";
 
 type ItemSelector = (
   itemId: number
-) => UseQueryResult<ARTIFACT_Entry | PLUSHIES_Entry | undefined, Error>;
+) => UseQueryResult<ArtifactEntry | PlushiesEntry | undefined, Error>;
 
 const selectorMap: { [key: string]: ItemSelector } = {
   artifacts: selectArtifactById,

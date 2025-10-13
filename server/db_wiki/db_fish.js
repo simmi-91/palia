@@ -33,7 +33,7 @@ const createDB = async () => {
                 f.description,
                 f.rarity,
                 f.time,
-                f.base_value,
+                f.base_value AS baseValue,
                 (
                     SELECT 
                         COALESCE(

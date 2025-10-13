@@ -1,6 +1,6 @@
-import { type FOOD_entry } from "../types/types";
+import { type FoodEntry } from "../types/types";
 
-export const FOOD: FOOD_entry[] = [
+export const FOOD: FoodEntry[] = [
   {
     food: "Congee",
     category: "Campfire Foods",

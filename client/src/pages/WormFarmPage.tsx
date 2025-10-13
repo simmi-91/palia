@@ -1,6 +1,6 @@
 import { Fragment, useEffect, useState } from "react";
 import { selectAllFoods } from "../features/slices/FoodSlice";
-import type { FOOD_entry, FoodDetail } from "../app/types/types";
+import type { FoodEntry, FoodDetail } from "../app/types/types";
 import {
   textIcon,
   icoCoin,
@@ -17,7 +17,7 @@ const WormFarmPage = () => {
   const [sortOn, setSortOn] = useState("");
   const [sortDir, setSortDir] = useState("desc");
   const [filteredData, setFilteredData] = useState([...FoodsArr]);
-  const [suggestions, setSuggestions] = useState<FOOD_entry[]>([]);
+  const [suggestions, setSuggestions] = useState<FoodEntry[]>([]);
 
   const filterFoods = () => {
     let defaultVal = -999;
@@ -209,7 +209,7 @@ const WormFarmPage = () => {
     );
   };
 
-  const foodRow = (i: number, entry: FOOD_entry) => {
+  const foodRow = (i: number, entry: FoodEntry) => {
     const key = entry.food.replace(/\s/, "_").toLowerCase();
     return (
       <Fragment key={i}>

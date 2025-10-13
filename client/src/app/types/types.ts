@@ -13,31 +13,9 @@ export type FoodDetail = {
   glowworms: FoodsWorms;
 };
 
-export type FOOD_entry = {
+export type FoodEntry = {
   food: string;
   category: string | null;
   base: FoodDetail;
   star: FoodDetail | null;
-};
-
-export type ARTIFACT_Entry = {
-  id: number;
-  name: string;
-  url: string;
-  image: string;
-};
-
-export type PLUSHIES_Entry = {
-  id: number;
-  name: string;
-  url: string;
-  image: string;
-  rarity: string;
-  howToObtain?: Multilist_entry[];
-};
-
-export type Multilist_entry = {
-  title: string;
-  url: string;
-  category: string;
 };

@@ -6,17 +6,17 @@ import { useAuth } from "../../context/AuthContext";
 
 import type {
   Multilist_entry,
-  ARTIFACT_Entry,
-  PLUSHIES_Entry,
-} from "../../app/types/types";
+  ArtifactEntry,
+  PlushiesEntry,
+} from "../../app/types/wikiTypes";
 
 type CustomCardProps = {
-  dataObject: ARTIFACT_Entry | PLUSHIES_Entry;
+  dataObject: ArtifactEntry | PlushiesEntry;
   category: string; // Passed from parent (e.g., 'artifacts', 'plushies')
 };
 
 const getMultiListProps = (
-  data: ARTIFACT_Entry | PLUSHIES_Entry
+  data: ArtifactEntry | PlushiesEntry
 ): { title: string; list: Multilist_entry[] }[] => {
   const multiListProperties: { title: string; list: Multilist_entry[] }[] = [];
   for (const key in data) {

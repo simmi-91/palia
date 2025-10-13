@@ -34,7 +34,7 @@ const createDB = async () => {
                 b.rarity,
                 b.time,
                 b.behavior,
-                b.baseValue,
+                b.base_value AS baseValue,
                 (
                     SELECT 
                         COALESCE(
@@ -72,7 +72,7 @@ const createDB = async () => {
                         needed_for_entity AS ne ON n_link.needed_for_id = ne.id
                     WHERE 
                         n_link.bugs_id = b.id
-                ) AS neededFor
+                ) AS needed_for
             FROM
                 bugs AS b
             ORDER BY
@@ -84,7 +84,7 @@ const createDB = async () => {
           return rows.map((row) => ({
             ...row,
             location: JSON.parse(row.location),
-            neededFor: JSON.parse(row.neededFor),
+            neededFor: JSON.parse(row.needed_for),
           }));
         },
       };

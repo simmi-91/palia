@@ -1,19 +1,16 @@
 import { useQuery, type UseQueryResult } from "@tanstack/react-query";
-import type { PLUSHIES_Entry } from "../../app/types/types";
+import type { PlushiesEntry } from "../../app/types/wikiTypes";
 
-const fetchPlushies = async (): Promise<PLUSHIES_Entry[]> => {
+const fetchPlushies = async (): Promise<PlushiesEntry[]> => {
   const response = await fetch(import.meta.env.VITE_API_URL + "/plushies");
   if (!response.ok) {
     throw new Error("Network response was not ok");
   }
-  const data: PLUSHIES_Entry[] = await response.json();
+  const data: PlushiesEntry[] = await response.json();
   return data;
 };
 
-export const selectAllPlushies = (): UseQueryResult<
-  PLUSHIES_Entry[],
-  Error
-> => {
+export const selectAllPlushies = (): UseQueryResult<PlushiesEntry[], Error> => {
   const query = useQuery({
     queryKey: ["PlushiesData"],
     queryFn: fetchPlushies,
@@ -24,7 +21,7 @@ export const selectAllPlushies = (): UseQueryResult<
 
 export const selectPlushById = (
   itemId: number
-): UseQueryResult<PLUSHIES_Entry | undefined, Error> => {
+): UseQueryResult<PlushiesEntry | undefined, Error> => {
   return useQuery({
     queryKey: ["PlushiesData"],
     queryFn: fetchPlushies,

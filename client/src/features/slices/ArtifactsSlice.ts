@@ -1,17 +1,17 @@
 import { useQuery, type UseQueryResult } from "@tanstack/react-query";
-import type { ARTIFACT_Entry } from "../../app/types/types";
+import type { ArtifactEntry } from "../../app/types/wikiTypes";
 
-const fetchArtifacts = async (): Promise<ARTIFACT_Entry[]> => {
+const fetchArtifacts = async (): Promise<ArtifactEntry[]> => {
   const response = await fetch(import.meta.env.VITE_API_URL + "/artifacts");
   if (!response.ok) {
     throw new Error("Network response was not ok");
   }
-  const data: ARTIFACT_Entry[] = await response.json();
+  const data: ArtifactEntry[] = await response.json();
   return data;
 };
 
 export const selectAllArtifacts = (): UseQueryResult<
-  ARTIFACT_Entry[],
+  ArtifactEntry[],
   Error
 > => {
   const query = useQuery({
@@ -24,7 +24,7 @@ export const selectAllArtifacts = (): UseQueryResult<
 
 export const selectArtifactById = (
   itemId: number
-): UseQueryResult<ARTIFACT_Entry | undefined, Error> => {
+): UseQueryResult<ArtifactEntry | undefined, Error> => {
   return useQuery({
     queryKey: ["ArtifactsData"],
     queryFn: fetchArtifacts,

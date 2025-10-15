@@ -145,6 +145,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
                   ...googleProfile,
                   isAdmin: registerResult.user?.isAdmin || false,
                 });
+                window.location.href =
+                  window.location.origin + "/palia/profile";
               } else {
                 console.error("Registration failed:", registerResult.message);
                 logOut();

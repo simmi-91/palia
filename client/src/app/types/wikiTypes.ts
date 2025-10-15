@@ -1,3 +1,13 @@
+export type MultilistEntry = {
+  title: string;
+  url: string;
+  category: string;
+};
+export type MultilistProps = {
+  title: string;
+  list: MultilistEntry[];
+};
+
 export type MainItemEntry = {
   id: number;
   name: string;
@@ -5,29 +15,29 @@ export type MainItemEntry = {
   image: string;
 };
 
-export type ArtifactEntry = MainItemEntry;
-
 export type CatchableEntry = MainItemEntry & {
   rarity: number;
   time: string;
   description: string;
   baseValue: number;
-  location: Multilist_entry[];
-  neededFor: Multilist_entry[];
+  location: MultilistEntry[];
+  neededFor: MultilistEntry[];
 };
+
+export type ArtifactEntry = MainItemEntry;
 
 export type BugsEntry = CatchableEntry & {
   behavior: string;
 };
 
 export type FishEntry = CatchableEntry & {
-  howToObtain: Multilist_entry[];
-  bait: Multilist_entry[];
+  howToObtain: MultilistEntry[];
+  bait: MultilistEntry[];
 };
 
 export type PlushiesEntry = MainItemEntry & {
   rarity: number;
-  howToObtain: Multilist_entry[];
+  howToObtain: MultilistEntry[];
 };
 
 export type PotatoPodEntry = MainItemEntry & {
@@ -36,10 +46,4 @@ export type PotatoPodEntry = MainItemEntry & {
 
 export type StickerEntry = MainItemEntry & {
   rarity: number;
-};
-
-export type Multilist_entry = {
-  title: string;
-  url: string;
-  category: string;
 };

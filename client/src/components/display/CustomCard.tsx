@@ -1,12 +1,12 @@
+import { useAuth } from "../../context/AuthContext";
+
 import Tag from "./Tag";
 import RarityTag from "./RarityTag";
 import missingImg from "../../assets/images/missing.png";
 import { icoWorm, icoGlowWorm } from "../../app/icons/common";
-
-import { useAuth } from "../../context/AuthContext";
+import { getMultiListProps } from "../../utils/multilistProperties";
 
 import type {
-  Multilist_entry,
   PlushiesEntry,
   CatchableEntry,
   FishEntry,
@@ -18,39 +18,6 @@ type CustomCardProps = {
   dataObject: MainItemEntry;
   category: string; // Passed from parent (e.g., 'artifacts', 'plushies')
   isTradeable: boolean;
-};
-
-const getMultiListProps = (
-  data: MainItemEntry
-): { title: string; list: Multilist_entry[] }[] => {
-  const multiListProperties: { title: string; list: Multilist_entry[] }[] = [];
-  for (const key in data) {
-    if (key === "bait") {
-      //skip
-    } else if (Object.prototype.hasOwnProperty.call(data, key)) {
-      const value = data[key as keyof typeof data];
-      if (Array.isArray(value)) {
-        if (value.length > 0) {
-          const isMultiList =
-            typeof value[0] === "object" &&
-            value[0] !== null &&
-            "title" in value[0];
-
-          if (isMultiList) {
-            const title = key
-              .replace(/([A-Z])/g, " $1")
-              .replace(/^./, (str) => str.toUpperCase());
-
-            multiListProperties.push({
-              title: title,
-              list: value as Multilist_entry[],
-            });
-          }
-        }
-      }
-    }
-  }
-  return multiListProperties;
 };
 
 const CustomCard: React.FC<CustomCardProps> = ({
@@ -83,7 +50,7 @@ const CustomCard: React.FC<CustomCardProps> = ({
 
   const bait = "bait" in dataObject ? (dataObject as FishEntry).bait : "";
 
-  const multilist = getMultiListProps(dataObject);
+  const multilist = getMultiListProps(dataObject, ["bait"]);
   let hasMultiList = false;
   if (multilist && multilist.length > 0) {
     hasMultiList = true;

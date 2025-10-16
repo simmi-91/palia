@@ -4,8 +4,11 @@ import { Link } from "@tanstack/react-router";
 const ProfilePage = () => {
   const { profile, logOut } = useAuth();
   if (!profile) {
-    //window.location.href = window.location.origin + "/palia/";
-    return;
+    return (
+      <div className="container p-2">
+        <div className="row py-1">Not logged in</div>
+      </div>
+    );
   }
   const alertLogout = () => {
     if (confirm("Are you sure you want to log out?")) {
@@ -17,10 +20,24 @@ const ProfilePage = () => {
   return (
     <div className="container p-2">
       <div className="row py-1">
-        <div className="col">Logget inn som: {profile.given_name}</div>
-        <div className="col-6 col-sm-3 col-lg-2">
+        <div className="col">Logged in as: {profile.given_name}</div>
+        <div className="col-12 col-sm-6 col-lg-2">
           <div className=" float-end">
-            <button onClick={() => alertLogout()}> Log out</button>
+            {/*isAdmin && (
+              <Link
+                to="/admin"
+                className="btn btn-info border rounded-2 border-dark m-2"
+                style={{ color: "inherit" }}
+              >
+                Admin
+              </Link>
+            )*/}
+            <button
+              className="btn btn-primary border rounded-2 border-dark"
+              onClick={() => alertLogout()}
+            >
+              Log out
+            </button>
           </div>
         </div>
       </div>
@@ -53,6 +70,7 @@ const ProfilePage = () => {
           <div className="col">
             user is admin - display edit options for content
           </div>
+          <div className="col"></div>
         </div>
       )}
     </div>

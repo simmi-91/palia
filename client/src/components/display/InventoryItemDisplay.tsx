@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useState } from "react";
+
 import missingImg from "../../assets/images/missing.png";
 import { useItemDetails } from "../../hooks/useItemDetails";
 import { type TradeDisplayItem } from "../../app/types/userTypes";
@@ -14,6 +15,8 @@ const InventoryItemDisplay: React.FC<InventoryItemDisplayProps> = ({
   opacity,
   offeringUsers,
 }) => {
+  const [tradeWithUsers, setTradeWithUsers] = useState("");
+
   const { itemObject, isItemLoading } = useItemDetails(
     item.category,
     item.itemId
@@ -39,7 +42,7 @@ const InventoryItemDisplay: React.FC<InventoryItemDisplayProps> = ({
   return (
     <div key={item.itemId} className="col-6 col-md-3 col-lg-3 col-xxl-2 d-flex">
       <div
-        className="rounded border border-dark  flex-fill"
+        className="rounded border border-dark d-flex"
         style={{
           opacity: numOpacity,
           background:
@@ -51,35 +54,42 @@ const InventoryItemDisplay: React.FC<InventoryItemDisplayProps> = ({
             <span className="visually-hidden">Loading...</span>
           </div>
         ) : (
-          <>
+          <div className="d-flex flex-column">
             <div className="position-relative">
-              <b className="p">{objectName}</b>
+              <b>{objectName}</b>
             </div>
             <div className="position-relative">
               {userCount > 0 && (
-                <div
+                <button
                   title={userListTitle}
-                  className="position-absolute top-50 start-70 border border-dark bg-info rounded-circle overflow-hidden
-                "
+                  className="position-absolute top-50 start-70 border border-dark bg-info rounded-circle overflow-hidden"
                   style={{ height: "30px", width: "30px" }}
+                  onClick={() => setTradeWithUsers(userListTitle)}
                 >
                   {userCount}
-                </div>
+                </button>
               )}
             </div>
-            {itemObject?.image ? (
-              <img
-                src={itemObject.image}
-                style={{ maxHeight: "100px", maxWidth: "100%" }}
-              />
-            ) : (
-              <img
-                src={missingImg}
-                style={{ maxHeight: "100px", maxWidth: "100%" }}
-              />
-            )}
+            <div>
+              {itemObject?.image ? (
+                <img
+                  src={itemObject.image}
+                  style={{ maxHeight: "100px", maxWidth: "100%" }}
+                />
+              ) : (
+                <img
+                  src={missingImg}
+                  style={{ maxHeight: "100px", maxWidth: "100%" }}
+                />
+              )}
+            </div>
             <div>For trade: {amount}</div>
-          </>
+            {tradeWithUsers && (
+              <div className="bg-dark text-light flex-fill">
+                {tradeWithUsers}
+              </div>
+            )}
+          </div>
         )}
       </div>
     </div>

@@ -169,17 +169,6 @@ const TradePage = ({
     (tradeableInventory as RawTradeItem[]) || null
   );
 
-  if (Object.keys(groupedUserInventory).length === 0) {
-    return (
-      <div className="alert alert-info text-center">
-        <p>
-          <b>You don't have any items in your inventory to trade yet.</b>
-        </p>
-        <p>You need atleast 2 of an item to be able to trade away 1</p>
-      </div>
-    );
-  }
-
   return (
     <div className="container-fluid text-center">
       <div className="row">
@@ -187,20 +176,33 @@ const TradePage = ({
       </div>
 
       <div className="row">
-        <div className="col  border-end ">
-          <h3 className="border-bottom">I have:</h3>
-          <div className="row">
-            {listInventory(groupedUserInventory, false, null)}
+        <div className="col-12 col-sm-6 border-end ">
+          <h3 className="border-bottom mt-2">I have:</h3>
+          <div className="row p-1">
+            {Object.keys(groupedUserInventory).length === 0 ? (
+              <div className="alert alert-info text-center">
+                <p>
+                  <b>
+                    You don't have any items in your inventory to trade yet.
+                  </b>
+                </p>
+                <p>You need atleast 2 of an item for it to be visible here</p>
+              </div>
+            ) : (
+              listInventory(groupedUserInventory, false, null)
+            )}
           </div>
         </div>
 
         <div className="col text-center">
-          <h3 className="border-bottom">Others have:</h3>
-          <div className="row">
+          <h3 className="border-bottom mt-2">Others have:</h3>
+          <div className="row p-1">
             {Object.keys(groupedTradeInventory).length > 0 ? (
               listInventory(groupedTradeInventory, true, groupedUserInventory)
             ) : (
-              <div>There are no other users with registered items</div>
+              <div className="alert alert-info text-center">
+                <p>There are no other users with registered items</p>
+              </div>
             )}
           </div>
         </div>

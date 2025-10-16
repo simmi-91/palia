@@ -3,6 +3,7 @@ import { Router } from "express";
 import usersRouter from "./users.js";
 import inventoryRouter from "./inventory.js";
 import linksRouter from "./links.js";
+import favoritesRouter from "./favorites.js";
 
 import artifactsRouter from "./artifacts.js";
 import bugsRouter from "./bugs.js";
@@ -17,6 +18,7 @@ const apiRouter = Router();
 apiRouter.use("/users", usersRouter);
 apiRouter.use("/inventory", inventoryRouter);
 apiRouter.use("/links", linksRouter);
+apiRouter.use("/favorites", favoritesRouter);
 
 // wiki routes
 apiRouter.use("/artifacts", artifactsRouter);

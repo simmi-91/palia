@@ -12,6 +12,8 @@ import type {
   FishEntry,
   StickerEntry,
   MainItemEntry,
+  MultilistEntry,
+  MultilistProps,
 } from "../../app/types/wikiTypes";
 
 type CustomCardProps = {
@@ -103,11 +105,11 @@ const CustomCard: React.FC<CustomCardProps> = ({
   const multiTagBlock = () => {
     return (
       <div className="col d-flex">
-        {multilist.map((cat) => (
+        {multilist.map((cat: MultilistProps) => (
           <div className="row">
             <b className="text-s">{cat.title}:</b>
             <div className="d-flex flex-wrap">
-              {cat.list.map((listItem, idx) => {
+              {cat.list.map((listItem: MultilistEntry, idx: number) => {
                 let icon = "";
                 if (listItem.category === "Bug Catching") {
                   icon = "bi-bug-fill";

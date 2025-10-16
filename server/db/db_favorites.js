@@ -26,12 +26,26 @@ const createDB = async () => {
 
           const items = lowdb.data || [];
           const newId =
-            items.length > 0 ? Math.max(...items.map((l) => l.id || 0)) + 1 : 1;
+            items.length > 0
+              ? Math.max(
+                  ...items.map((l) =>
+                    l.favorite_id != null ? l.favorite_id : 0
+                  )
+                ) + 1
+              : 1;
+          const userId =
+            newFavorite.user_id != null
+              ? newFavorite.user_id
+              : newFavorite.profileId;
+          const itemId =
+            newFavorite.item_id != null
+              ? newFavorite.item_id
+              : newFavorite.itemId;
           items.push({
             favorite_id: newId,
-            user_id: newFavorite.user_id,
+            user_id: userId,
             category: newFavorite.category,
-            item_id: newFavorite.item_id,
+            item_id: itemId,
           });
           await lowdb.write();
         },
@@ -63,11 +77,15 @@ const createDB = async () => {
         addFavorite: async (newFavorite) => {
           const sql =
             "INSERT INTO user_favorites (user_id,category,item_id) VALUES (?, ?, ?)";
-          const values = [
-            newFavorite.user_id,
-            newFavorite.category,
-            newFavorite.item_id,
-          ];
+          const userId =
+            newFavorite.user_id != null
+              ? newFavorite.user_id
+              : newFavorite.profileId;
+          const itemId =
+            newFavorite.item_id != null
+              ? newFavorite.item_id
+              : newFavorite.itemId;
+          const values = [userId, newFavorite.category, itemId];
           await pool.execute(sql, values);
         },
         removeFavorite: async (favorite_id, user_id) => {

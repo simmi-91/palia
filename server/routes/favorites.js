@@ -3,10 +3,8 @@ import { createDB } from "../db/db_favorites.js";
 
 const router = Router();
 
-router.get("/", async (req, res) => {
-  const { user_id: bodyUserId } = req.body || {};
-  const { user_id: queryUserId } = req.query || {};
-  const user_id = bodyUserId ?? queryUserId;
+router.get("/:profileId", async (req, res) => {
+  const { profileId } = req.params;
   let db;
   try {
     db = await createDB();
@@ -15,12 +13,13 @@ router.get("/", async (req, res) => {
     return res.status(503).json({ error: "Database service unavailable" });
   }
 
-  const favorites = await db.getAll(user_id);
+  const favorites = await db.getAll(profileId);
   res.json(favorites);
 });
 
-router.post("/", async (req, res) => {
-  const { user_id, category, item_id } = req.body;
+router.post("/:profileId", async (req, res) => {
+  const { profileId } = req.params;
+  const { category, itemId } = req.body;
   let db;
   try {
     db = await createDB();
@@ -29,13 +28,14 @@ router.post("/", async (req, res) => {
     return res.status(503).json({ error: "Database service unavailable" });
   }
 
-  const newFavorite = { user_id, category, item_id };
+  const newFavorite = { profileId, category, itemId };
   const result = await db.addFavorite(newFavorite);
   res.json(result);
 });
 
-router.delete("/", async (req, res) => {
-  const { user_id, favorite_id } = req.body;
+router.delete("/:profileId", async (req, res) => {
+  const { profileId } = req.params;
+  const { favoriteId } = req.body;
   let db;
   try {
     db = await createDB();
@@ -44,7 +44,7 @@ router.delete("/", async (req, res) => {
     return res.status(503).json({ error: "Database service unavailable" });
   }
 
-  const result = await db.removeFavorite(favorite_id, user_id);
+  const result = await db.removeFavorite(favoriteId, profileId);
   res.json(result);
 });
 

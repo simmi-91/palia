@@ -112,18 +112,17 @@ const CustomCard: React.FC<CustomCardProps> = ({
           const result = await removeFavorite(profileId, favoriteId);
           if (result) {
             setFavoriteState(false);
-            console.log(`Removed ${name} as favorite`);
+            //console.log(`Removed ${name} as favorite`);
           }
         } else {
           const result = await addFavorite(profileId, category, id);
           if (result) {
             setFavoriteState(true);
-            console.log(`Added ${name} as favorite`);
+            //console.log(`Added ${name} as favorite`);
           }
         }
       } catch (e) {
-        console.error("Failed to add favorite", e);
-        console.log("Failed to set as favorite");
+        console.error("Failed to edit favorite state", e);
       }
     }
   };
@@ -215,10 +214,10 @@ const CustomCard: React.FC<CustomCardProps> = ({
   const favoriteBlock = () => {
     return (
       <>
-        <div className="input-group mb-1 flex-nowrap">
+        <div className="input-group mb-1 flex-nowrap justify-content-end align-top">
           <button
             type="button"
-            className="btn btn-outline-secondary rounded fw-bold p-1 m-0"
+            className="btn  btn-outline-dark rounded fw-bold p-0 m-0"
             style={{
               minWidth: 40,
               width: 40,
@@ -227,7 +226,14 @@ const CustomCard: React.FC<CustomCardProps> = ({
             onClick={handleFavorite}
           >
             {favoriteState ? (
-              <i className="bi bi-star-fill"></i>
+              <i
+                className="bi bi-star-fill fs-5"
+                style={{
+                  WebkitTextStrokeWidth: "2px",
+                  WebkitTextStrokeColor: "black",
+                  color: "yellow",
+                }}
+              ></i>
             ) : (
               <i className="bi bi-star"></i>
             )}
@@ -319,8 +325,8 @@ const CustomCard: React.FC<CustomCardProps> = ({
         )}
         {hasMultiList && showFavoriteControls && (
           <div className="row">
-            <div className="col-12 col-md-10 ">{multiTagBlock()}</div>
-            <div className="col-12 col-md-2 ">{favoriteBlock()}</div>
+            <div className="col-12 col-md-9 ">{multiTagBlock()}</div>
+            <div className="col-12 col-md-3 ">{favoriteBlock()}</div>
           </div>
         )}
         {hasMultiList && !showInventoryControls && !showFavoriteControls && (

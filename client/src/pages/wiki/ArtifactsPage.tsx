@@ -1,8 +1,12 @@
-import { selectAllArtifacts } from "../../features/slices/ArtifactsSlice";
 import CustomCard from "../../components/display/CustomCard";
 
+import { selectAllArtifacts } from "../../features/slices/ArtifactsSlice";
+
 const ArtifactsPage = () => {
+  const curCategory = "artifacts";
+
   const { data, isLoading, isError, error } = selectAllArtifacts();
+
   if (isLoading) {
     return (
       <div className={" text-center"}>
@@ -30,14 +34,17 @@ const ArtifactsPage = () => {
       </div>
       <div className="row d-flex g-2 my-1">
         {data &&
-          data.map((item) => (
-            <CustomCard
-              category="artifacts"
-              key={item.id}
-              dataObject={item}
-              isTradeable={true}
-            />
-          ))}
+          data.map((item) => {
+            return (
+              <CustomCard
+                category={curCategory}
+                key={item.id}
+                dataObject={item}
+                isTradeable={true}
+                favoriteId={0}
+              />
+            );
+          })}
       </div>
     </div>
   );

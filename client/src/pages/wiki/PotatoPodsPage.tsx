@@ -1,8 +1,12 @@
-import { selectAllPotatoPods } from "../../features/slices/PotatoPodsSlice";
 import CustomCard from "../../components/display/CustomCard";
 
+import { selectAllPotatoPods } from "../../features/slices/PotatoPodsSlice";
+
 const PotatoPodsPage = () => {
+  const curCategory = "potatopods";
+
   const { data, isLoading, isError, error } = selectAllPotatoPods();
+
   if (isLoading) {
     return (
       <div className={" text-center"}>
@@ -33,10 +37,11 @@ const PotatoPodsPage = () => {
         {data &&
           data.map((item) => (
             <CustomCard
-              category="potatopods"
+              category={curCategory}
               key={item.id}
               dataObject={item}
               isTradeable={true}
+              favoriteId={0}
             />
           ))}
       </div>

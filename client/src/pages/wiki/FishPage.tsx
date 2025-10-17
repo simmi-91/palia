@@ -1,9 +1,22 @@
-import { selectAllFish } from "../../features/slices/FishSlice";
+import { useAuth } from "../../context/AuthContext";
 import CustomCard from "../../components/display/CustomCard";
 
+import { selectAllFish } from "../../features/slices/FishSlice";
+import { selectFavoritesByCategory } from "../../features/slices/FavoritesSlice";
+
 const FishPage = () => {
+  const curCategory = "fish";
+
+  const { profile } = useAuth();
+  const profileId = profile ? profile.id : "";
+
   const { data, isLoading, isError, error } = selectAllFish();
-  if (isLoading) {
+  const { data: favoritesData, isLoading: favLoad } = selectFavoritesByCategory(
+    profileId,
+    curCategory
+  );
+
+  if (isLoading || favLoad) {
     return (
       <div className={" text-center"}>
         <div className="spinner-border text-dark" role="status">
@@ -31,14 +44,19 @@ const FishPage = () => {
 
       <div className="row d-flex g-2 my-2">
         {data &&
-          data.map((item) => (
-            <CustomCard
-              category="fish"
-              key={item.id}
-              dataObject={item}
-              isTradeable={false}
-            />
-          ))}
+          data.map((item) => {
+            const favId =
+              favoritesData?.find((f) => f.itemId === item.id)?.favoriteId ?? 0;
+            return (
+              <CustomCard
+                category={curCategory}
+                key={item.id}
+                dataObject={item}
+                isTradeable={false}
+                favoriteId={favId}
+              />
+            );
+          })}
       </div>
     </div>
   );

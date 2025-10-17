@@ -1,10 +1,16 @@
 import { useAuth } from "../../context/AuthContext";
+import { useState } from "react";
 
 import Tag from "./Tag";
 import RarityTag from "./RarityTag";
 import missingImg from "../../assets/images/missing.png";
 import { icoWorm, icoGlowWorm } from "../../app/icons/common";
 import { getMultiListProps } from "../../utils/multilistProperties";
+
+import {
+  addFavorite,
+  removeFavorite,
+} from "../../features/slices/FavoritesSlice";
 
 import type {
   PlushiesEntry,
@@ -20,25 +26,31 @@ type CustomCardProps = {
   dataObject: MainItemEntry;
   category: string; // Passed from parent (e.g., 'artifacts', 'plushies')
   isTradeable: boolean;
+  favoriteId: number;
 };
 
 const CustomCard: React.FC<CustomCardProps> = ({
   dataObject,
   category,
   isTradeable,
+  favoriteId,
 }) => {
   const id = dataObject.id;
   const name = dataObject.name;
+  const [favoriteState, setFavoriteState] = useState(
+    favoriteId > 0 ? true : false
+  );
 
   const { profile, inventory, updateInventoryAmount } = useAuth();
+  const profileId = profile ? profile.id : "";
 
   const currentItem = inventory?.find(
     (item) => item.itemId === dataObject.id && item.category === category
   );
   const currentAmount = currentItem ? currentItem.amount : 0;
 
-  const showInventoryControls = isTradeable && profile;
-  const showFavoriteControls = !isTradeable && profile;
+  const showInventoryControls = isTradeable && profileId != "";
+  const showFavoriteControls = !isTradeable && profileId != "";
 
   let imgurl = missingImg;
   if ("image" in dataObject && dataObject.image && dataObject.image != "") {
@@ -93,20 +105,34 @@ const CustomCard: React.FC<CustomCardProps> = ({
     }
   };
 
-  const handleFavorite = () => {
-    const item = {
-      category: category,
-      itemId: id,
-      favorite: 0,
-    };
-    console.log("handleFavorite", item);
+  const handleFavorite = async () => {
+    if (profileId != "") {
+      try {
+        if (favoriteState) {
+          const result = await removeFavorite(profileId, favoriteId);
+          if (result) {
+            setFavoriteState(false);
+            console.log(`Removed ${name} as favorite`);
+          }
+        } else {
+          const result = await addFavorite(profileId, category, id);
+          if (result) {
+            setFavoriteState(true);
+            console.log(`Added ${name} as favorite`);
+          }
+        }
+      } catch (e) {
+        console.error("Failed to add favorite", e);
+        console.log("Failed to set as favorite");
+      }
+    }
   };
 
   const multiTagBlock = () => {
     return (
       <div className="col d-flex">
         {multilist.map((cat: MultilistProps) => (
-          <div className="row">
+          <div key={cat.title.replace(/\s/g, "").toLowerCase()} className="row">
             <b className="text-s">{cat.title}:</b>
             <div className="d-flex flex-wrap">
               {cat.list.map((listItem: MultilistEntry, idx: number) => {
@@ -192,7 +218,7 @@ const CustomCard: React.FC<CustomCardProps> = ({
         <div className="input-group mb-1 flex-nowrap">
           <button
             type="button"
-            className="btn btn-outline-secondary rounded fw-bold"
+            className="btn btn-outline-secondary rounded fw-bold p-1 m-0"
             style={{
               minWidth: 40,
               width: 40,
@@ -200,7 +226,11 @@ const CustomCard: React.FC<CustomCardProps> = ({
             }}
             onClick={handleFavorite}
           >
-            <i className="bi bi-star"></i>
+            {favoriteState ? (
+              <i className="bi bi-star-fill"></i>
+            ) : (
+              <i className="bi bi-star"></i>
+            )}
           </button>
         </div>
       </>
@@ -238,6 +268,7 @@ const CustomCard: React.FC<CustomCardProps> = ({
                 <RarityTag number={rarity} />
               </div>
             )}
+
             {bait && (
               <div>
                 {Array.isArray(bait)
@@ -245,6 +276,7 @@ const CustomCard: React.FC<CustomCardProps> = ({
                       if (item.title === "Worm") {
                         return (
                           <span
+                            key={"worm"}
                             title={item.title}
                             className=" rounded-circle opacity-75 px-1 py-1 text-s bg-dark"
                           >
@@ -254,6 +286,7 @@ const CustomCard: React.FC<CustomCardProps> = ({
                       } else if (item.title === "Glow Worm") {
                         return (
                           <span
+                            key={"glowworm"}
                             title={item.title}
                             className=" rounded-circle opacity-75 px-1 py-1 text-s bg-dark"
                           >
@@ -269,6 +302,9 @@ const CustomCard: React.FC<CustomCardProps> = ({
             {!hasMultiList && showInventoryControls && (
               <div className="">{inventoryBlock()}</div>
             )}
+            {!hasMultiList && showFavoriteControls && (
+              <div className="">{favoriteBlock()}</div>
+            )}
           </div>
           <div className={hasMultiList ? "col-3" : "col-4 col-md-5"}>
             <img src={imgurl} style={{ maxWidth: "100%" }} />
@@ -281,14 +317,16 @@ const CustomCard: React.FC<CustomCardProps> = ({
             <div className="col-12 col-md-6 ">{inventoryBlock()}</div>
           </div>
         )}
-        {hasMultiList && !showInventoryControls && (
+        {hasMultiList && showFavoriteControls && (
+          <div className="row">
+            <div className="col-12 col-md-10 ">{multiTagBlock()}</div>
+            <div className="col-12 col-md-2 ">{favoriteBlock()}</div>
+          </div>
+        )}
+        {hasMultiList && !showInventoryControls && !showFavoriteControls && (
           <div className="row">
             <div className="col d-flex flex-wrap">{multiTagBlock()}</div>
           </div>
-        )}
-
-        {showFavoriteControls && (
-          <div className=" visually-hidden">{favoriteBlock()}</div>
         )}
       </div>
     </div>

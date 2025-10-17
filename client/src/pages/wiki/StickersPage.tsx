@@ -1,8 +1,12 @@
-import { selectAllStickers } from "../../features/slices/StickerSlice";
 import CustomCard from "../../components/display/CustomCard";
 
+import { selectAllStickers } from "../../features/slices/StickerSlice";
+
 const StickersPage = () => {
+  const curCategory = "stickers";
+
   const { data, isLoading, isError, error } = selectAllStickers();
+
   if (isLoading) {
     return (
       <div className={" text-center"}>
@@ -35,10 +39,11 @@ const StickersPage = () => {
         {data &&
           data.map((item) => (
             <CustomCard
-              category="stickers"
+              category={curCategory}
               key={item.id}
               dataObject={item}
               isTradeable={true}
+              favoriteId={0}
             />
           ))}
       </div>

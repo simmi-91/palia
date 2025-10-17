@@ -1,8 +1,12 @@
-import { selectAllPlushies } from "../../features/slices/PlushiesSlice";
 import CustomCard from "../../components/display/CustomCard";
 
+import { selectAllPlushies } from "../../features/slices/PlushiesSlice";
+
 const PlushiesPage = () => {
+  const curCategory = "plushies";
+
   const { data, isLoading, isError, error } = selectAllPlushies();
+
   if (isLoading) {
     return (
       <div className={" text-center"}>
@@ -33,10 +37,11 @@ const PlushiesPage = () => {
         {data &&
           data.map((item) => (
             <CustomCard
-              category="plushies"
+              category={curCategory}
               key={item.id}
               dataObject={item}
               isTradeable={true}
+              favoriteId={0}
             />
           ))}
       </div>

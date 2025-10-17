@@ -15,11 +15,11 @@ const createDB = async () => {
 
       await lowdb.read();
       db = {
-        getAll: async (user_id) => {
+        getAll: async (userId) => {
           await lowdb.read();
           const items = lowdb.data || [];
-          if (!user_id) return items;
-          return items.filter((f) => String(f.user_id) == String(user_id));
+          if (!userId) return items;
+          return items.filter((f) => String(f.userId) == String(userId));
         },
         addFavorite: async (newFavorite) => {
           await lowdb.read();
@@ -28,34 +28,34 @@ const createDB = async () => {
           const newId =
             items.length > 0
               ? Math.max(
-                  ...items.map((l) =>
-                    l.favorite_id != null ? l.favorite_id : 0
-                  )
+                  ...items.map((l) => (l.favoriteId != null ? l.favoriteId : 0))
                 ) + 1
               : 1;
           const userId =
-            newFavorite.user_id != null
-              ? newFavorite.user_id
+            newFavorite.userId != null
+              ? newFavorite.userId
               : newFavorite.profileId;
           const itemId =
             newFavorite.item_id != null
               ? newFavorite.item_id
               : newFavorite.itemId;
-          items.push({
-            favorite_id: newId,
-            user_id: userId,
+          const created = {
+            favoriteId: newId,
+            userId: userId,
             category: newFavorite.category,
-            item_id: itemId,
-          });
+            itemId: itemId,
+          };
+          items.push(created);
           await lowdb.write();
+          return created;
         },
-        removeFavorite: async (favorite_id, user_id) => {
+        removeFavorite: async (favoriteId, userId) => {
           await lowdb.read();
           const items = lowdb.data || [];
           const index = items.findIndex(
             (f) =>
-              String(f.favorite_id) == String(favorite_id) &&
-              String(f.user_id) == String(user_id)
+              String(f.favoriteId) == String(favoriteId) &&
+              String(f.userId) == String(userId)
           );
           if (index !== -1) {
             items.splice(index, 1);
@@ -67,12 +67,19 @@ const createDB = async () => {
     } else {
       const pool = initializePool();
       db = {
-        getAll: async (user_id) => {
+        getAll: async (userId) => {
           const [rows] = await pool.query(
             "SELECT * FROM user_favorites WHERE user_id=?",
-            [user_id]
+            [userId]
           );
-          return rows;
+
+          const frontendFormat = rows.map((item) => ({
+            favoriteId: item.favorite_id,
+            userId: item.user_id,
+            itemId: item.item_id,
+            category: item.category,
+          }));
+          return frontendFormat;
         },
         addFavorite: async (newFavorite) => {
           const sql =
@@ -86,12 +93,18 @@ const createDB = async () => {
               ? newFavorite.item_id
               : newFavorite.itemId;
           const values = [userId, newFavorite.category, itemId];
-          await pool.execute(sql, values);
+          const [result] = await pool.execute(sql, values);
+          return {
+            favoriteId: result?.insertId,
+            userId: userId,
+            category: newFavorite.category,
+            itemId: itemId,
+          };
         },
-        removeFavorite: async (favorite_id, user_id) => {
+        removeFavorite: async (favoriteId, userId) => {
           const sql =
             "DELETE FROM user_favorites WHERE favorite_id=? AND user_id=? ";
-          const values = [favorite_id, user_id];
+          const values = [favoriteId, userId];
           await pool.execute(sql, values);
         },
       };

@@ -3,12 +3,6 @@ import { createDB } from "../db/db_inventory.js";
 
 const router = Router();
 
-const collectionMap = {
-  artifacts: "user_artifacts",
-  plushies: "user_plushies",
-  bugs: "user_bugs",
-};
-
 router.get("/:profileId", async (req, res) => {
   const { profileId } = req.params;
 

@@ -3,7 +3,7 @@ import { textIcon } from "../app/icons/common";
 
 const Footer = () => {
   const footerClasses =
-    "container-fluid z-3 position-fixed bottom-0 start-0 bg-dark border-top border-dark text-center ";
+    "container-fluid z-2 position-fixed bottom-0 start-0 bg-dark border-top border-dark text-center ";
   const { data: linksArr, isLoading, isError, error } = selectAllLinks();
 
   if (isLoading) {

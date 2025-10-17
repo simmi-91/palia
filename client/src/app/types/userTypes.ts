@@ -5,7 +5,7 @@ export type GoogleProfile = {
   email: string;
   given_name: string;
   picture: string;
-  isAdmin?: boolean; // Add the admin flag here
+  isAdmin?: boolean;
 };
 
 export type UserInventoryItem = {
@@ -13,6 +13,14 @@ export type UserInventoryItem = {
   itemId: number;
   amount: number;
 };
+
+export type FavoriteItem = {
+  favoriteId: number;
+  userId: string;
+  category: string;
+  itemId: number;
+};
+
 export type RawTradeItem = {
   category: string;
   itemId: number;

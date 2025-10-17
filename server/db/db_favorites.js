@@ -105,7 +105,14 @@ const createDB = async () => {
           const sql =
             "DELETE FROM user_favorites WHERE favorite_id=? AND user_id=? ";
           const values = [favoriteId, userId];
-          await pool.execute(sql, values);
+          const [result] = await pool.execute(sql, values);
+          const affected =
+            (result &&
+              (result.affectedRows != null
+                ? result.affectedRows
+                : result.changes)) ||
+            0;
+          return { removed: affected > 0 };
         },
       };
     }

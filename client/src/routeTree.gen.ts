@@ -14,16 +14,19 @@ import { Route as WikiRouteImport } from './routes/wiki'
 import { Route as TradeRouteImport } from './routes/trade'
 import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as PaliatrackerRouteImport } from './routes/paliatracker'
-import { Route as LoginRouteImport } from './routes/login'
+import { Route as HuntRouteImport } from './routes/hunt'
 import { Route as GardenRouteImport } from './routes/garden'
+import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as WikiIndexRouteImport } from './routes/wiki/index'
+import { Route as AdminIndexRouteImport } from './routes/admin/index'
 import { Route as WikiStickersRouteImport } from './routes/wiki/stickers'
 import { Route as WikiPotatopodsRouteImport } from './routes/wiki/potatopods'
 import { Route as WikiPlushiesRouteImport } from './routes/wiki/plushies'
 import { Route as WikiFishRouteImport } from './routes/wiki/fish'
 import { Route as WikiBugsRouteImport } from './routes/wiki/bugs'
 import { Route as WikiArtifactsRouteImport } from './routes/wiki/artifacts'
+import { Route as AdminEditItemsRouteImport } from './routes/admin/edit-items'
 
 const WormfarmRoute = WormfarmRouteImport.update({
   id: '/wormfarm',
@@ -50,14 +53,19 @@ const PaliatrackerRoute = PaliatrackerRouteImport.update({
   path: '/paliatracker',
   getParentRoute: () => rootRouteImport,
 } as any)
-const LoginRoute = LoginRouteImport.update({
-  id: '/login',
-  path: '/login',
+const HuntRoute = HuntRouteImport.update({
+  id: '/hunt',
+  path: '/hunt',
   getParentRoute: () => rootRouteImport,
 } as any)
 const GardenRoute = GardenRouteImport.update({
   id: '/garden',
   path: '/garden',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -69,6 +77,11 @@ const WikiIndexRoute = WikiIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => WikiRoute,
+} as any)
+const AdminIndexRoute = AdminIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AdminRoute,
 } as any)
 const WikiStickersRoute = WikiStickersRouteImport.update({
   id: '/stickers',
@@ -100,115 +113,137 @@ const WikiArtifactsRoute = WikiArtifactsRouteImport.update({
   path: '/artifacts',
   getParentRoute: () => WikiRoute,
 } as any)
+const AdminEditItemsRoute = AdminEditItemsRouteImport.update({
+  id: '/edit-items',
+  path: '/edit-items',
+  getParentRoute: () => AdminRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRouteWithChildren
   '/garden': typeof GardenRoute
-  '/login': typeof LoginRoute
+  '/hunt': typeof HuntRoute
   '/paliatracker': typeof PaliatrackerRoute
   '/profile': typeof ProfileRoute
   '/trade': typeof TradeRoute
   '/wiki': typeof WikiRouteWithChildren
   '/wormfarm': typeof WormfarmRoute
+  '/admin/edit-items': typeof AdminEditItemsRoute
   '/wiki/artifacts': typeof WikiArtifactsRoute
   '/wiki/bugs': typeof WikiBugsRoute
   '/wiki/fish': typeof WikiFishRoute
   '/wiki/plushies': typeof WikiPlushiesRoute
   '/wiki/potatopods': typeof WikiPotatopodsRoute
   '/wiki/stickers': typeof WikiStickersRoute
+  '/admin/': typeof AdminIndexRoute
   '/wiki/': typeof WikiIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/garden': typeof GardenRoute
-  '/login': typeof LoginRoute
+  '/hunt': typeof HuntRoute
   '/paliatracker': typeof PaliatrackerRoute
   '/profile': typeof ProfileRoute
   '/trade': typeof TradeRoute
   '/wormfarm': typeof WormfarmRoute
+  '/admin/edit-items': typeof AdminEditItemsRoute
   '/wiki/artifacts': typeof WikiArtifactsRoute
   '/wiki/bugs': typeof WikiBugsRoute
   '/wiki/fish': typeof WikiFishRoute
   '/wiki/plushies': typeof WikiPlushiesRoute
   '/wiki/potatopods': typeof WikiPotatopodsRoute
   '/wiki/stickers': typeof WikiStickersRoute
+  '/admin': typeof AdminIndexRoute
   '/wiki': typeof WikiIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/admin': typeof AdminRouteWithChildren
   '/garden': typeof GardenRoute
-  '/login': typeof LoginRoute
+  '/hunt': typeof HuntRoute
   '/paliatracker': typeof PaliatrackerRoute
   '/profile': typeof ProfileRoute
   '/trade': typeof TradeRoute
   '/wiki': typeof WikiRouteWithChildren
   '/wormfarm': typeof WormfarmRoute
+  '/admin/edit-items': typeof AdminEditItemsRoute
   '/wiki/artifacts': typeof WikiArtifactsRoute
   '/wiki/bugs': typeof WikiBugsRoute
   '/wiki/fish': typeof WikiFishRoute
   '/wiki/plushies': typeof WikiPlushiesRoute
   '/wiki/potatopods': typeof WikiPotatopodsRoute
   '/wiki/stickers': typeof WikiStickersRoute
+  '/admin/': typeof AdminIndexRoute
   '/wiki/': typeof WikiIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/admin'
     | '/garden'
-    | '/login'
+    | '/hunt'
     | '/paliatracker'
     | '/profile'
     | '/trade'
     | '/wiki'
     | '/wormfarm'
+    | '/admin/edit-items'
     | '/wiki/artifacts'
     | '/wiki/bugs'
     | '/wiki/fish'
     | '/wiki/plushies'
     | '/wiki/potatopods'
     | '/wiki/stickers'
+    | '/admin/'
     | '/wiki/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/garden'
-    | '/login'
+    | '/hunt'
     | '/paliatracker'
     | '/profile'
     | '/trade'
     | '/wormfarm'
+    | '/admin/edit-items'
     | '/wiki/artifacts'
     | '/wiki/bugs'
     | '/wiki/fish'
     | '/wiki/plushies'
     | '/wiki/potatopods'
     | '/wiki/stickers'
+    | '/admin'
     | '/wiki'
   id:
     | '__root__'
     | '/'
+    | '/admin'
     | '/garden'
-    | '/login'
+    | '/hunt'
     | '/paliatracker'
     | '/profile'
     | '/trade'
     | '/wiki'
     | '/wormfarm'
+    | '/admin/edit-items'
     | '/wiki/artifacts'
     | '/wiki/bugs'
     | '/wiki/fish'
     | '/wiki/plushies'
     | '/wiki/potatopods'
     | '/wiki/stickers'
+    | '/admin/'
     | '/wiki/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AdminRoute: typeof AdminRouteWithChildren
   GardenRoute: typeof GardenRoute
-  LoginRoute: typeof LoginRoute
+  HuntRoute: typeof HuntRoute
   PaliatrackerRoute: typeof PaliatrackerRoute
   ProfileRoute: typeof ProfileRoute
   TradeRoute: typeof TradeRoute
@@ -253,11 +288,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PaliatrackerRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/login': {
-      id: '/login'
-      path: '/login'
-      fullPath: '/login'
-      preLoaderRoute: typeof LoginRouteImport
+    '/hunt': {
+      id: '/hunt'
+      path: '/hunt'
+      fullPath: '/hunt'
+      preLoaderRoute: typeof HuntRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/garden': {
@@ -265,6 +300,13 @@ declare module '@tanstack/react-router' {
       path: '/garden'
       fullPath: '/garden'
       preLoaderRoute: typeof GardenRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -280,6 +322,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/wiki/'
       preLoaderRoute: typeof WikiIndexRouteImport
       parentRoute: typeof WikiRoute
+    }
+    '/admin/': {
+      id: '/admin/'
+      path: '/'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AdminIndexRouteImport
+      parentRoute: typeof AdminRoute
     }
     '/wiki/stickers': {
       id: '/wiki/stickers'
@@ -323,8 +372,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof WikiArtifactsRouteImport
       parentRoute: typeof WikiRoute
     }
+    '/admin/edit-items': {
+      id: '/admin/edit-items'
+      path: '/edit-items'
+      fullPath: '/admin/edit-items'
+      preLoaderRoute: typeof AdminEditItemsRouteImport
+      parentRoute: typeof AdminRoute
+    }
   }
 }
+
+interface AdminRouteChildren {
+  AdminEditItemsRoute: typeof AdminEditItemsRoute
+  AdminIndexRoute: typeof AdminIndexRoute
+}
+
+const AdminRouteChildren: AdminRouteChildren = {
+  AdminEditItemsRoute: AdminEditItemsRoute,
+  AdminIndexRoute: AdminIndexRoute,
+}
+
+const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 
 interface WikiRouteChildren {
   WikiArtifactsRoute: typeof WikiArtifactsRoute
@@ -350,8 +418,9 @@ const WikiRouteWithChildren = WikiRoute._addFileChildren(WikiRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AdminRoute: AdminRouteWithChildren,
   GardenRoute: GardenRoute,
-  LoginRoute: LoginRoute,
+  HuntRoute: HuntRoute,
   PaliatrackerRoute: PaliatrackerRoute,
   ProfileRoute: ProfileRoute,
   TradeRoute: TradeRoute,

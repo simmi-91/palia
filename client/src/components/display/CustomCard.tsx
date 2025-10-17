@@ -8,9 +8,9 @@ import { icoWorm, icoGlowWorm } from "../../app/icons/common";
 import { getMultiListProps } from "../../utils/multilistProperties";
 
 import {
-  addFavorite,
-  removeFavorite,
-} from "../../features/slices/FavoritesSlice";
+  useAddFavorite,
+  useRemoveFavorite,
+} from "../../hooks/useFavoriteMutations";
 
 import type {
   PlushiesEntry,
@@ -44,6 +44,10 @@ const CustomCard: React.FC<CustomCardProps> = ({
 
   const { profile, inventory, updateInventoryAmount } = useAuth();
   const profileId = profile ? profile.id : "";
+  const { add: addFavoriteMutate, isPending: addingFav } =
+    useAddFavorite(profileId);
+  const { remove: removeFavoriteMutate, isPending: removingFav } =
+    useRemoveFavorite(profileId);
 
   const currentItem = inventory?.find(
     (item) => item.itemId === dataObject.id && item.category === category
@@ -107,25 +111,26 @@ const CustomCard: React.FC<CustomCardProps> = ({
     }
   };
 
-  const handleFavorite = async () => {
-    if (profileId != "") {
-      try {
-        if (favoriteState) {
-          const result = await removeFavorite(profileId, favoriteId);
-          if (result) {
-            setFavoriteState(false);
-            //console.log(`Removed ${name} as favorite`);
+  const handleFavorite = () => {
+    if (!profileId) return;
+    try {
+      if (favoriteState) {
+        removeFavoriteMutate(
+          { favoriteId },
+          {
+            onSuccess: () => setFavoriteState(false),
           }
-        } else {
-          const result = await addFavorite(profileId, category, id);
-          if (result) {
-            setFavoriteState(true);
-            //console.log(`Added ${name} as favorite`);
+        );
+      } else {
+        addFavoriteMutate(
+          { category, itemId: id },
+          {
+            onSuccess: () => setFavoriteState(true),
           }
-        }
-      } catch (e) {
-        console.error("Failed to edit favorite state", e);
+        );
       }
+    } catch (e) {
+      console.error("Failed to edit favorite state", e);
     }
   };
 
@@ -226,6 +231,7 @@ const CustomCard: React.FC<CustomCardProps> = ({
               height: 40,
             }}
             onClick={handleFavorite}
+            disabled={addingFav || removingFav}
           >
             {favoriteState ? (
               <i

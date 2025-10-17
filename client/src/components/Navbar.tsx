@@ -1,42 +1,38 @@
-import { Link } from "@tanstack/react-router";
 import { useState } from "react";
-import Clock from "./Clock";
-import UserIcon from "./UserIcon";
-import { useSubmenu, type SubmenuItem } from "../context/SubmenuContext";
 import { useAuth } from "../context/AuthContext";
+import { useSubmenu, type SubmenuItem } from "../context/SubmenuContext";
+import { Link } from "@tanstack/react-router";
+
+import UserIcon from "./UserIcon";
+import Clock from "./Clock";
+import { clockColorMap } from "../utils/clockPhases";
 
 const Navbar = () => {
   const [bgColor, setBgColor] = useState("");
-  const colorMap: Record<string, { bg: string; text?: string }> = {
-    Dawn: { bg: "#d5b58f", text: "black" },
-    Day: { bg: "#83b4e7", text: "black" },
-    Dusk: { bg: "#dda4aa", text: "black" },
-    Night: { bg: "#535c84", text: "white" },
-  };
 
   const { submenuItems } = useSubmenu();
   const { profile } = useAuth();
 
   const menuBtnClasses =
-    "px-2 m-1 text-nowrap bg-light text-black text-decoration-none rounded-pill border border-dark align-content-center";
+    "px-1 mb-1 mx-1 text-nowrap bg-light text-black text-decoration-none rounded-pill border border-dark align-content-center";
 
   return (
     <div
-      className=" sticky-top"
+      className="sticky-top"
       style={{
-        backgroundColor: colorMap[bgColor]?.bg,
+        backgroundColor: clockColorMap[bgColor]?.bg,
       }}
     >
       <nav className="navbar navbar-expand-md p-0 p-md-1">
         <div className="container-fluid">
           <div
-            className="navbar-brand d-inline-flex flex-grow-1 "
+            className="navbar-brand d-inline-flex flex-grow-1 p-0"
             style={{
-              color: colorMap[bgColor]?.text,
+              color: clockColorMap[bgColor]?.text,
             }}
           >
             <Clock setBgColor={setBgColor} />
-            <h2 className="px-3 ">
+            <h2 className="px-3 align-content-center">
               <Link
                 to="/"
                 className="text-decoration-none"
@@ -98,13 +94,23 @@ const Navbar = () => {
               </Link>
 
               {profile && (
-                <Link
-                  to="/trade"
-                  className={menuBtnClasses}
-                  activeProps={{ className: "text-white bg-dark fw-bold" }}
-                >
-                  Trade
-                </Link>
+                <>
+                  <Link
+                    to="/hunt"
+                    className={menuBtnClasses}
+                    activeProps={{ className: "text-white bg-dark fw-bold" }}
+                  >
+                    On the hunt
+                  </Link>
+
+                  <Link
+                    to="/trade"
+                    className={menuBtnClasses}
+                    activeProps={{ className: "text-white bg-dark fw-bold" }}
+                  >
+                    Trade
+                  </Link>
+                </>
               )}
             </div>
 
@@ -127,12 +133,12 @@ const Navbar = () => {
                   className:
                     "px-1 text-nowrap text-decoration-none rounded-pill border border-1 text-s fw-bold",
                   style: {
-                    color: colorMap[bgColor]?.text || "inherit",
+                    color: clockColorMap[bgColor]?.text || "inherit",
                     backgroundColor: "rgba(255, 255, 255, 0.6)",
                   },
                 }}
                 style={{
-                  color: colorMap[bgColor]?.text || "inherit",
+                  color: clockColorMap[bgColor]?.text || "inherit",
                   backgroundColor: "rgba(255, 255, 255, 0.3)",
                 }}
               >

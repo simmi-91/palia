@@ -1,16 +1,5 @@
 import { useState, useEffect } from "react";
-
-const getPhase = (hours: number) => {
-  if (hours >= 3 && hours < 6) {
-    return { text: "Dawn", icon: "☀️", bIcon: "bi-sunrise" };
-  } else if (hours >= 6 && hours < 18) {
-    return { text: "Day", icon: "🌞", bIcon: "bi-brightness-high-fill" };
-  } else if (hours >= 18 && hours < 21) {
-    return { text: "Dusk", icon: "🌇", bIcon: "bi-sunset" };
-  } else {
-    return { text: "Night", icon: "🌙", bIcon: "bi-moon-stars-fill" };
-  }
-};
+import { getCurrentPhase } from "../utils/clockPhases";
 
 const Clock = ({ setBgColor }: { setBgColor: (text: string) => void }) => {
   const [virtualTime, setVirtualTime] = useState(0);
@@ -36,7 +25,7 @@ const Clock = ({ setBgColor }: { setBgColor: (text: string) => void }) => {
     return () => clearInterval(interval);
   }, []);
 
-  const phase = getPhase(virtualTime);
+  const phase = getCurrentPhase(virtualTime);
   if (phase.text !== curPhase) {
     setcurPhase(phase.text);
   }

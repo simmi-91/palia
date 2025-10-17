@@ -1,5 +1,10 @@
 import { useAuth } from "../../context/AuthContext";
 import CustomCard from "../../components/display/CustomCard";
+import {
+  LoadingState,
+  ErrorState,
+  EmptyCategoryState,
+} from "../../components/CommonStates";
 
 import { selectAllBugs } from "../../features/slices/BugsSlice";
 import { selectFavoritesByCategory } from "../../features/slices/FavoritesSlice";
@@ -17,21 +22,13 @@ const BugsPage = () => {
   );
 
   if (isLoading || favLoad) {
-    return (
-      <div className={" text-center"}>
-        <div className="spinner-border text-dark" role="status">
-          <span className="visually-hidden">Loading...</span>
-        </div>
-      </div>
-    );
+    return <LoadingState color="dark" />;
   }
-
   if (isError) {
-    return (
-      <div className={" text-center"}>
-        <div className="text-danger">Error loading data: {error.message}</div>
-      </div>
-    );
+    return <ErrorState error={error} />;
+  }
+  if (!data) {
+    return <EmptyCategoryState />;
   }
 
   return (

@@ -20,6 +20,7 @@ import type {
   MainItemEntry,
   MultilistEntry,
   MultilistProps,
+  PotatoPodEntry,
 } from "../../app/types/wikiTypes";
 
 type CustomCardProps = {
@@ -61,8 +62,9 @@ const CustomCard: React.FC<CustomCardProps> = ({
     "rarity" in dataObject
       ? (dataObject as CatchableEntry | PlushiesEntry | StickerEntry).rarity
       : 0;
-
   const bait = "bait" in dataObject ? (dataObject as FishEntry).bait : "";
+  const family =
+    "family" in dataObject ? (dataObject as PotatoPodEntry).family : "";
 
   const multilist = getMultiListProps(dataObject, ["bait"]);
   let hasMultiList = false;
@@ -272,6 +274,12 @@ const CustomCard: React.FC<CustomCardProps> = ({
             {rarity > 0 && (
               <div>
                 <RarityTag number={rarity} />
+              </div>
+            )}
+
+            {family != "" && (
+              <div>
+                <Tag text={family} />
               </div>
             )}
 

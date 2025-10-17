@@ -1,3 +1,8 @@
+import {
+  LoadingState,
+  ErrorState,
+  EmptyCategoryState,
+} from "../../components/CommonStates";
 import CustomCard from "../../components/display/CustomCard";
 
 import { selectAllStickers } from "../../features/slices/StickerSlice";
@@ -8,21 +13,13 @@ const StickersPage = () => {
   const { data, isLoading, isError, error } = selectAllStickers();
 
   if (isLoading) {
-    return (
-      <div className={" text-center"}>
-        <div className="spinner-border text-dark" role="status">
-          <span className="visually-hidden">Loading...</span>
-        </div>
-      </div>
-    );
+    return <LoadingState color="dark" />;
   }
-
   if (isError) {
-    return (
-      <div className={" text-center"}>
-        <div className="text-danger">Error loading data: {error.message}</div>
-      </div>
-    );
+    return <ErrorState error={error} />;
+  }
+  if (!data) {
+    return <EmptyCategoryState />;
   }
 
   return (

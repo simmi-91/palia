@@ -14,8 +14,8 @@ import { Route as WikiRouteImport } from './routes/wiki'
 import { Route as TradeRouteImport } from './routes/trade'
 import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as PaliatrackerRouteImport } from './routes/paliatracker'
-import { Route as HuntRouteImport } from './routes/hunt'
 import { Route as GardenRouteImport } from './routes/garden'
+import { Route as CatchRouteImport } from './routes/catch'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as WikiIndexRouteImport } from './routes/wiki/index'
@@ -53,14 +53,14 @@ const PaliatrackerRoute = PaliatrackerRouteImport.update({
   path: '/paliatracker',
   getParentRoute: () => rootRouteImport,
 } as any)
-const HuntRoute = HuntRouteImport.update({
-  id: '/hunt',
-  path: '/hunt',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const GardenRoute = GardenRouteImport.update({
   id: '/garden',
   path: '/garden',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CatchRoute = CatchRouteImport.update({
+  id: '/catch',
+  path: '/catch',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminRoute = AdminRouteImport.update({
@@ -122,8 +122,8 @@ const AdminEditItemsRoute = AdminEditItemsRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteWithChildren
+  '/catch': typeof CatchRoute
   '/garden': typeof GardenRoute
-  '/hunt': typeof HuntRoute
   '/paliatracker': typeof PaliatrackerRoute
   '/profile': typeof ProfileRoute
   '/trade': typeof TradeRoute
@@ -141,8 +141,8 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/catch': typeof CatchRoute
   '/garden': typeof GardenRoute
-  '/hunt': typeof HuntRoute
   '/paliatracker': typeof PaliatrackerRoute
   '/profile': typeof ProfileRoute
   '/trade': typeof TradeRoute
@@ -161,8 +161,8 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteWithChildren
+  '/catch': typeof CatchRoute
   '/garden': typeof GardenRoute
-  '/hunt': typeof HuntRoute
   '/paliatracker': typeof PaliatrackerRoute
   '/profile': typeof ProfileRoute
   '/trade': typeof TradeRoute
@@ -183,8 +183,8 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/admin'
+    | '/catch'
     | '/garden'
-    | '/hunt'
     | '/paliatracker'
     | '/profile'
     | '/trade'
@@ -202,8 +202,8 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/catch'
     | '/garden'
-    | '/hunt'
     | '/paliatracker'
     | '/profile'
     | '/trade'
@@ -221,8 +221,8 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/admin'
+    | '/catch'
     | '/garden'
-    | '/hunt'
     | '/paliatracker'
     | '/profile'
     | '/trade'
@@ -242,8 +242,8 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdminRoute: typeof AdminRouteWithChildren
+  CatchRoute: typeof CatchRoute
   GardenRoute: typeof GardenRoute
-  HuntRoute: typeof HuntRoute
   PaliatrackerRoute: typeof PaliatrackerRoute
   ProfileRoute: typeof ProfileRoute
   TradeRoute: typeof TradeRoute
@@ -288,18 +288,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PaliatrackerRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/hunt': {
-      id: '/hunt'
-      path: '/hunt'
-      fullPath: '/hunt'
-      preLoaderRoute: typeof HuntRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/garden': {
       id: '/garden'
       path: '/garden'
       fullPath: '/garden'
       preLoaderRoute: typeof GardenRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/catch': {
+      id: '/catch'
+      path: '/catch'
+      fullPath: '/catch'
+      preLoaderRoute: typeof CatchRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin': {
@@ -419,8 +419,8 @@ const WikiRouteWithChildren = WikiRoute._addFileChildren(WikiRouteChildren)
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRouteWithChildren,
+  CatchRoute: CatchRoute,
   GardenRoute: GardenRoute,
-  HuntRoute: HuntRoute,
   PaliatrackerRoute: PaliatrackerRoute,
   ProfileRoute: ProfileRoute,
   TradeRoute: TradeRoute,

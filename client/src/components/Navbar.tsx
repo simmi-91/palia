@@ -96,11 +96,11 @@ const Navbar = () => {
               {profile && (
                 <>
                   <Link
-                    to="/hunt"
+                    to="/catch"
                     className={menuBtnClasses}
                     activeProps={{ className: "text-white bg-dark fw-bold" }}
                   >
-                    On the hunt
+                    Go Catch
                   </Link>
 
                   <Link

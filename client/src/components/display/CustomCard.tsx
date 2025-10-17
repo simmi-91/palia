@@ -313,6 +313,16 @@ const CustomCard: React.FC<CustomCardProps> = ({
                             {icoGlowWorm}
                           </span>
                         );
+                      } else if (item.title === "none") {
+                        return (
+                          <span
+                            key={"none"}
+                            title={item.title}
+                            className=" rounded-circle opacity-75 px-1 py-1 text-s bg-dark"
+                          >
+                            No Bait
+                          </span>
+                        );
                       }
                     })
                   : null}

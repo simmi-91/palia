@@ -196,7 +196,12 @@ const CatchPage = ({ profile }: { profile: GoogleProfile }) => {
             <div className="container">
               <h5 className="mb-0 text-center">
                 {title === "Now" ? (
-                  <span>Favorites that are catchable now</span>
+                  <>
+                    <span className="me-2">
+                      Favorites that are catchable now
+                    </span>
+                    <PhaseCountdown phaseText={currentPhaseText} />
+                  </>
                 ) : (
                   title
                 )}

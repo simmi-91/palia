@@ -2,13 +2,15 @@ import { Link } from "@tanstack/react-router";
 import { useGoogleLogin } from "@react-oauth/google";
 
 import { useAuth } from "../context/AuthContext";
+import type { ExtendedTokenResponse } from "../app/types/userTypes";
 
 const UserIcon = () => {
   const { profile, setUser } = useAuth();
 
   const login = useGoogleLogin({
-    onSuccess: (codeResponse) => setUser(codeResponse),
+    onSuccess: (codeResponse) => setUser(codeResponse as ExtendedTokenResponse),
     onError: (error: unknown) => console.error("Login Failed:", error),
+    scope: "openid email profile",
   });
 
   return (

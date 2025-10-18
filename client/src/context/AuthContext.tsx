@@ -5,11 +5,19 @@ import {
   useEffect,
   type ReactNode,
 } from "react";
-import { googleLogout, type TokenResponse } from "@react-oauth/google";
+import { googleLogout } from "@react-oauth/google";
 
-import type { AuthContextType, GoogleProfile } from "../app/types/userTypes";
+import type {
+  AuthContextType,
+  GoogleProfile,
+  ExtendedTokenResponse,
+} from "../app/types/userTypes";
 
 import { useInventory } from "../hooks/useInventory";
+
+// --- Configuration ---
+const TOKEN_LIFETIME_DAYS = 10;
+const TOKEN_LIFETIME_MS = TOKEN_LIFETIME_DAYS * 24 * 60 * 60 * 1000;
 
 // --- Context and Hook ---
 
@@ -23,28 +31,124 @@ export const useAuth = (): AuthContextType => {
 };
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const [user, setUserState] = useState<TokenResponse | null>(null);
+  const [user, setUserState] = useState<ExtendedTokenResponse | null>(null);
   const [profile, setProfile] = useState<GoogleProfile | null>(null);
+
+  // --- Token Refresh Function ---
+
+  const refreshAccessToken = async (
+    refreshToken: string
+  ): Promise<ExtendedTokenResponse | null> => {
+    try {
+      const response = await fetch("https://oauth2.googleapis.com/token", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: new URLSearchParams({
+          client_id: import.meta.env.VITE_GOOGLE_CLIENT_ID,
+          refresh_token: refreshToken,
+          grant_type: "refresh_token",
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Token refresh failed: ${response.status}`);
+      }
+
+      const tokenData = await response.json();
+      return {
+        access_token: tokenData.access_token,
+        expires_in: tokenData.expires_in,
+        token_type: tokenData.token_type,
+        scope: tokenData.scope,
+        refresh_token: refreshToken, // Keep the original refresh token
+      } as ExtendedTokenResponse;
+    } catch (error) {
+      console.error("Failed to refresh token:", error);
+      return null;
+    }
+  };
+
+  // --- API Call with Auto-Refresh ---
+
+  const makeAuthenticatedRequest = async (
+    url: string,
+    options: RequestInit = {}
+  ): Promise<Response> => {
+    if (!user?.access_token) {
+      throw new Error("No access token available");
+    }
+
+    // Add authorization header
+    const authHeaders = {
+      ...options.headers,
+      Authorization: `Bearer ${user.access_token}`,
+    };
+
+    let response = await fetch(url, { ...options, headers: authHeaders });
+
+    // If token is invalid, try to refresh and retry once
+    if (response.status === 401 && user.refresh_token) {
+      console.log("Access token invalid, refreshing...");
+      const refreshedToken = await refreshAccessToken(user.refresh_token);
+
+      if (refreshedToken) {
+        setUser(refreshedToken); // Update stored token
+        // Retry the request with new token
+        const newAuthHeaders = {
+          ...options.headers,
+          Authorization: `Bearer ${refreshedToken.access_token}`,
+        };
+        response = await fetch(url, { ...options, headers: newAuthHeaders });
+      } else {
+        // Refresh failed, log out user
+        logOut();
+        throw new Error("Authentication failed");
+      }
+    }
+
+    return response;
+  };
 
   // --- Persistence and Initialization ---
 
   useEffect(() => {
-    const storedUser = localStorage.getItem("googleAuthUser");
-    if (storedUser) {
-      const userWithTimestamp = JSON.parse(storedUser);
-      const { issuedAt, ...userToken } = userWithTimestamp;
-      const expiresInMs = userToken.expires_in * 1000;
-      const expirationTime = issuedAt + expiresInMs;
-      if (Date.now() < expirationTime) {
-        setUserState(userToken);
-      } else {
-        console.log("Token expired. Logging out.");
-        logOut();
+    const initializeAuth = async () => {
+      const storedUser = localStorage.getItem("googleAuthUser");
+      if (storedUser) {
+        const userWithTimestamp = JSON.parse(storedUser);
+        const { issuedAt, ...userToken } = userWithTimestamp;
+
+        const expirationTime = issuedAt + TOKEN_LIFETIME_MS;
+        const now = Date.now();
+
+        if (now < expirationTime) {
+          setUserState(userToken);
+        } else if (userToken.refresh_token) {
+          console.log("Access token expired, attempting refresh...");
+          const refreshedToken = await refreshAccessToken(
+            userToken.refresh_token
+          );
+
+          if (refreshedToken) {
+            console.log("Token refreshed successfully");
+            setUser(refreshedToken);
+          } else {
+            console.log("Token refresh failed. Logging out.");
+            logOut();
+          }
+        } else {
+          console.log(
+            "Token expired and no refresh token available. Logging out."
+          );
+          logOut();
+        }
       }
-    }
+    };
+
+    initializeAuth();
   }, []);
 
-  const setUser = (token: TokenResponse | null) => {
+  const setUser = (token: ExtendedTokenResponse | null) => {
     setUserState(token);
     if (token) {
       localStorage.setItem(
@@ -78,11 +182,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     if (user?.access_token) {
       const checkAndRegisterUser = async () => {
         try {
-          const profileResponse = await fetch(
-            `https://www.googleapis.com/oauth2/v1/userinfo?access_token=${user.access_token}`,
+          const profileResponse = await makeAuthenticatedRequest(
+            `https://www.googleapis.com/oauth2/v1/userinfo`,
             {
               headers: {
-                Authorization: `Bearer ${user.access_token}`,
                 Accept: "application/json",
               },
             }
@@ -182,12 +285,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   }, [profile, loadInventory]);
 
-  //const contextValue: AuthContextType = { user, profile, setUser, logOut };
   const contextValue: AuthContextType = {
     user,
     profile,
     setUser,
     logOut,
+    makeAuthenticatedRequest,
     inventory,
     loadInventory,
     updateInventoryAmount: (item) => updateInventoryAmount(item),

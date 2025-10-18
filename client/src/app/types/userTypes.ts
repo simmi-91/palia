@@ -1,5 +1,9 @@
 import { type TokenResponse } from "@react-oauth/google";
 
+export interface ExtendedTokenResponse extends TokenResponse {
+  refresh_token?: string;
+}
+
 export type GoogleProfile = {
   id: string;
   email: string;
@@ -34,10 +38,14 @@ export interface TradeDisplayItem extends RawTradeItem {
 }
 
 export type AuthContextType = {
-  user: TokenResponse | null;
+  user: ExtendedTokenResponse | null;
   profile: GoogleProfile | null;
-  setUser: (token: TokenResponse | null) => void;
+  setUser: (token: ExtendedTokenResponse | null) => void;
   logOut: () => void;
+  makeAuthenticatedRequest: (
+    url: string,
+    options?: RequestInit
+  ) => Promise<Response>;
   inventory: UserInventoryItem[] | [];
   loadInventory: () => Promise<void>;
   updateInventoryAmount: (item: UserInventoryItem) => void;

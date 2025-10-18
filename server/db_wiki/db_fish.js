@@ -84,7 +84,7 @@ const createDB = async () => {
           return rows.map((row) => ({
             ...row,
             location: JSON.parse(row.location),
-            needed_for: JSON.parse(row.needed_for),
+            neededFor: JSON.parse(row.neededFor),
           }));
         },
       };

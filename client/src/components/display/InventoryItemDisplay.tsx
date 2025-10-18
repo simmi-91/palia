@@ -42,7 +42,7 @@ const InventoryItemDisplay: React.FC<InventoryItemDisplayProps> = ({
   return (
     <div key={item.itemId} className="col-6 col-md-3 col-lg-3 col-xxl-2 d-flex">
       <div
-        className="rounded border border-dark d-flex"
+        className="rounded border border-dark d-flex flex-fill justify-content-center"
         style={{
           opacity: numOpacity,
           background:
@@ -54,7 +54,7 @@ const InventoryItemDisplay: React.FC<InventoryItemDisplayProps> = ({
             <span className="visually-hidden">Loading...</span>
           </div>
         ) : (
-          <div className="d-flex flex-column">
+          <div className="d-flex flex-column px-1">
             <div className="position-relative">
               <b>{objectName}</b>
             </div>
@@ -70,7 +70,7 @@ const InventoryItemDisplay: React.FC<InventoryItemDisplayProps> = ({
                 </button>
               )}
             </div>
-            <div>
+            <div className="flex-fill">
               {itemObject?.image ? (
                 <img
                   src={itemObject.image}

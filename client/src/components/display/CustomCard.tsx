@@ -70,7 +70,7 @@ const CustomCard: React.FC<CustomCardProps> = ({
   const family =
     "family" in dataObject ? (dataObject as PotatoPodEntry).family : "";
 
-  const multilist = getMultiListProps(dataObject, ["bait"]);
+  const multilist = getMultiListProps(dataObject);
   let hasMultiList = false;
   if (multilist && multilist.length > 0) {
     hasMultiList = true;
@@ -289,45 +289,7 @@ const CustomCard: React.FC<CustomCardProps> = ({
               </div>
             )}
 
-            {bait && (
-              <div>
-                {Array.isArray(bait)
-                  ? bait.map((item) => {
-                      if (item.title === "Worm") {
-                        return (
-                          <span
-                            key={"worm"}
-                            title={item.title}
-                            className=" rounded-circle opacity-75 px-1 py-1 text-s bg-dark"
-                          >
-                            {icoWorm}
-                          </span>
-                        );
-                      } else if (item.title === "Glow Worm") {
-                        return (
-                          <span
-                            key={"glowworm"}
-                            title={item.title}
-                            className=" rounded-circle opacity-75 px-1 py-1 text-s bg-dark"
-                          >
-                            {icoGlowWorm}
-                          </span>
-                        );
-                      } else if (item.title === "none") {
-                        return (
-                          <span
-                            key={"none"}
-                            title={item.title}
-                            className=" rounded-circle opacity-75 px-1 py-1 text-s bg-dark"
-                          >
-                            No Bait
-                          </span>
-                        );
-                      }
-                    })
-                  : null}
-              </div>
-            )}
+            {bait && <div>{bait}</div>}
 
             {!hasMultiList && showInventoryControls && (
               <div className="">{inventoryBlock()}</div>

@@ -157,11 +157,11 @@ const CatchPage = ({ profile }: { profile: GoogleProfile }) => {
   };
 
   const generateInfotext = (item: fullFavoriteEntry) => {
-    let infoText = [];
+    let infoText: string[] = [];
     infoText.push(item.time.replace(/\s*\([^)]*\)\s*$/, ""));
 
-    if ("bait" in item && Array.isArray(item.bait) && item.bait.length > 0) {
-      infoText.push(item.bait.map((b: MultilistEntry) => b.title).join(", "));
+    if ("bait" in item && typeof item.bait === "string") {
+      infoText.push(item.bait);
     }
 
     if (Array.isArray(item.location) && item.location.length > 0) {

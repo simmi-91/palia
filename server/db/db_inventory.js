@@ -41,7 +41,6 @@ const createDB = async () => {
           );
 
           if (index > -1) {
-            // Found: Update the amount
             lowdb.data[index].amount = amount;
           } else if (amount > 0) {
             lowdb.data.push({
@@ -56,7 +55,7 @@ const createDB = async () => {
         },
 
         bulkUpdate: async (profileId, items) => {
-          await lowdb.read(); // 1. Read the data once
+          await lowdb.read();
 
           const otherUsersInventory = lowdb.data.filter(
             (item) => item.userId !== profileId

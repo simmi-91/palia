@@ -33,9 +33,10 @@ const createDB = async () => {
                 f.description,
                 f.rarity,
                 f.time,
+                f.bait,
                 f.base_value AS baseValue,
                 (
-                    SELECT 
+                    SELECT
                         COALESCE(
                             JSON_ARRAYAGG(
                                 JSON_OBJECT(
@@ -44,36 +45,17 @@ const createDB = async () => {
                                     'category', le.category
                                 )
                             ),
-                            '[]' 
+                            '[]'
                         )
-                    FROM 
+                    FROM
                         fish_location_link AS l_link
-                    LEFT JOIN 
+                    LEFT JOIN
                         location_entity AS le ON l_link.location_id = le.id
-                    WHERE 
+                    WHERE
                         l_link.fish_id = f.id
                 ) AS location,
                 (
-                    SELECT 
-                        COALESCE(
-                            JSON_ARRAYAGG(
-                                JSON_OBJECT(
-                                    'title', be.title,
-                                    'url', be.url,
-                                    'category', be.category
-                                )
-                            ),
-                            '[]'
-                        )
-                    FROM 
-                        fish_bait_link AS b_link
-                    LEFT JOIN 
-                        bait_entity AS be ON b_link.bait_id = be.id
-                    WHERE 
-                        b_link.fish_id = f.id
-                ) AS bait,
-                (
-                    SELECT 
+                    SELECT
                         COALESCE(
                             JSON_ARRAYAGG(
                                 JSON_OBJECT(
@@ -84,13 +66,13 @@ const createDB = async () => {
                             ),
                             '[]'
                         )
-                    FROM 
+                    FROM
                         fish_needed_for_link AS n_link
-                    LEFT JOIN 
+                    LEFT JOIN
                         needed_for_entity AS ne ON n_link.needed_for_id = ne.id
-                    WHERE 
+                    WHERE
                         n_link.fish_id = f.id
-                ) AS needed_for
+                ) AS neededFor
             FROM
                 fish AS f
             ORDER BY

@@ -4,7 +4,6 @@ import { useState } from "react";
 import Tag from "./Tag";
 import RarityTag from "./RarityTag";
 import missingImg from "../../assets/images/missing.png";
-import { icoWorm, icoGlowWorm } from "../../app/icons/common";
 import { getMultiListProps } from "../../utils/multilistProperties";
 
 import {

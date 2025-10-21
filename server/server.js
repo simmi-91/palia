@@ -1,5 +1,5 @@
 import dotenv from "dotenv";
-dotenv.config({ path: "./env/.env.palia" });
+dotenv.config({ path: "../env/.env.palia" });
 
 import express from "express";
 import cors from "cors";

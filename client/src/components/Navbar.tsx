@@ -78,6 +78,14 @@ const Navbar = () => {
               </Link>
 
               <Link
+                to="/ranching"
+                className={menuBtnClasses}
+                activeProps={{ className: "text-white bg-dark fw-bold" }}
+              >
+                Ranching
+              </Link>
+
+              <Link
                 to="/wormfarm"
                 className={menuBtnClasses}
                 activeProps={{ className: "text-white bg-dark fw-bold" }}

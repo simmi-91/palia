@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as WormfarmRouteImport } from './routes/wormfarm'
 import { Route as WikiRouteImport } from './routes/wiki'
 import { Route as TradeRouteImport } from './routes/trade'
+import { Route as RanchingRouteImport } from './routes/ranching'
 import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as PaliatrackerRouteImport } from './routes/paliatracker'
 import { Route as GardenRouteImport } from './routes/garden'
@@ -41,6 +42,11 @@ const WikiRoute = WikiRouteImport.update({
 const TradeRoute = TradeRouteImport.update({
   id: '/trade',
   path: '/trade',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RanchingRoute = RanchingRouteImport.update({
+  id: '/ranching',
+  path: '/ranching',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ProfileRoute = ProfileRouteImport.update({
@@ -126,6 +132,7 @@ export interface FileRoutesByFullPath {
   '/garden': typeof GardenRoute
   '/paliatracker': typeof PaliatrackerRoute
   '/profile': typeof ProfileRoute
+  '/ranching': typeof RanchingRoute
   '/trade': typeof TradeRoute
   '/wiki': typeof WikiRouteWithChildren
   '/wormfarm': typeof WormfarmRoute
@@ -145,6 +152,7 @@ export interface FileRoutesByTo {
   '/garden': typeof GardenRoute
   '/paliatracker': typeof PaliatrackerRoute
   '/profile': typeof ProfileRoute
+  '/ranching': typeof RanchingRoute
   '/trade': typeof TradeRoute
   '/wormfarm': typeof WormfarmRoute
   '/admin/edit-items': typeof AdminEditItemsRoute
@@ -165,6 +173,7 @@ export interface FileRoutesById {
   '/garden': typeof GardenRoute
   '/paliatracker': typeof PaliatrackerRoute
   '/profile': typeof ProfileRoute
+  '/ranching': typeof RanchingRoute
   '/trade': typeof TradeRoute
   '/wiki': typeof WikiRouteWithChildren
   '/wormfarm': typeof WormfarmRoute
@@ -187,6 +196,7 @@ export interface FileRouteTypes {
     | '/garden'
     | '/paliatracker'
     | '/profile'
+    | '/ranching'
     | '/trade'
     | '/wiki'
     | '/wormfarm'
@@ -206,6 +216,7 @@ export interface FileRouteTypes {
     | '/garden'
     | '/paliatracker'
     | '/profile'
+    | '/ranching'
     | '/trade'
     | '/wormfarm'
     | '/admin/edit-items'
@@ -225,6 +236,7 @@ export interface FileRouteTypes {
     | '/garden'
     | '/paliatracker'
     | '/profile'
+    | '/ranching'
     | '/trade'
     | '/wiki'
     | '/wormfarm'
@@ -246,6 +258,7 @@ export interface RootRouteChildren {
   GardenRoute: typeof GardenRoute
   PaliatrackerRoute: typeof PaliatrackerRoute
   ProfileRoute: typeof ProfileRoute
+  RanchingRoute: typeof RanchingRoute
   TradeRoute: typeof TradeRoute
   WikiRoute: typeof WikiRouteWithChildren
   WormfarmRoute: typeof WormfarmRoute
@@ -272,6 +285,13 @@ declare module '@tanstack/react-router' {
       path: '/trade'
       fullPath: '/trade'
       preLoaderRoute: typeof TradeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ranching': {
+      id: '/ranching'
+      path: '/ranching'
+      fullPath: '/ranching'
+      preLoaderRoute: typeof RanchingRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/profile': {
@@ -423,6 +443,7 @@ const rootRouteChildren: RootRouteChildren = {
   GardenRoute: GardenRoute,
   PaliatrackerRoute: PaliatrackerRoute,
   ProfileRoute: ProfileRoute,
+  RanchingRoute: RanchingRoute,
   TradeRoute: TradeRoute,
   WikiRoute: WikiRouteWithChildren,
   WormfarmRoute: WormfarmRoute,

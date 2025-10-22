@@ -13,6 +13,13 @@ export type FoodDetail = {
   glowworms: FoodsWorms;
 };
 
+export type FoodEntry = {
+  food: string;
+  category: string | null;
+  base: FoodDetail;
+  star: FoodDetail | null;
+};
+
 export type TreatEntry = {
   name: string;
   description: string;

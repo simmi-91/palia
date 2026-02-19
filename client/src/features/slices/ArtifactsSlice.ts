@@ -23,10 +23,10 @@ export const selectAllArtifacts = (): UseQueryResult<
 };
 
 export const selectArtifactById = (
-  itemId: number
+  itemId: number,
 ): UseQueryResult<ArtifactEntry | undefined, Error> => {
   return useQuery({
-    queryKey: ["ArtifactsData"],
+    queryKey: ["ArtifactsData", itemId],
     queryFn: fetchArtifacts,
     staleTime: 1000 * 60 * 5,
     select: (data) => data.find((item) => item.id === itemId),

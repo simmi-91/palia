@@ -20,10 +20,10 @@ export const selectAllFish = (): UseQueryResult<FishEntry[], Error> => {
 };
 
 export const selectFishById = (
-  itemId: number
+  itemId: number,
 ): UseQueryResult<FishEntry | undefined, Error> => {
   return useQuery({
-    queryKey: ["FishData"],
+    queryKey: ["FishData", itemId],
     queryFn: fetchFish,
     staleTime: 1000 * 60 * 5,
     select: (data) => data.find((item) => item.id === itemId),

@@ -23,10 +23,10 @@ export const selectAllPotatoPods = (): UseQueryResult<
 };
 
 export const selectPotatoPodById = (
-  itemId: number
+  itemId: number,
 ): UseQueryResult<PotatoPodEntry | undefined, Error> => {
   return useQuery({
-    queryKey: ["PotatoPodsData"],
+    queryKey: ["PotatoPodsData", itemId],
     queryFn: fetchPotatoPods,
     staleTime: 1000 * 60 * 5,
     select: (data) => data.find((item) => item.id === itemId),

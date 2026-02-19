@@ -20,10 +20,10 @@ export const selectAllStickers = (): UseQueryResult<StickerEntry[], Error> => {
 };
 
 export const selectStickerById = (
-  itemId: number
+  itemId: number,
 ): UseQueryResult<StickerEntry | undefined, Error> => {
   return useQuery({
-    queryKey: ["StickerData"],
+    queryKey: ["StickerData", itemId],
     queryFn: fetchStickers,
     staleTime: 1000 * 60 * 5,
     select: (data) => data.find((item) => item.id === itemId),

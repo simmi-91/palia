@@ -20,10 +20,10 @@ export const selectAllBugs = (): UseQueryResult<BugsEntry[], Error> => {
 };
 
 export const selectBugById = (
-  itemId: number
+  itemId: number,
 ): UseQueryResult<BugsEntry | undefined, Error> => {
   return useQuery({
-    queryKey: ["BugsData"],
+    queryKey: ["BugsData", itemId],
     queryFn: fetchBugs,
     staleTime: 1000 * 60 * 5,
     select: (data) => data.find((item) => item.id === itemId),

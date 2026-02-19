@@ -20,10 +20,10 @@ export const selectAllPlushies = (): UseQueryResult<PlushiesEntry[], Error> => {
 };
 
 export const selectPlushById = (
-  itemId: number
+  itemId: number,
 ): UseQueryResult<PlushiesEntry | undefined, Error> => {
   return useQuery({
-    queryKey: ["PlushiesData"],
+    queryKey: ["PlushiesData", itemId],
     queryFn: fetchPlushies,
     staleTime: 1000 * 60 * 5,
     select: (data) => data.find((item) => item.id === itemId),

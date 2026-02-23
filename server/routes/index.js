@@ -4,6 +4,7 @@ import usersRouter from "./users.js";
 import inventoryRouter from "./inventory.js";
 import linksRouter from "./links.js";
 import favoritesRouter from "./favorites.js";
+import entityRouter from "./entity.js";
 
 import artifactsRouter from "./artifacts.js";
 import bugsRouter from "./bugs.js";
@@ -19,6 +20,7 @@ apiRouter.use("/users", usersRouter);
 apiRouter.use("/inventory", inventoryRouter);
 apiRouter.use("/links", linksRouter);
 apiRouter.use("/favorites", favoritesRouter);
+apiRouter.use("/entity", entityRouter);
 
 // wiki routes
 apiRouter.use("/artifacts", artifactsRouter);

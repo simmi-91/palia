@@ -19,6 +19,14 @@ const createDB = async () => {
           await lowdb.read();
           return lowdb.data;
         },
+        updateItem: async (id, data) => {
+          await lowdb.read();
+          const index = lowdb.data.findIndex((item) => item.id === id);
+          if (index === -1) return { success: false, error: "Not found" };
+          lowdb.data[index] = { ...lowdb.data[index], ...data, id };
+          await lowdb.write();
+          return { success: true };
+        },
       };
     } else {
       const pool = initializePool();
@@ -59,6 +67,9 @@ const createDB = async () => {
             ...row,
             howToObtain: JSON.parse(row.howToObtain),
           }));
+        },
+        updateItem: async () => {
+          return { success: false, error: "Update not yet implemented for MySQL" };
         },
       };
     }

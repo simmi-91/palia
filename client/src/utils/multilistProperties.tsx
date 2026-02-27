@@ -6,7 +6,8 @@ import type {
 
 export const getMultiListProps = (
   data: MainItemEntry,
-  skipKeys?: [string]
+  skipKeys?: [string],
+  includeEmpty?: boolean
 ): MultilistProps[] => {
   const multiListProperties: { title: string; list: MultilistEntry[] }[] = [];
   for (const key in data) {
@@ -15,22 +16,20 @@ export const getMultiListProps = (
     } else if (Object.prototype.hasOwnProperty.call(data, key)) {
       const value = data[key as keyof typeof data];
       if (Array.isArray(value)) {
-        if (value.length > 0) {
-          const isMultiList =
-            typeof value[0] === "object" &&
-            value[0] !== null &&
-            "title" in value[0];
+        const isMultiList =
+          value.length > 0
+            ? typeof value[0] === "object" && value[0] !== null && "title" in value[0]
+            : includeEmpty === true;
 
-          if (isMultiList) {
-            const title = key
-              .replace(/([A-Z])/g, " $1")
-              .replace(/^./, (str) => str.toUpperCase());
+        if (isMultiList) {
+          const title = key
+            .replace(/([A-Z])/g, " $1")
+            .replace(/^./, (str) => str.toUpperCase());
 
-            multiListProperties.push({
-              title: title,
-              list: value as MultilistEntry[],
-            });
-          }
+          multiListProperties.push({
+            title: title,
+            list: value as MultilistEntry[],
+          });
         }
       }
     }

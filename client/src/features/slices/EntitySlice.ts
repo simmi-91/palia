@@ -12,20 +12,20 @@ const fetchEntities = async (entityType: string): Promise<EntityOption[]> => {
 export const useLocationEntities = (): UseQueryResult<EntityOption[], Error> =>
   useQuery({
     queryKey: ["EntityData", "location"],
-    queryFn: () => fetchEntities("location"),
+    queryFn: () => fetchEntities("location_entity"),
     staleTime: 1000 * 60 * 5,
   });
 
 export const useNeededForEntities = (): UseQueryResult<EntityOption[], Error> =>
   useQuery({
     queryKey: ["EntityData", "neededFor"],
-    queryFn: () => fetchEntities("neededFor"),
+    queryFn: () => fetchEntities("needed_for_entity"),
     staleTime: 1000 * 60 * 5,
   });
 
 export const useHowToObtainEntities = (): UseQueryResult<EntityOption[], Error> =>
   useQuery({
     queryKey: ["EntityData", "howToObtain"],
-    queryFn: () => fetchEntities("howToObtain"),
+    queryFn: () => fetchEntities("how_to_obtain_entity"),
     staleTime: 1000 * 60 * 5,
   });

@@ -18,7 +18,7 @@ const StickersPage = () => {
   if (isError) {
     return <ErrorState error={error} />;
   }
-  if (!data) {
+  if (!data || data.length === 0) {
     return <EmptyCategoryState />;
   }
 

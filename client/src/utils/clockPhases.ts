@@ -1,3 +1,11 @@
+
+export const CLOCK_PHASES = [
+  { name: "Morning", startLabel: "3:00 AM", endLabel: "6:00 AM" },
+  { name: "Day",     startLabel: "6:00 AM", endLabel: "6:00 PM" },
+  { name: "Evening", startLabel: "6:00 PM", endLabel: "9:00 PM" },
+  { name: "Night",   startLabel: "9:00 PM", endLabel: "3:00 AM" },
+] as const;
+
 export const clockColorMap: Record<string, { bg: string; text?: string }> = {
   Morning: { bg: "#d5b58f", text: "black" },
   Day: { bg: "#83b4e7", text: "black" },
@@ -82,4 +90,20 @@ export const getCountdownToNextPhase = (
     seconds,
     totalSeconds: Math.floor(hoursUntilEnd * 3600),
   };
+};
+
+export const parseTimePhases = (time: string): string[] => {
+  if (time.trim() === "Any Time") return CLOCK_PHASES.map((p) => p.name);
+  if (!time) return [];
+  return CLOCK_PHASES.filter((p) => time.includes(p.name)).map((p) => p.name);
+};
+
+export const buildTimeString = (selected: string[]): string => {
+  const ordered = CLOCK_PHASES.filter((p) => selected.includes(p.name));
+  if (ordered.length === 0) return "";
+  if (ordered.length === CLOCK_PHASES.length) return "Any Time";
+  const names = ordered.map((p) => p.name).join(" and ");
+  const start = ordered[0].startLabel;
+  const end = ordered[ordered.length - 1].endLabel;
+  return `${names} (${start} - ${end})`;
 };

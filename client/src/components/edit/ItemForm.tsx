@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Formik, Form, Field, FieldArray, ErrorMessage, useFormikContext } from "formik";
 import { createDynamicValidationSchema } from "../../utils/dynamicSchema";
+import { CLOCK_PHASES, parseTimePhases, buildTimeString } from "../../utils/clockPhases";
 
 import type { EntityOption } from "../../app/types/entityTypes";
 import type { MainItemEntry, MultilistProps } from "../../app/types/wikiTypes";
@@ -108,6 +109,89 @@ const RarityNameDisplay = () => {
     );
 };
 
+const TimeCheckboxField = () => {
+    const { values, setFieldValue, setFieldTouched } = useFormikContext<MainItemEntry & { time?: string }>();
+    const selected = parseTimePhases(values.time ?? "");
+    const allSelected = selected.length === CLOCK_PHASES.length;
+
+    const toggle = (name: string) => {
+        const next = selected.includes(name)
+            ? selected.filter((s) => s !== name)
+            : [...selected, name];
+        setFieldValue("time", buildTimeString(next));
+        setFieldTouched("time", true, false);
+    };
+
+    const toggleAll = () => {
+        const next = allSelected ? [] : CLOCK_PHASES.map((p) => p.name);
+        setFieldValue("time", buildTimeString(next));
+        setFieldTouched("time", true, false);
+    };
+
+    return (
+        <div className="my-2">
+            <div className="d-flex flex-wrap align-items-center gap-3">
+                <span className="input-group-text">Active Times</span>
+                {CLOCK_PHASES.map((phase) => (
+                    <div key={phase.name} className="form-check">
+                        <input
+                            className="form-check-input"
+                            type="checkbox"
+                            id={`time-${phase.name}`}
+                            checked={selected.includes(phase.name)}
+                            onChange={() => toggle(phase.name)}
+                        />
+                        <label className="form-check-label" htmlFor={`time-${phase.name}`}>
+                            {phase.name}
+                        </label>
+                    </div>
+                ))}
+                <div className="form-check">
+                    <input
+                        className="form-check-input"
+                        type="checkbox"
+                        id="time-any"
+                        checked={allSelected}
+                        onChange={toggleAll}
+                    />
+                    <label className="form-check-label" htmlFor="time-any">
+                        Any Time
+                    </label>
+                </div>
+            </div>
+            <small className="text-muted">{values.time ?? ""}</small>
+            <ErrorMessage name="time" component="div" className="text-danger small" />
+        </div>
+    );
+};
+
+const BEHAVIOR_OPTIONS = ["running", "flying", "jumping", "dashing"];
+
+const BehaviorField = () => (
+    <div className="input-group my-2 flex-column">
+        <div className="input-group">
+            <span className="input-group-text">Behavior</span>
+            <Field name="behavior">
+                {({ field }: { field: { name: string; value: string; onChange: React.ChangeEventHandler; onBlur: React.FocusEventHandler } }) => (
+                    <>
+                        <input
+                            {...field}
+                            list="behavior-options"
+                            className="form-control"
+                        />
+                        <datalist id="behavior-options">
+                            {BEHAVIOR_OPTIONS.map((opt) => (
+                                <option key={opt} value={opt} />
+                            ))}
+                        </datalist>
+                    </>
+                )}
+            </Field>
+        </div>
+        <ErrorMessage name="behavior" component="div" className="text-danger small" />
+    </div>
+);
+
 const genericFields = (keys: string[]) => {
     const skipKey = ["id", "name", "image", "url"];
     return (
@@ -123,32 +207,6 @@ const genericFields = (keys: string[]) => {
                     }
                     if (element === "rarity") {
                         return <RarityField key={element} />;
-                        /*return (
-                            <div key={element} className="d-inline-flex align-items-center mb-3">
-                                <label htmlFor="rarity" className="form-label pe-2">
-                                    Rarity
-                                </label>
-                                <RarityNameDisplay />
-                                <Field
-                                    name="rarity"
-                                    type="range"
-                                    min="1"
-                                    max="6"
-                                    className="form-range mx-2"
-                                />
-                                <Field
-                                    name="rarity"
-                                    type="number"
-                                    className="form-control w-auto"
-                                    style={{ maxWidth: "60px" }}
-                                />
-                                <ErrorMessage
-                                    name="rarity"
-                                    component="div"
-                                    className="text-danger small"
-                                />
-                            </div>
-                        );*/
                     }
                     if (element === "description")
                         return (
@@ -161,10 +219,9 @@ const genericFields = (keys: string[]) => {
                         );
                     if (element === "baseValue")
                         return <FormikInput key={element} label="Base Value" name="baseValue" />;
-                    if (element === "time")
-                        return <FormikInput key={element} label="Time" name="time" />;
+                    if (element === "time") return <TimeCheckboxField key={element} />;
                     if (element === "behavior")
-                        return <FormikInput key={element} label="Behavior" name="behavior" />;
+                        return <BehaviorField key={element} />;
                     return null;
                 })}
             </div>
@@ -172,16 +229,11 @@ const genericFields = (keys: string[]) => {
     );
 };
 
-const MultiFieldsArray = ({
-    title,
-    allOptions,
-}: {
-    title: string;
-    allOptions: EntityOption[];
-}) => {
+const MultiFieldsArray = ({ title, allOptions }: { title: string; allOptions: EntityOption[] }) => {
     const name = toAllEntityKey(title);
     const { values } = useFormikContext<MainItemEntry & Record<string, MultilistProps["list"]>>();
-    const list: MultilistProps["list"] = (values as Record<string, unknown>)[name] as MultilistProps["list"] ?? [];
+    const list: MultilistProps["list"] =
+        ((values as Record<string, unknown>)[name] as MultilistProps["list"]) ?? [];
 
     const [selectedTitle, setSelectedTitle] = useState("");
 
@@ -327,7 +379,9 @@ const ItemForm = ({
                     <div className="container">
                         <div className="card my-2 shadow">
                             <h5 className="card-header">
-                                Editing id {values.id}, {values.name}
+                                {values.id === 0
+                                    ? "New Item"
+                                    : `Editing id ${values.id}, ${values.name}`}
                             </h5>
                             <div className="card-body">{genericFields(genericKeys)}</div>
                         </div>
@@ -352,10 +406,12 @@ const ItemForm = ({
                                     Object.keys(errors).length > 0 &&
                                     Object.keys(touched).length > 0
                                 }>
-                                Save Changes
+                                {values.id === 0 ? "Add Item" : "Save Changes"}
                             </button>
                             {status?.success && (
-                                <div className="alert alert-success mt-2">Changes saved!</div>
+                                <div className="alert alert-success mt-2">
+                                    {values.id === 0 ? "Item added!" : "Changes saved!"}
+                                </div>
                             )}
                             {status?.error && (
                                 <div className="alert alert-danger mt-2">{status.error}</div>

@@ -3,12 +3,13 @@ dotenv.config({ path: "../env/.env.palia" });
 
 import express from "express";
 import cors from "cors";
-import { initializePool, initializeDbHost } from "./db/db_connections.js";
+import { initializePool } from "./db/db_connections.js";
+import { initDb } from "./db/initDb.js";
 import apiRouter from "./routes/index.js";
 
 async function main() {
-  initializeDbHost();
   initializePool();
+  if (process.env.DB_HOST) await initDb();
 
   const app = express();
 

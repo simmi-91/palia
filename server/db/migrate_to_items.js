@@ -90,26 +90,38 @@ async function migrate() {
             }
         }
 
-        // Remap user_inventory
-        console.log("Remapping user_inventory...");
-        for (const [category, map] of Object.entries(idMaps)) {
-            for (const [oldId, newId] of Object.entries(map)) {
-                await conn.execute(
-                    "UPDATE user_inventory SET item_id = ? WHERE category = ? AND item_id = ?",
-                    [newId, category, oldId]
-                );
+        // Build user_inventory_new with remapped IDs
+        console.log("Building user_inventory_new...");
+        await conn.execute("DROP TABLE IF EXISTS user_inventory_new");
+        await conn.execute(`CREATE TABLE user_inventory_new LIKE user_inventory`);
+        const [inventoryRows] = await conn.query("SELECT * FROM user_inventory");
+        for (const row of inventoryRows) {
+            const newId = idMaps[row.category]?.[row.item_id];
+            if (newId === undefined) {
+                console.warn(`  Warning: no mapping for inventory (${row.category}, item_id=${row.item_id}) — skipping`);
+                continue;
             }
+            await conn.execute(
+                "INSERT INTO user_inventory_new (user_id, category, item_id, amount) VALUES (?, ?, ?, ?)",
+                [row.user_id, row.category, newId, row.amount]
+            );
         }
 
-        // Remap user_favorites
-        console.log("Remapping user_favorites...");
-        for (const [category, map] of Object.entries(idMaps)) {
-            for (const [oldId, newId] of Object.entries(map)) {
-                await conn.execute(
-                    "UPDATE user_favorites SET item_id = ? WHERE category = ? AND item_id = ?",
-                    [newId, category, oldId]
-                );
+        // Build user_favorites_new with remapped IDs
+        console.log("Building user_favorites_new...");
+        await conn.execute("DROP TABLE IF EXISTS user_favorites_new");
+        await conn.execute(`CREATE TABLE user_favorites_new LIKE user_favorites`);
+        const [favoritesRows] = await conn.query("SELECT * FROM user_favorites");
+        for (const row of favoritesRows) {
+            const newId = idMaps[row.category]?.[row.item_id];
+            if (newId === undefined) {
+                console.warn(`  Warning: no mapping for favorite (${row.category}, item_id=${row.item_id}) — skipping`);
+                continue;
             }
+            await conn.execute(
+                "INSERT INTO user_favorites_new (favorite_id, user_id, category, item_id) VALUES (?, ?, ?, ?)",
+                [row.favorite_id, row.user_id, row.category, newId]
+            );
         }
 
         // Migrate link tables
@@ -169,7 +181,10 @@ async function migrate() {
         for (const [cat, map] of Object.entries(idMaps)) {
             console.log(`  ${cat}:`, map);
         }
-        console.log("\nOld tables have NOT been dropped. Verify the migration, then drop them manually.");
+        console.log("\nNext steps — verify, then run in MySQL:");
+        console.log("  RENAME TABLE user_inventory TO user_inventory_old, user_inventory_new TO user_inventory;");
+        console.log("  RENAME TABLE user_favorites TO user_favorites_old, user_favorites_new TO user_favorites;");
+        console.log("  -- Then drop old catalog tables once backend is updated.");
 
     } catch (err) {
         await conn.rollback();

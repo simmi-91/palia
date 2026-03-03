@@ -45,7 +45,6 @@ const UrlField = () => {
                 <a
                     href={values.url || "#"}
                     target="formurl"
-
                     className="btn border-secondary-subtle"
                     tabIndex={-1}>
                     <i className="bi bi-box-arrow-up-right" />
@@ -67,7 +66,6 @@ const ImgField = () => {
                     <a
                         href={values.image}
                         target="formurl"
-    
                         className="btn border-secondary-subtle p-0 overflow-hidden"
                         tabIndex={-1}>
                         <img src={values.image} alt="" height={40} style={{ display: "block" }} />
@@ -306,70 +304,72 @@ const MultiFieldsArray = ({ title, allOptions }: { title: string; allOptions: En
             <div className="card-body">
                 <FieldArray name={name}>
                     {({ push, remove }) => (
-                        <div>
-                            {list.length === 0 ? (
-                                <span className="fst-italic">Empty list</span>
-                            ) : null}
-                            {list?.map((item, index: number) => (
-                                <div
-                                    key={index}
-                                    className="d-flex justify-content-between align-items-center border p-2 mb-2">
-                                    <span className="fw-bold">{item.title}</span>
-                                    <a
-                                        href={item.url}
-                                        target="formurl"
-                    
-                                        className="ms-3 small text-truncate">
-                                        {item.url}
-                                    </a>
-                                    <button
-                                        type="button"
-                                        className="btn btn-danger btn-sm ms-auto"
-                                        onClick={() => remove(index)}>
-                                        Remove
-                                    </button>
-                                </div>
-                            ))}
+                        <>
+                            <div>
+                                {list.length === 0 ? (
+                                    <span className="fst-italic">Empty list</span>
+                                ) : null}
+                                {list?.map((item, index: number) => (
+                                    <div
+                                        key={index}
+                                        className="d-flex justify-content-between align-items-center border p-2 mb-2">
+                                        <span className="fw-bold">{item.title}</span>
+                                        <a
+                                            href={item.url}
+                                            target="formurl"
+                                            className="ms-3 small text-truncate">
+                                            {item.url}
+                                        </a>
+                                        <button
+                                            type="button"
+                                            className="btn btn-danger btn-sm ms-auto"
+                                            onClick={() => remove(index)}>
+                                            Remove
+                                        </button>
+                                    </div>
+                                ))}
+                            </div>
+                            <div className="d-flex gap-2">
+                                {unselectedOptions.length > 0 && (
+                                    <select
+                                        className="form-select mt-2 w-auto"
+                                        value={selectedTitle}
+                                        onChange={(e) => setSelectedTitle(e.target.value)}>
+                                        <option value="">Select a new {title}...</option>
+                                        {unselectedOptions.map((option) => (
+                                            <option key={option.id} value={option.title}>
+                                                {option.category
+                                                    ? `[${option.category[0]}] ${option.title}`
+                                                    : option.title}
+                                            </option>
+                                        ))}
+                                    </select>
+                                )}
 
-                            {unselectedOptions.length > 0 && (
-                                <select
-                                    className="form-select mt-2 w-auto"
-                                    value={selectedTitle}
-                                    onChange={(e) => setSelectedTitle(e.target.value)}>
-                                    <option value="">Select a new {title}...</option>
-                                    {unselectedOptions.map((option) => (
-                                        <option key={option.id} value={option.title}>
-                                            {option.category
-                                                ? `[${option.category[0]}] ${option.title}`
-                                                : option.title}
-                                        </option>
-                                    ))}
-                                </select>
-                            )}
+                                <button
+                                    type="button"
+                                    className="btn btn-primary btn-sm mt-2"
+                                    onClick={() => {
+                                        if (!selectedTitle) return;
 
-                            <button
-                                type="button"
-                                className="btn btn-primary btn-sm mt-2"
-                                onClick={() => {
-                                    if (!selectedTitle) return;
+                                        const entityToAdd = allOptions.find(
+                                            (opt) => opt.title === selectedTitle
+                                        );
 
-                                    const entityToAdd = allOptions.find(
-                                        (opt) => opt.title === selectedTitle
-                                    );
-
-                                    if (entityToAdd) {
-                                        push({
-                                            title: entityToAdd.title,
-                                            url: entityToAdd.url,
-                                            category: entityToAdd.category || "",
-                                        });
-                                        setSelectedTitle("");
-                                    }
-                                }}
-                                disabled={unselectedOptions.length === 0}>
-                                Add Selected {title}
-                            </button>
-                        </div>
+                                        if (entityToAdd) {
+                                            push({
+                                                title: entityToAdd.title,
+                                                url: entityToAdd.url,
+                                                category: entityToAdd.category || "",
+                                            });
+                                            setSelectedTitle("");
+                                        }
+                                    }}
+                                    disabled={unselectedOptions.length === 0}>
+                                    Add Selected {title}
+                                </button>
+                            </div>
+                        </>
                     )}
                 </FieldArray>
                 <ErrorMessage name={name}>

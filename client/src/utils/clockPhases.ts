@@ -115,6 +115,15 @@ export const buildTimeString = (selected: string[]): string => {
     }
   }
   runs.push(current);
+
+  // Merge wrap-around: Night and Morning are circular neighbours
+  if (runs.length > 1 && runs[0][0].name === "Morning" && runs[runs.length - 1].at(-1)?.name === "Night") {
+    const merged = [...runs[runs.length - 1], ...runs[0]];
+    runs.splice(runs.length - 1, 1);
+    runs.splice(0, 1);
+    runs.push(merged);
+  }
+
   return runs
     .map((run) => {
       const names = run.length <= 2

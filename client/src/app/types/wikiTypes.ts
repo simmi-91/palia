@@ -32,7 +32,6 @@ export type BugsEntry = CatchableEntry & {
 
 export type FishEntry = CatchableEntry & {
   bait: string;
-  howToObtain: MultilistEntry[];
 };
 
 export type PlushiesEntry = MainItemEntry & {

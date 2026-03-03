@@ -2,7 +2,16 @@ import { useState } from "react";
 import { useAuth } from "../../context/AuthContext";
 
 import { type UseQueryResult, useQueryClient } from "@tanstack/react-query";
-import type { MainItemEntry, CatchableEntry } from "../../app/types/wikiTypes";
+import type {
+    MainItemEntry,
+    CatchableEntry,
+    ArtifactEntry,
+    StickerEntry,
+    PotatoPodEntry,
+    PlushiesEntry,
+    BugsEntry,
+    FishEntry,
+} from "../../app/types/wikiTypes";
 
 import ItemForm from "../../components/edit/ItemForm";
 
@@ -42,13 +51,63 @@ const collectionQueryKeyMap: Record<string, string> = {
     fish: "FishData",
 };
 
+const blank = <T extends MainItemEntry>(entry: T): MainItemEntry => entry;
+
 const blankItemMap: Record<string, MainItemEntry> = {
-    artifacts: { id: 0, name: "", url: "", image: "" },
-    stickers: { id: 0, name: "", url: "", image: "", rarity: 1 } as MainItemEntry,
-    potatopods: { id: 0, name: "", url: "", image: "", family: "" } as MainItemEntry,
-    bugs: { id: 0, name: "", url: "", image: "", description: "", rarity: 1, time: "", behavior: "", baseValue: 0, location: [], neededFor: [] } as MainItemEntry,
-    fish: { id: 0, name: "", url: "", image: "", description: "", rarity: 1, time: "", bait: "", baseValue: 0, location: [], neededFor: [] } as MainItemEntry,
-    plushies: { id: 0, name: "", url: "", image: "", rarity: 1, howToObtain: [] } as MainItemEntry,
+    artifacts: blank<ArtifactEntry>({ id: 0, name: "", url: "", image: "" }),
+    stickers: blank<StickerEntry>({ id: 0, name: "", url: "", image: "", rarity: 1 }),
+    potatopods: blank<PotatoPodEntry>({ id: 0, name: "", url: "", image: "", family: "" }),
+    bugs: blank<BugsEntry>({
+        id: 0,
+        name: "",
+        url: "",
+        image: "",
+        description: "",
+        rarity: 1,
+        time: "",
+        behavior: "",
+        baseValue: 0,
+        location: [],
+        neededFor: [],
+    }),
+    fish: blank<FishEntry>({
+        id: 0,
+        name: "",
+        url: "",
+        image: "",
+        description: "",
+        rarity: 1,
+        time: "",
+        bait: "",
+        baseValue: 0,
+        location: [],
+        neededFor: [],
+    }),
+    plushies: blank<PlushiesEntry>({
+        id: 0,
+        name: "",
+        url: "",
+        image: "",
+        rarity: 1,
+        howToObtain: [],
+    }),
+};
+const requiredFieldsMap: Record<string, string[]> = {
+    bugs: ["image", "location"],
+    fish: ["image", "location", "bait"],
+    plushies: ["image", "howToObtain"],
+    stickers: ["image"],
+    artifacts: ["image"],
+    potatopods: ["image", "family"],
+};
+
+const getMissingFields = (item: MainItemEntry, collectionName: string): string[] => {
+    const fields = requiredFieldsMap[collectionName] ?? [];
+    return fields.filter((field) => {
+        const value = (item as Record<string, unknown>)[field];
+        if (Array.isArray(value)) return value.length === 0;
+        return !value;
+    });
 };
 
 const EditItemsPage = () => {
@@ -78,9 +137,9 @@ const EditItemsPage = () => {
         if (isNew) {
             const data = await response.json();
             setActiveItem({ ...values, id: data.id } as MainItemEntry);
-            const queryKey = collectionQueryKeyMap[activeItemCollection];
-            if (queryKey) queryClient.invalidateQueries({ queryKey: [queryKey] });
         }
+        const queryKey = collectionQueryKeyMap[activeItemCollection];
+        if (queryKey) queryClient.invalidateQueries({ queryKey: [queryKey] });
     };
 
     const handleDelete = async (id: number) => {
@@ -99,7 +158,7 @@ const EditItemsPage = () => {
     };
 
     const handleSelectItem = (id: number) => {
-        if (!id || !itemCollection) {
+        if (id < 0 || !itemCollection) {
             return;
         }
         const itemObject = itemCollection.find((item) => item.id === id);
@@ -163,6 +222,13 @@ const EditItemsPage = () => {
                                                 : "btn-primary btn mx-1 flex-fill text-start "
                                         }>
                                         {item.id} - {item.name}
+                                        {getMissingFields(item, activeItemCollection).length >
+                                            0 && (
+                                            <i
+                                                className="bi bi-exclamation-triangle-fill text-warning float-end"
+                                                title={`Missing: ${getMissingFields(item, activeItemCollection).join(", ")}`}
+                                            />
+                                        )}
                                     </button>
                                 </div>
                             );

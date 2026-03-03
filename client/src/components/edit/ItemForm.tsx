@@ -168,37 +168,49 @@ const TimeCheckboxField = () => {
     );
 };
 
-const BEHAVIOR_OPTIONS = ["running", "flying", "jumping", "dashing"];
+const COMBO_OPTIONS: Record<string, string[]> = {
+    behavior: ["running", "flying", "jumping", "dashing"],
+    bait: ["No bait", "Worm", "Glow Worm"],
+};
 
-const BehaviorField = () => (
-    <div className="input-group my-2 flex-column">
-        <div className="input-group">
-            <span className="input-group-text">Behavior</span>
-            <Field name="behavior">
-                {({
-                    field,
-                }: {
-                    field: {
-                        name: string;
-                        value: string;
-                        onChange: React.ChangeEventHandler;
-                        onBlur: React.FocusEventHandler;
-                    };
-                }) => (
-                    <>
-                        <input {...field} list="behavior-options" className="form-control" />
-                        <datalist id="behavior-options">
-                            {BEHAVIOR_OPTIONS.map((opt) => (
-                                <option key={opt} value={opt} />
-                            ))}
-                        </datalist>
-                    </>
-                )}
-            </Field>
+const ComboField = ({ element }: { element: string }) => {
+    const options = COMBO_OPTIONS[element] ?? [];
+    const label = element.charAt(0).toUpperCase() + element.slice(1);
+
+    return (
+        <div className="input-group my-2 flex-column">
+            <div className="input-group">
+                <span className="input-group-text">{label}</span>
+                <Field name={element}>
+                    {({
+                        field,
+                    }: {
+                        field: {
+                            name: string;
+                            value: string;
+                            onChange: React.ChangeEventHandler;
+                            onBlur: React.FocusEventHandler;
+                        };
+                    }) => (
+                        <>
+                            <input
+                                {...field}
+                                list={`${element}-options`}
+                                className="form-control"
+                            />
+                            <datalist id={`${element}-options`}>
+                                {options.map((opt) => (
+                                    <option key={opt} value={opt} />
+                                ))}
+                            </datalist>
+                        </>
+                    )}
+                </Field>
+            </div>
+            <ErrorMessage name={element} component="div" className="text-danger small" />
         </div>
-        <ErrorMessage name="behavior" component="div" className="text-danger small" />
-    </div>
-);
+    );
+};
 
 const FamilyField = () => {
     const { data: families = [] } = usePotatoPodFamilies();
@@ -261,7 +273,9 @@ const genericFields = (keys: string[]) => {
                     if (element === "baseValue")
                         return <FormikInput key={element} label="Base Value" name="baseValue" />;
                     if (element === "time") return <TimeCheckboxField key={element} />;
-                    if (element === "behavior") return <BehaviorField key={element} />;
+                    if (element === "behavior")
+                        return <ComboField key={element} element={element} />;
+                    if (element === "bait") return <ComboField key={element} element={element} />;
                     if (element === "family") return <FamilyField key={element} />;
                     {
                         const label = element
@@ -293,6 +307,9 @@ const MultiFieldsArray = ({ title, allOptions }: { title: string; allOptions: En
                 <FieldArray name={name}>
                     {({ push, remove }) => (
                         <div>
+                            {list.length === 0 ? (
+                                <span className="fst-italic">Empty list</span>
+                            ) : null}
                             {list?.map((item, index: number) => (
                                 <div
                                     key={index}
@@ -455,6 +472,15 @@ const ItemForm = ({
                             ))}
 
                         <div className="row mt-3">
+                            {status?.success && (
+                                <div className="alert alert-success m-2">
+                                    {values.id === 0 ? "Item added!" : "Changes saved!"}
+                                </div>
+                            )}
+                            {status?.error && (
+                                <div className="alert alert-danger m-2">{status.error}</div>
+                            )}
+
                             <div className="d-flex gap-2">
                                 <button
                                     type="submit"
@@ -488,14 +514,6 @@ const ItemForm = ({
                                     </button>
                                 )}
                             </div>
-                            {status?.success && (
-                                <div className="alert alert-success mt-2">
-                                    {values.id === 0 ? "Item added!" : "Changes saved!"}
-                                </div>
-                            )}
-                            {status?.error && (
-                                <div className="alert alert-danger mt-2">{status.error}</div>
-                            )}
                         </div>
                     </div>
                 </Form>

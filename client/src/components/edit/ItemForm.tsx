@@ -428,7 +428,7 @@ const ItemForm = ({
                     setSubmitting(false);
                 }
             }}>
-            {({ values, errors, touched, status, isSubmitting }) => (
+            {({ values, status, isSubmitting }) => (
                 <Form>
                     <div className="container">
                         <div className="card my-2 shadow">

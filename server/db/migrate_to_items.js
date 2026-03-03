@@ -11,15 +11,19 @@ import dotenv from "dotenv";
 dotenv.config({ path: "../env/.env.palia" });
 
 import { initializePool, pool } from "./db_connections.js";
+import { initDb } from "./initDb.js";
 
 initializePool();
 
 async function migrate() {
+    await initDb();
     const conn = await pool.getConnection();
     try {
         const [[{ count }]] = await conn.query("SELECT COUNT(*) AS count FROM items");
         if (Number(count) > 0) {
-            console.log(`items table already has ${count} rows — aborting to avoid duplicate migration.`);
+            console.log(
+                `items table already has ${count} rows — aborting to avoid duplicate migration.`
+            );
             return;
         }
 
@@ -52,18 +56,28 @@ async function migrate() {
                 table: "bugs",
                 category: "bugs",
                 columns: {
-                    name: "name", image: "image", url: "url",
-                    description: "description", rarity: "rarity", time: "time",
-                    behavior: "behavior", base_value: "base_value",
+                    name: "name",
+                    image: "image",
+                    url: "url",
+                    description: "description",
+                    rarity: "rarity",
+                    time: "time",
+                    behavior: "behavior",
+                    base_value: "base_value",
                 },
             },
             {
                 table: "fish",
                 category: "fish",
                 columns: {
-                    name: "name", image: "image", url: "url",
-                    description: "description", rarity: "rarity", time: "time",
-                    bait: "bait", base_value: "base_value",
+                    name: "name",
+                    image: "image",
+                    url: "url",
+                    description: "description",
+                    rarity: "rarity",
+                    time: "time",
+                    bait: "bait",
+                    base_value: "base_value",
                 },
             },
         ];
@@ -78,7 +92,10 @@ async function migrate() {
 
             for (const row of rows) {
                 const itemCols = ["category", ...Object.keys(columns)];
-                const values = [category, ...Object.keys(columns).map((col) => row[columns[col]] ?? null)];
+                const values = [
+                    category,
+                    ...Object.keys(columns).map((col) => row[columns[col]] ?? null),
+                ];
                 const placeholders = values.map(() => "?").join(", ");
                 const colList = itemCols.map((c) => `\`${c}\``).join(", ");
 
@@ -98,7 +115,9 @@ async function migrate() {
         for (const row of inventoryRows) {
             const newId = idMaps[row.category]?.[row.item_id];
             if (newId === undefined) {
-                console.warn(`  Warning: no mapping for inventory (${row.category}, item_id=${row.item_id}) — skipping`);
+                console.warn(
+                    `  Warning: no mapping for inventory (${row.category}, item_id=${row.item_id}) — skipping`
+                );
                 continue;
             }
             await conn.execute(
@@ -115,7 +134,9 @@ async function migrate() {
         for (const row of favoritesRows) {
             const newId = idMaps[row.category]?.[row.item_id];
             if (newId === undefined) {
-                console.warn(`  Warning: no mapping for favorite (${row.category}, item_id=${row.item_id}) — skipping`);
+                console.warn(
+                    `  Warning: no mapping for favorite (${row.category}, item_id=${row.item_id}) — skipping`
+                );
                 continue;
             }
             await conn.execute(
@@ -129,50 +150,55 @@ async function migrate() {
         const [bugLocs] = await conn.query("SELECT * FROM bugs_location_link");
         for (const row of bugLocs) {
             const newId = idMaps.bugs[row.bugs_id];
-            if (newId) await conn.execute(
-                "INSERT INTO item_location_link (item_id, location_id) VALUES (?, ?)",
-                [newId, row.location_id]
-            );
+            if (newId)
+                await conn.execute(
+                    "INSERT INTO item_location_link (item_id, location_id) VALUES (?, ?)",
+                    [newId, row.location_id]
+                );
         }
 
         console.log("Migrating bugs_needed_for_link...");
         const [bugNeeds] = await conn.query("SELECT * FROM bugs_needed_for_link");
         for (const row of bugNeeds) {
             const newId = idMaps.bugs[row.bugs_id];
-            if (newId) await conn.execute(
-                "INSERT INTO item_needed_for_link (item_id, needed_for_id) VALUES (?, ?)",
-                [newId, row.needed_for_id]
-            );
+            if (newId)
+                await conn.execute(
+                    "INSERT INTO item_needed_for_link (item_id, needed_for_id) VALUES (?, ?)",
+                    [newId, row.needed_for_id]
+                );
         }
 
         console.log("Migrating fish_location_link...");
         const [fishLocs] = await conn.query("SELECT * FROM fish_location_link");
         for (const row of fishLocs) {
             const newId = idMaps.fish[row.fish_id];
-            if (newId) await conn.execute(
-                "INSERT INTO item_location_link (item_id, location_id) VALUES (?, ?)",
-                [newId, row.location_id]
-            );
+            if (newId)
+                await conn.execute(
+                    "INSERT INTO item_location_link (item_id, location_id) VALUES (?, ?)",
+                    [newId, row.location_id]
+                );
         }
 
         console.log("Migrating fish_needed_for_link...");
         const [fishNeeds] = await conn.query("SELECT * FROM fish_needed_for_link");
         for (const row of fishNeeds) {
             const newId = idMaps.fish[row.fish_id];
-            if (newId) await conn.execute(
-                "INSERT INTO item_needed_for_link (item_id, needed_for_id) VALUES (?, ?)",
-                [newId, row.needed_for_id]
-            );
+            if (newId)
+                await conn.execute(
+                    "INSERT INTO item_needed_for_link (item_id, needed_for_id) VALUES (?, ?)",
+                    [newId, row.needed_for_id]
+                );
         }
 
         console.log("Migrating plushies_how_to_obtain_link...");
         const [plushLinks] = await conn.query("SELECT * FROM plushies_how_to_obtain_link");
         for (const row of plushLinks) {
             const newId = idMaps.plushies[row.plushies_id];
-            if (newId) await conn.execute(
-                "INSERT INTO item_how_to_obtain_link (item_id, how_to_obtain_id) VALUES (?, ?)",
-                [newId, row.how_to_obtain_id]
-            );
+            if (newId)
+                await conn.execute(
+                    "INSERT INTO item_how_to_obtain_link (item_id, how_to_obtain_id) VALUES (?, ?)",
+                    [newId, row.how_to_obtain_id]
+                );
         }
 
         await conn.commit();
@@ -182,10 +208,13 @@ async function migrate() {
             console.log(`  ${cat}:`, map);
         }
         console.log("\nNext steps — verify, then run in MySQL:");
-        console.log("  RENAME TABLE user_inventory TO user_inventory_old, user_inventory_new TO user_inventory;");
-        console.log("  RENAME TABLE user_favorites TO user_favorites_old, user_favorites_new TO user_favorites;");
+        console.log(
+            "  RENAME TABLE user_inventory TO user_inventory_old, user_inventory_new TO user_inventory;"
+        );
+        console.log(
+            "  RENAME TABLE user_favorites TO user_favorites_old, user_favorites_new TO user_favorites;"
+        );
         console.log("  -- Then drop old catalog tables once backend is updated.");
-
     } catch (err) {
         await conn.rollback();
         console.error("Migration failed — rolled back.", err);

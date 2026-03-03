@@ -45,7 +45,7 @@ const UrlField = () => {
                 <a
                     href={values.url || "#"}
                     target="formurl"
-                    rel="noopener noreferrer"
+
                     className="btn border-secondary-subtle"
                     tabIndex={-1}>
                     <i className="bi bi-box-arrow-up-right" />
@@ -67,7 +67,7 @@ const ImgField = () => {
                     <a
                         href={values.image}
                         target="formurl"
-                        rel="noopener noreferrer"
+    
                         className="btn border-secondary-subtle p-0 overflow-hidden"
                         tabIndex={-1}>
                         <img src={values.image} alt="" height={40} style={{ display: "block" }} />
@@ -318,7 +318,7 @@ const MultiFieldsArray = ({ title, allOptions }: { title: string; allOptions: En
                                     <a
                                         href={item.url}
                                         target="formurl"
-                                        rel="noopener noreferrer"
+                    
                                         className="ms-3 small text-truncate">
                                         {item.url}
                                     </a>

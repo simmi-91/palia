@@ -84,7 +84,41 @@ const CREATE_STATEMENTS = [
     category VARCHAR(255)
   )`,
 
-    // Wiki catalog tables
+    // Unified items table
+    `CREATE TABLE IF NOT EXISTS items (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    category VARCHAR(50) NOT NULL,
+    name VARCHAR(255) NOT NULL,
+    image VARCHAR(512),
+    url VARCHAR(512),
+    rarity INT,
+    description TEXT,
+    time VARCHAR(255),
+    base_value INT,
+    behavior VARCHAR(255),
+    bait VARCHAR(255),
+    family VARCHAR(255)
+  )`,
+
+    `CREATE TABLE IF NOT EXISTS item_location_link (
+    item_id INT NOT NULL,
+    location_id INT NOT NULL,
+    PRIMARY KEY (item_id, location_id)
+  )`,
+
+    `CREATE TABLE IF NOT EXISTS item_needed_for_link (
+    item_id INT NOT NULL,
+    needed_for_id INT NOT NULL,
+    PRIMARY KEY (item_id, needed_for_id)
+  )`,
+
+    `CREATE TABLE IF NOT EXISTS item_how_to_obtain_link (
+    item_id INT NOT NULL,
+    how_to_obtain_id INT NOT NULL,
+    PRIMARY KEY (item_id, how_to_obtain_id)
+  )`,
+
+    // Wiki catalog tables (legacy — kept until migration verified)
     `CREATE TABLE IF NOT EXISTS artifacts (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(255) NOT NULL,

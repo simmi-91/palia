@@ -102,8 +102,25 @@ export const buildTimeString = (selected: string[]): string => {
   const ordered = CLOCK_PHASES.filter((p) => selected.includes(p.name));
   if (ordered.length === 0) return "";
   if (ordered.length === CLOCK_PHASES.length) return "Any Time";
-  const names = ordered.map((p) => p.name).join(" and ");
-  const start = ordered[0].startLabel;
-  const end = ordered[ordered.length - 1].endLabel;
-  return `${names} (${start} - ${end})`;
+  const runs: (typeof CLOCK_PHASES[number])[][] = [];
+  let current = [ordered[0]];
+  for (let i = 1; i < ordered.length; i++) {
+    const prevIdx = CLOCK_PHASES.findIndex((p) => p.name === ordered[i - 1].name);
+    const currIdx = CLOCK_PHASES.findIndex((p) => p.name === ordered[i].name);
+    if (currIdx === prevIdx + 1) {
+      current.push(ordered[i]);
+    } else {
+      runs.push(current);
+      current = [ordered[i]];
+    }
+  }
+  runs.push(current);
+  return runs
+    .map((run) => {
+      const names = run.length <= 2
+        ? run.map((p) => p.name).join(" and ")
+        : run.slice(0, -1).map((p) => p.name).join(", ") + " and " + run[run.length - 1].name;
+      return `${names} (${run[0].startLabel} - ${run[run.length - 1].endLabel})`;
+    })
+    .join(" and ");
 };

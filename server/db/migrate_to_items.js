@@ -10,10 +10,9 @@
 import dotenv from "dotenv";
 dotenv.config({ path: "../env/.env.palia" });
 
-import { initializePool } from "./db_connections.js";
-import { initDb } from "./initDb.js";
+import { initializePool, pool } from "./db_connections.js";
 
-const pool = initializePool();
+initializePool();
 
 async function migrate() {
     const conn = await pool.getConnection();

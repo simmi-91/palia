@@ -4,9 +4,7 @@ import type { MainItemEntry } from "../app/types/wikiTypes";
 // type MultilistEntry
 const MultiListItemSchema = Yup.object({
   title: Yup.string().required("Title is required for multi-list entry"),
-  url: Yup.string()
-    .url("Must be a valid URL for multi-list entry")
-    .required("URL is required for multi-list entry"),
+  url: Yup.string().required("URL is required for multi-list entry"),
   category: Yup.string().nullable(),
 });
 
@@ -50,12 +48,16 @@ export const createDynamicValidationSchema = (item: MainItemEntry) => {
     }
 
     if (typeof value === "string") {
+      if (key === "image") {
+        schemaShape[key as string] = Yup.string().trim();
+        continue;
+      }
+
       const stringSchema = Yup.string().trim().required(`${key} is required`);
 
       if (key === "url") {
         schemaShape[key as string] = stringSchema.url("Must be a valid URL");
       } else {
-        // Applies to 'image', 'name', 'description', 'time', 'behavior', etc.
         schemaShape[key as string] = stringSchema;
       }
       continue;

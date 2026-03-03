@@ -22,6 +22,19 @@ export const selectAllPotatoPods = (): UseQueryResult<
   return query;
 };
 
+const fetchPotatoPodFamilies = async (): Promise<string[]> => {
+  const response = await fetch(import.meta.env.VITE_API_URL + "/potato_pods/families");
+  if (!response.ok) throw new Error("Network response was not ok");
+  return response.json();
+};
+
+export const usePotatoPodFamilies = (): UseQueryResult<string[], Error> =>
+  useQuery({
+    queryKey: ["PotatoPodsData", "families"],
+    queryFn: fetchPotatoPodFamilies,
+    staleTime: 1000 * 60 * 5,
+  });
+
 export const selectPotatoPodById = (
   itemId: number,
 ): UseQueryResult<PotatoPodEntry | undefined, Error> => {

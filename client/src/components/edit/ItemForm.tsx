@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { Formik, Form, Field, FieldArray, ErrorMessage, useFormikContext } from "formik";
 import { createDynamicValidationSchema } from "../../utils/dynamicSchema";
 import { CLOCK_PHASES, parseTimePhases, buildTimeString } from "../../utils/clockPhases";
@@ -13,6 +13,7 @@ import {
     useNeededForEntities,
     useHowToObtainEntities,
 } from "../../features/slices/EntitySlice";
+import { usePotatoPodFamilies } from "../../features/slices/PotatoPodsSlice";
 
 const FormikInput = ({
     label,
@@ -110,7 +111,9 @@ const RarityNameDisplay = () => {
 };
 
 const TimeCheckboxField = () => {
-    const { values, setFieldValue, setFieldTouched } = useFormikContext<MainItemEntry & { time?: string }>();
+    const { values, setFieldValue, setFieldTouched } = useFormikContext<
+        MainItemEntry & { time?: string }
+    >();
     const selected = parseTimePhases(values.time ?? "");
     const allSelected = selected.length === CLOCK_PHASES.length;
 
@@ -172,13 +175,18 @@ const BehaviorField = () => (
         <div className="input-group">
             <span className="input-group-text">Behavior</span>
             <Field name="behavior">
-                {({ field }: { field: { name: string; value: string; onChange: React.ChangeEventHandler; onBlur: React.FocusEventHandler } }) => (
+                {({
+                    field,
+                }: {
+                    field: {
+                        name: string;
+                        value: string;
+                        onChange: React.ChangeEventHandler;
+                        onBlur: React.FocusEventHandler;
+                    };
+                }) => (
                     <>
-                        <input
-                            {...field}
-                            list="behavior-options"
-                            className="form-control"
-                        />
+                        <input {...field} list="behavior-options" className="form-control" />
                         <datalist id="behavior-options">
                             {BEHAVIOR_OPTIONS.map((opt) => (
                                 <option key={opt} value={opt} />
@@ -191,6 +199,39 @@ const BehaviorField = () => (
         <ErrorMessage name="behavior" component="div" className="text-danger small" />
     </div>
 );
+
+const FamilyField = () => {
+    const { data: families = [] } = usePotatoPodFamilies();
+    return (
+        <div className="input-group my-2 flex-column">
+            <div className="input-group">
+                <span className="input-group-text">Family</span>
+                <Field name="family">
+                    {({
+                        field,
+                    }: {
+                        field: {
+                            name: string;
+                            value: string;
+                            onChange: React.ChangeEventHandler;
+                            onBlur: React.FocusEventHandler;
+                        };
+                    }) => (
+                        <>
+                            <input {...field} list="family-options" className="form-control" />
+                            <datalist id="family-options">
+                                {families.map((f) => (
+                                    <option key={f} value={f} />
+                                ))}
+                            </datalist>
+                        </>
+                    )}
+                </Field>
+            </div>
+            <ErrorMessage name="family" component="div" className="text-danger small" />
+        </div>
+    );
+};
 
 const genericFields = (keys: string[]) => {
     const skipKey = ["id", "name", "image", "url"];
@@ -220,9 +261,14 @@ const genericFields = (keys: string[]) => {
                     if (element === "baseValue")
                         return <FormikInput key={element} label="Base Value" name="baseValue" />;
                     if (element === "time") return <TimeCheckboxField key={element} />;
-                    if (element === "behavior")
-                        return <BehaviorField key={element} />;
-                    return null;
+                    if (element === "behavior") return <BehaviorField key={element} />;
+                    if (element === "family") return <FamilyField key={element} />;
+                    {
+                        const label = element
+                            .replace(/([A-Z])/g, " $1")
+                            .replace(/^./, (s) => s.toUpperCase());
+                        return <FormikInput key={element} label={label} name={element} />;
+                    }
                 })}
             </div>
         </>
@@ -307,7 +353,13 @@ const MultiFieldsArray = ({ title, allOptions }: { title: string; allOptions: En
                         </div>
                     )}
                 </FieldArray>
-                <ErrorMessage name={name} component="div" className="text-danger small mt-2" />
+                <ErrorMessage name={name}>
+                    {(msg) =>
+                        typeof msg === "string" ? (
+                            <div className="text-danger small mt-2">{msg}</div>
+                        ) : null
+                    }
+                </ErrorMessage>
             </div>
         </div>
     );
@@ -333,10 +385,12 @@ const ItemForm = ({
     item,
     collectionName: _collectionName,
     onSave,
+    onDelete,
 }: {
     item: MainItemEntry;
     collectionName: string;
     onSave: (values: MainItemEntry) => Promise<void>;
+    onDelete?: (id: number) => Promise<void>;
 }) => {
     const { data: locationData } = useLocationEntities();
     const { data: neededForData } = useNeededForEntities();
@@ -374,7 +428,7 @@ const ItemForm = ({
                     setSubmitting(false);
                 }
             }}>
-            {({ values, errors, touched, status }) => (
+            {({ values, errors, touched, status, isSubmitting }) => (
                 <Form>
                     <div className="container">
                         <div className="card my-2 shadow">
@@ -399,15 +453,39 @@ const ItemForm = ({
                             ))}
 
                         <div className="row mt-3">
-                            <button
-                                type="submit"
-                                className="btn btn-success"
-                                disabled={
-                                    Object.keys(errors).length > 0 &&
-                                    Object.keys(touched).length > 0
-                                }>
-                                {values.id === 0 ? "Add Item" : "Save Changes"}
-                            </button>
+                            <div className="d-flex gap-2">
+                                <button
+                                    type="submit"
+                                    className="btn btn-success"
+                                    disabled={isSubmitting}>
+                                    {values.id === 0 ? "Add Item" : "Save Changes"}
+                                </button>
+                                {values.id !== 0 && onDelete && (
+                                    <button
+                                        type="button"
+                                        className="btn btn-danger"
+                                        disabled={isSubmitting}
+                                        onClick={async () => {
+                                            if (
+                                                !confirm(
+                                                    `Delete "${values.name}"? This cannot be undone.`
+                                                )
+                                            )
+                                                return;
+                                            try {
+                                                await onDelete(values.id);
+                                            } catch (err) {
+                                                alert(
+                                                    err instanceof Error
+                                                        ? err.message
+                                                        : "Delete failed"
+                                                );
+                                            }
+                                        }}>
+                                        Delete
+                                    </button>
+                                )}
+                            </div>
                             {status?.success && (
                                 <div className="alert alert-success mt-2">
                                     {values.id === 0 ? "Item added!" : "Changes saved!"}

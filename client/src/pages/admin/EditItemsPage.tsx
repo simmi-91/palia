@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useAuth } from "../../context/AuthContext";
 
-import { type UseQueryResult } from "@tanstack/react-query";
+import { type UseQueryResult, useQueryClient } from "@tanstack/react-query";
 import type { MainItemEntry, CatchableEntry } from "../../app/types/wikiTypes";
 
 import ItemForm from "../../components/edit/ItemForm";
@@ -33,8 +33,27 @@ const collectionRouteMap: Record<string, string> = {
     fish: "fish",
 };
 
+const collectionQueryKeyMap: Record<string, string> = {
+    artifacts: "ArtifactsData",
+    plushies: "PlushiesData",
+    stickers: "StickerData",
+    potatopods: "PotatoPodsData",
+    bugs: "BugsData",
+    fish: "FishData",
+};
+
+const blankItemMap: Record<string, MainItemEntry> = {
+    artifacts: { id: 0, name: "", url: "", image: "" },
+    stickers: { id: 0, name: "", url: "", image: "", rarity: 1 } as MainItemEntry,
+    potatopods: { id: 0, name: "", url: "", image: "", family: "" } as MainItemEntry,
+    bugs: { id: 0, name: "", url: "", image: "", description: "", rarity: 1, time: "", behavior: "", baseValue: 0, location: [], neededFor: [] } as MainItemEntry,
+    fish: { id: 0, name: "", url: "", image: "", description: "", rarity: 1, time: "", bait: "", baseValue: 0, location: [], neededFor: [] } as MainItemEntry,
+    plushies: { id: 0, name: "", url: "", image: "", rarity: 1, howToObtain: [] } as MainItemEntry,
+};
+
 const EditItemsPage = () => {
     const { profile, makeAuthenticatedRequest } = useAuth();
+    const queryClient = useQueryClient();
     const [activeItemCollection, setActiveItemCollection] = useState("bugs");
     const [activeItem, setActiveItem] = useState<MainItemEntry | undefined>();
 
@@ -45,15 +64,33 @@ const EditItemsPage = () => {
 
     const handleSave = async (values: MainItemEntry | CatchableEntry) => {
         const routeName = collectionRouteMap[activeItemCollection] ?? activeItemCollection;
-        const response = await makeAuthenticatedRequest(
-            `${import.meta.env.VITE_API_URL}/${routeName}/${values.id}`,
-            {
-                method: "PUT",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(values),
-            }
-        );
+        const isNew = values.id === 0;
+        const method = isNew ? "POST" : "PUT";
+        const url = isNew
+            ? `${import.meta.env.VITE_API_URL}/${routeName}`
+            : `${import.meta.env.VITE_API_URL}/${routeName}/${values.id}`;
+        const response = await makeAuthenticatedRequest(url, {
+            method,
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(values),
+        });
         if (!response.ok) throw new Error("Failed to save item");
+        if (isNew) {
+            const data = await response.json();
+            setActiveItem({ ...values, id: data.id } as MainItemEntry);
+            const queryKey = collectionQueryKeyMap[activeItemCollection];
+            if (queryKey) queryClient.invalidateQueries({ queryKey: [queryKey] });
+        }
+    };
+
+    const handleDelete = async (id: number) => {
+        const routeName = collectionRouteMap[activeItemCollection] ?? activeItemCollection;
+        const url = `${import.meta.env.VITE_API_URL}/${routeName}/${id}`;
+        const response = await makeAuthenticatedRequest(url, { method: "DELETE" });
+        if (!response.ok) throw new Error("Failed to delete item");
+        setActiveItem(undefined);
+        const queryKey = collectionQueryKeyMap[activeItemCollection];
+        if (queryKey) queryClient.invalidateQueries({ queryKey: [queryKey] });
     };
 
     const handleSelectCollection = (value: string) => {
@@ -71,7 +108,7 @@ const EditItemsPage = () => {
 
     return (
         <div className="container-fluid">
-            <div className="row my-1">
+            <div className="row my-1 align-items-end">
                 <div className="col-12 col-sm-6">
                     <div className="form-floating">
                         <select
@@ -92,6 +129,13 @@ const EditItemsPage = () => {
                         </select>
                         <label htmlFor="selectItemCollection">Item collection:</label>
                     </div>
+                </div>
+                <div className="col-auto mt-2 mt-sm-0">
+                    <button
+                        className="btn btn-success"
+                        onClick={() => setActiveItem(blankItemMap[activeItemCollection])}>
+                        New Item
+                    </button>
                 </div>
             </div>
 
@@ -131,6 +175,7 @@ const EditItemsPage = () => {
                                 item={activeItem}
                                 collectionName={activeItemCollection}
                                 onSave={handleSave}
+                                onDelete={handleDelete}
                             />
                         ) : (
                             <div className="text-center">Select an item to edit</div>

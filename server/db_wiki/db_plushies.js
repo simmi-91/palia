@@ -22,8 +22,65 @@ const createDB = async () => {
         howToObtain: JSON.parse(row.howToObtain),
       }));
     },
-    updateItem: async () => {
-      return { success: false, error: "Update not yet implemented for MySQL" };
+    addItem: async (data) => {
+      const conn = await pool.getConnection();
+      await conn.beginTransaction();
+      try {
+        const [result] = await conn.execute(
+          "INSERT INTO plushies (name, image, url, rarity) VALUES (?, ?, ?, ?)",
+          [data.name, data.image, data.url, data.rarity]
+        );
+        const id = result.insertId;
+        for (const hto of data.howToObtain ?? []) {
+          const [[entity]] = await conn.query("SELECT id FROM how_to_obtain_entity WHERE title = ?", [hto.title]);
+          if (entity) await conn.execute("INSERT INTO plushies_how_to_obtain_link (plushies_id, how_to_obtain_id) VALUES (?, ?)", [id, entity.id]);
+        }
+        await conn.commit();
+        return { success: true, id };
+      } catch (err) {
+        await conn.rollback();
+        return { success: false, error: err.message };
+      } finally {
+        conn.release();
+      }
+    },
+    updateItem: async (id, data) => {
+      const conn = await pool.getConnection();
+      await conn.beginTransaction();
+      try {
+        await conn.execute(
+          "UPDATE plushies SET name = ?, image = ?, url = ?, rarity = ? WHERE id = ?",
+          [data.name, data.image, data.url, data.rarity, id]
+        );
+        await conn.execute("DELETE FROM plushies_how_to_obtain_link WHERE plushies_id = ?", [id]);
+        for (const hto of data.howToObtain ?? []) {
+          const [[entity]] = await conn.query("SELECT id FROM how_to_obtain_entity WHERE title = ?", [hto.title]);
+          if (entity) await conn.execute("INSERT INTO plushies_how_to_obtain_link (plushies_id, how_to_obtain_id) VALUES (?, ?)", [id, entity.id]);
+        }
+        await conn.commit();
+        return { success: true };
+      } catch (err) {
+        await conn.rollback();
+        return { success: false, error: err.message };
+      } finally {
+        conn.release();
+      }
+    },
+    deleteItem: async (id) => {
+      const conn = await pool.getConnection();
+      await conn.beginTransaction();
+      try {
+        await conn.execute("DELETE FROM plushies_how_to_obtain_link WHERE plushies_id = ?", [id]);
+        const [result] = await conn.execute("DELETE FROM plushies WHERE id = ?", [id]);
+        await conn.commit();
+        if (!result.affectedRows) return { success: false, error: "Not found" };
+        return { success: true };
+      } catch (err) {
+        await conn.rollback();
+        return { success: false, error: err.message };
+      } finally {
+        conn.release();
+      }
     },
   };
 

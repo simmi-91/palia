@@ -26,14 +26,81 @@ const createDB = async () => {
         ORDER BY b.id
       `;
       const [rows] = await pool.query(sql);
-      return rows.map((row) => ({
+      return rows.map(({ needed_for, ...row }) => ({
         ...row,
         location: JSON.parse(row.location),
-        neededFor: JSON.parse(row.needed_for),
+        neededFor: JSON.parse(needed_for),
       }));
     },
-    updateItem: async () => {
-      return { success: false, error: "Update not yet implemented for MySQL" };
+    addItem: async (data) => {
+      const conn = await pool.getConnection();
+      await conn.beginTransaction();
+      try {
+        const [result] = await conn.execute(
+          "INSERT INTO bugs (name, image, url, description, rarity, time, behavior, base_value) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+          [data.name, data.image, data.url, data.description, data.rarity, data.time, data.behavior, data.baseValue]
+        );
+        const id = result.insertId;
+        for (const loc of data.location ?? []) {
+          const [[entity]] = await conn.query("SELECT id FROM location_entity WHERE title = ?", [loc.title]);
+          if (entity) await conn.execute("INSERT INTO bugs_location_link (bugs_id, location_id) VALUES (?, ?)", [id, entity.id]);
+        }
+        for (const nf of data.neededFor ?? []) {
+          const [[entity]] = await conn.query("SELECT id FROM needed_for_entity WHERE title = ?", [nf.title]);
+          if (entity) await conn.execute("INSERT INTO bugs_needed_for_link (bugs_id, needed_for_id) VALUES (?, ?)", [id, entity.id]);
+        }
+        await conn.commit();
+        return { success: true, id };
+      } catch (err) {
+        await conn.rollback();
+        return { success: false, error: err.message };
+      } finally {
+        conn.release();
+      }
+    },
+    updateItem: async (id, data) => {
+      const conn = await pool.getConnection();
+      await conn.beginTransaction();
+      try {
+        await conn.execute(
+          "UPDATE bugs SET name = ?, image = ?, url = ?, description = ?, rarity = ?, time = ?, behavior = ?, base_value = ? WHERE id = ?",
+          [data.name, data.image, data.url, data.description, data.rarity, data.time, data.behavior, data.baseValue, id]
+        );
+        await conn.execute("DELETE FROM bugs_location_link WHERE bugs_id = ?", [id]);
+        for (const loc of data.location ?? []) {
+          const [[entity]] = await conn.query("SELECT id FROM location_entity WHERE title = ?", [loc.title]);
+          if (entity) await conn.execute("INSERT INTO bugs_location_link (bugs_id, location_id) VALUES (?, ?)", [id, entity.id]);
+        }
+        await conn.execute("DELETE FROM bugs_needed_for_link WHERE bugs_id = ?", [id]);
+        for (const nf of data.neededFor ?? []) {
+          const [[entity]] = await conn.query("SELECT id FROM needed_for_entity WHERE title = ?", [nf.title]);
+          if (entity) await conn.execute("INSERT INTO bugs_needed_for_link (bugs_id, needed_for_id) VALUES (?, ?)", [id, entity.id]);
+        }
+        await conn.commit();
+        return { success: true };
+      } catch (err) {
+        await conn.rollback();
+        return { success: false, error: err.message };
+      } finally {
+        conn.release();
+      }
+    },
+    deleteItem: async (id) => {
+      const conn = await pool.getConnection();
+      await conn.beginTransaction();
+      try {
+        await conn.execute("DELETE FROM bugs_location_link WHERE bugs_id = ?", [id]);
+        await conn.execute("DELETE FROM bugs_needed_for_link WHERE bugs_id = ?", [id]);
+        const [result] = await conn.execute("DELETE FROM bugs WHERE id = ?", [id]);
+        await conn.commit();
+        if (!result.affectedRows) return { success: false, error: "Not found" };
+        return { success: true };
+      } catch (err) {
+        await conn.rollback();
+        return { success: false, error: err.message };
+      } finally {
+        conn.release();
+      }
     },
   };
 

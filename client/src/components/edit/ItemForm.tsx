@@ -322,7 +322,9 @@ const MultiFieldsArray = ({ title, allOptions }: { title: string; allOptions: En
                                     <option value="">Select a new {title}...</option>
                                     {unselectedOptions.map((option) => (
                                         <option key={option.id} value={option.title}>
-                                            {option.title}
+                                            {option.category
+                                                ? `[${option.category[0]}] ${option.title}`
+                                                : option.title}
                                         </option>
                                     ))}
                                 </select>

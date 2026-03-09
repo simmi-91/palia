@@ -515,9 +515,9 @@ const ItemForm = ({
 
     return (
         <Formik
+            key={item.id}
             initialValues={initialValues}
             validationSchema={validationSchema}
-            enableReinitialize={true}
             onSubmit={async (values, { setSubmitting, setStatus }) => {
                 try {
                     await onSave(values as MainItemEntry);

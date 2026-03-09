@@ -1,0 +1,8 @@
+[
+  { "id": "artifacts",  "display_name": "Artifacts",   "is_visible": true, "is_tradeable": true,  "is_favoritable": false },
+  { "id": "bugs",       "display_name": "Bugs",         "is_visible": true, "is_tradeable": false, "is_favoritable": true  },
+  { "id": "fish",       "display_name": "Fish",         "is_visible": true, "is_tradeable": false, "is_favoritable": true  },
+  { "id": "plushies",   "display_name": "Plushies",     "is_visible": true, "is_tradeable": true,  "is_favoritable": false },
+  { "id": "potatopods", "display_name": "Potato Pods",  "is_visible": true, "is_tradeable": true,  "is_favoritable": false },
+  { "id": "stickers",   "display_name": "Stickers",     "is_visible": true, "is_tradeable": true,  "is_favoritable": false }
+]

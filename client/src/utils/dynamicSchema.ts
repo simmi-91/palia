@@ -31,7 +31,7 @@ export const createDynamicValidationSchema = (item: MainItemEntry) => {
     if (key === "rarity") {
       schemaShape[key as string] = Yup.number()
         .typeError("Rarity must be a number")
-        .required("Rarity is required")
+        .nullable()
         .integer("Rarity must be a whole number")
         .min(1, "Rarity must be at least 1")
         .max(6, "Rarity cannot exceed 6");
@@ -41,24 +41,27 @@ export const createDynamicValidationSchema = (item: MainItemEntry) => {
     if (key === "baseValue") {
       schemaShape[key as string] = Yup.number()
         .typeError("Base Value must be a whole number")
-        .required("Base Value is required")
+        .nullable()
         .integer("Base Value must be a whole number")
         .min(0, "Base Value cannot be negative");
       continue;
     }
 
-    if (typeof value === "string") {
+    const REQUIRED_STRINGS = ["name", "url", "category"];
+
+    if (typeof value === "string" || value === null) {
       if (key === "image") {
-        schemaShape[key as string] = Yup.string().trim();
+        schemaShape[key as string] = Yup.string().trim().nullable();
         continue;
       }
-
-      const stringSchema = Yup.string().trim().required(`${key} is required`);
-
       if (key === "url") {
-        schemaShape[key as string] = stringSchema.url("Must be a valid URL");
+        schemaShape[key as string] = Yup.string().trim().required(`${key} is required`).url("Must be a valid URL");
+        continue;
+      }
+      if (REQUIRED_STRINGS.includes(key)) {
+        schemaShape[key as string] = Yup.string().trim().required(`${key} is required`);
       } else {
-        schemaShape[key as string] = stringSchema;
+        schemaShape[key as string] = Yup.string().trim().nullable();
       }
       continue;
     }

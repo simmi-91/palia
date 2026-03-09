@@ -42,15 +42,17 @@ const FormikInput = ({
     name,
     type = "text",
     step,
+    required,
 }: {
     label: string;
     name: string;
     type?: string;
     step?: string;
+    required?: boolean;
 }) => (
     <div className="input-group my-2 flex-column">
         <div className="input-group">
-            <span className="input-group-text">{label}</span>
+            <span className="input-group-text">{label}{required && <span className="text-danger ms-1">*</span>}</span>
             <Field name={name} type={type} step={step} className="form-control" />
         </div>
         <ErrorMessage name={name} component="div" className="text-danger small" />
@@ -62,7 +64,7 @@ const UrlField = () => {
     return (
         <div className="input-group my-2 flex-column">
             <div className="input-group">
-                <span className="input-group-text">Wiki URL</span>
+                <span className="input-group-text">Wiki URL<span className="text-danger ms-1">*</span></span>
                 <Field name="url" type="text" className="form-control" />
                 <a
                     href={values.url || "#"}
@@ -276,7 +278,7 @@ const CategoryField = () => {
     return (
         <div className="input-group my-2 flex-column">
             <div className="input-group">
-                <span className="input-group-text">Category</span>
+                <span className="input-group-text">Category<span className="text-danger ms-1">*</span></span>
                 <Field name="category" as="select" className="form-select">
                     {categories.map((cat) => (
                         <option key={cat.id} value={cat.id}>
@@ -327,7 +329,7 @@ const genericFields = (keys: string[]) => {
     const skipKey = ["id", "name", "image", "url"];
     return (
         <>
-            <FormikInput label="Name" name="name" />
+            <FormikInput label="Name" name="name" required />
             <UrlField />
             <ImgField />
 
@@ -537,7 +539,10 @@ const ItemForm = ({
                                     ? "New Item"
                                     : `Editing id ${values.id}, ${values.name}`}
                             </h5>
-                            <div className="card-body">{genericFields(genericKeys)}</div>
+                            <div className="card-body">
+                                {genericFields(genericKeys)}
+                                <small className="text-muted"><span className="text-danger">*</span> Required</small>
+                            </div>
                         </div>
 
                         {multilist &&

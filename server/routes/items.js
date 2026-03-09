@@ -3,6 +3,79 @@ import { createDB } from "../db/db_items.js";
 
 const router = Router();
 
+/**
+ * @swagger
+ * /items:
+ *   get:
+ *     summary: Get all items
+ *     tags: [Items]
+ *     responses:
+ *       200:
+ *         description: List of all items
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Item'
+ *       503:
+ *         description: Database unavailable
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *   post:
+ *     summary: Add a new item
+ *     tags: [Items]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/Item'
+ *     responses:
+ *       201:
+ *         description: Item created
+ *       503:
+ *         description: Database unavailable
+ *
+ * /items/{id}:
+ *   put:
+ *     summary: Update an item
+ *     tags: [Items]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/Item'
+ *     responses:
+ *       200:
+ *         description: Item updated
+ *       404:
+ *         description: Item not found
+ *   delete:
+ *     summary: Delete an item
+ *     tags: [Items]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: Item deleted
+ *       404:
+ *         description: Item not found
+ */
+
 router.get("/", async (req, res) => {
     let db;
     try {

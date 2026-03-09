@@ -3,9 +3,11 @@ dotenv.config({ path: "../env/.env.palia" });
 
 import express from "express";
 import cors from "cors";
+import swaggerUi from "swagger-ui-express";
 import { initializePool } from "./db/db_connections.js";
 import { initDb } from "./db/initDb.js";
 import apiRouter from "./routes/index.js";
+import { swaggerSpec } from "./swagger.js";
 
 async function main() {
     initializePool();
@@ -25,6 +27,7 @@ async function main() {
 
     const PORT = 8080;
 
+    app.use("/palia/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
     app.use("/palia", apiRouter);
 
     app.get("/palia/", (req, res) => {

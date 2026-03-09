@@ -3,6 +3,84 @@ import { createDB } from "../db/db_inventory.js";
 
 const router = Router();
 
+/**
+ * @swagger
+ * /inventory/{profileId}:
+ *   get:
+ *     summary: Get all inventory items for a user
+ *     tags: [Inventory]
+ *     parameters:
+ *       - in: path
+ *         name: profileId
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: List of inventory items
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/InventoryItem'
+ *
+ * /inventory/tradeable/{profileId}:
+ *   get:
+ *     summary: Get tradeable inventory items (amount > 1) for all other users
+ *     tags: [Inventory]
+ *     parameters:
+ *       - in: path
+ *         name: profileId
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: List of tradeable items from other users
+ *
+ * /inventory:
+ *   post:
+ *     summary: Update a single inventory item
+ *     tags: [Inventory]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [profileId, category, itemId, amount]
+ *             properties:
+ *               profileId: { type: string }
+ *               category: { type: string }
+ *               itemId: { type: integer }
+ *               amount: { type: integer }
+ *     responses:
+ *       200:
+ *         description: Inventory updated
+ *
+ * /inventory/bulk-update:
+ *   post:
+ *     summary: Bulk update inventory items
+ *     tags: [Inventory]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [profileId, items]
+ *             properties:
+ *               profileId: { type: string }
+ *               items:
+ *                 type: array
+ *                 items:
+ *                   $ref: '#/components/schemas/InventoryItem'
+ *     responses:
+ *       200:
+ *         description: Bulk update successful
+ */
+
 router.get("/:profileId", async (req, res) => {
   const { profileId } = req.params;
 

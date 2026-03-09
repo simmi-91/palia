@@ -3,6 +3,29 @@ import { createDB } from "../db/db_links.js";
 
 const router = Router();
 
+/**
+ * @swagger
+ * /links:
+ *   get:
+ *     summary: Get all external links
+ *     tags: [Links]
+ *     responses:
+ *       200:
+ *         description: List of links
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   id: { type: integer }
+ *                   site: { type: string }
+ *                   url: { type: string }
+ *                   logo: { type: string, nullable: true }
+ *                   description: { type: string, nullable: true }
+ */
+
 router.get("/", async (req, res) => {
   let db;
   try {

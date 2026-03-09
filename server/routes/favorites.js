@@ -3,6 +3,72 @@ import { createDB } from "../db/db_favorites.js";
 
 const router = Router();
 
+/**
+ * @swagger
+ * /favorites/{profileId}:
+ *   get:
+ *     summary: Get all favorites for a user
+ *     tags: [Favorites]
+ *     parameters:
+ *       - in: path
+ *         name: profileId
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: List of favorites
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/FavoriteItem'
+ *   post:
+ *     summary: Add a favorite
+ *     tags: [Favorites]
+ *     parameters:
+ *       - in: path
+ *         name: profileId
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [category, itemId]
+ *             properties:
+ *               category: { type: string }
+ *               itemId: { type: integer }
+ *     responses:
+ *       200:
+ *         description: Favorite added
+ *   delete:
+ *     summary: Remove a favorite
+ *     tags: [Favorites]
+ *     parameters:
+ *       - in: path
+ *         name: profileId
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [favoriteId]
+ *             properties:
+ *               favoriteId: { type: integer }
+ *     responses:
+ *       200:
+ *         description: Favorite removed
+ */
+
 router.get("/:profileId", async (req, res) => {
   const { profileId } = req.params;
   let db;

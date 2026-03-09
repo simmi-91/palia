@@ -1,7 +1,54 @@
 import { Router } from "express";
-import { createDB } from "../db/db_users.js"; // Import createDB
+import { createDB } from "../db/db_users.js";
 
 const router = Router();
+
+/**
+ * @swagger
+ * /users/check:
+ *   post:
+ *     summary: Check if a user exists
+ *     tags: [Users]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [email]
+ *             properties:
+ *               email: { type: string }
+ *     responses:
+ *       200:
+ *         description: User existence check result
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 exists: { type: boolean }
+ *                 isAdmin: { type: boolean }
+ *
+ * /users/register:
+ *   post:
+ *     summary: Register a new user
+ *     tags: [Users]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [id, email, given_name]
+ *             properties:
+ *               id: { type: string }
+ *               email: { type: string }
+ *               given_name: { type: string }
+ *               picture: { type: string }
+ *     responses:
+ *       200:
+ *         description: User registered or already exists
+ */
 
 router.get("/", async (req, res) => {
   res.send("Users API.");

@@ -1,5 +1,5 @@
 import { useQuery, type UseQueryResult } from "@tanstack/react-query";
-import type { StickerEntry } from "../../app/types/wikiTypes";
+import type { StickerEntry } from "../app/types/wikiTypes";
 
 const fetchStickers = async (): Promise<StickerEntry[]> => {
   const response = await fetch(import.meta.env.VITE_API_URL + "/stickers");

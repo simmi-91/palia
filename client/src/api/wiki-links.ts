@@ -1,4 +1,4 @@
-//import { LINKS } from "../../app/shared/LINKS.ts";
+//import { LINKS } from "../app/shared/LINKS.ts";
 import { useQuery, type UseQueryResult } from "@tanstack/react-query";
 
 export type LINKS_Entry = {

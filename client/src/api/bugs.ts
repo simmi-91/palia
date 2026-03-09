@@ -1,5 +1,5 @@
 import { useQuery, type UseQueryResult } from "@tanstack/react-query";
-import type { BugsEntry } from "../../app/types/wikiTypes";
+import type { BugsEntry } from "../app/types/wikiTypes";
 
 const fetchBugs = async (): Promise<BugsEntry[]> => {
   const response = await fetch(import.meta.env.VITE_API_URL + "/bugs");

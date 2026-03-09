@@ -1,5 +1,5 @@
 import { useQuery, type UseQueryResult } from "@tanstack/react-query";
-import type { PotatoPodEntry } from "../../app/types/wikiTypes";
+import type { PotatoPodEntry } from "../app/types/wikiTypes";
 
 const fetchPotatoPods = async (): Promise<PotatoPodEntry[]> => {
   const response = await fetch(import.meta.env.VITE_API_URL + "/potato_pods");

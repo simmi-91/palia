@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import type { FavoriteItem } from "../app/types/userTypes";
-import { addFavorite, removeFavorite } from "../features/slices/FavoritesSlice";
+import { addFavorite, removeFavorite } from "../api/favorites";
 
 type RemoveArgs = { favoriteId: number };
 type AddArgs = { category: string; itemId: number };

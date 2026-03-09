@@ -118,6 +118,14 @@ const CREATE_STATEMENTS = [
     PRIMARY KEY (item_id, how_to_obtain_id)
   )`,
 
+    `CREATE TABLE IF NOT EXISTS categories (
+    id VARCHAR(50) PRIMARY KEY,
+    display_name VARCHAR(100) NOT NULL,
+    is_visible BOOLEAN NOT NULL DEFAULT TRUE,
+    is_tradeable BOOLEAN NOT NULL DEFAULT FALSE,
+    is_favoritable BOOLEAN NOT NULL DEFAULT FALSE
+  )`,
+
     // Wiki catalog tables (legacy — kept until migration verified)
     `CREATE TABLE IF NOT EXISTS artifacts (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -217,6 +225,7 @@ export async function initDb() {
     await seedFromJson("location_entity", join(seedDir, "location_entity.json"));
     await seedFromJson("needed_for_entity", join(seedDir, "needed_for_entity.json"));
     await seedFromJson("how_to_obtain_entity", join(seedDir, "how_to_obtain_entity.json"));
+    await seedFromJson("categories", join(seedDir, "categories.json"));
 
     if (process.env.NODE_ENV === "development") {
         // Seed catalog tables

@@ -1,4 +1,4 @@
-import { selectAllLinks } from "../features/slices/WikiLinkSlice";
+import { selectAllLinks } from "../api/wiki-links";
 import { textIcon } from "../app/icons/common";
 
 const Footer = () => {

@@ -5,7 +5,7 @@ import {
 } from "../../components/CommonStates";
 import CustomCard from "../../components/display/CustomCard";
 
-import { selectAllStickers } from "../../features/slices/StickerSlice";
+import { selectAllStickers } from "../../api/stickers";
 
 const StickersPage = () => {
   const curCategory = "stickers";

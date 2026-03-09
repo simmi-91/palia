@@ -2,7 +2,7 @@ import CustomCard from "../../components/display/CustomCard";
 
 import { LoadingState, ErrorState, EmptyCategoryState } from "../../components/CommonStates";
 
-import { selectAllPlushies } from "../../features/slices/PlushiesSlice";
+import { selectAllPlushies } from "../../api/plushies";
 
 const PlushiesPage = () => {
     const curCategory = "plushies";

@@ -3,8 +3,8 @@ import CustomCard from "../../components/display/CustomCard";
 
 import { LoadingState, ErrorState, EmptyCategoryState } from "../../components/CommonStates";
 
-import { selectAllFish } from "../../features/slices/FishSlice";
-import { selectFavoritesByCategory } from "../../features/slices/FavoritesSlice";
+import { selectAllFish } from "../../api/fish";
+import { selectFavoritesByCategory } from "../../api/favorites";
 
 const FishPage = () => {
     const curCategory = "fish";

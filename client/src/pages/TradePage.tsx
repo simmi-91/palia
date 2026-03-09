@@ -1,6 +1,6 @@
-import { selectAllTradeable } from "../features/slices/TradableSlice";
-import { selectAllArtifacts } from "../features/slices/ArtifactsSlice";
-import { selectAllPlushies } from "../features/slices/PlushiesSlice";
+import { selectAllTradeable } from "../api/tradable";
+import { selectAllArtifacts } from "../api/artifacts";
+import { selectAllPlushies } from "../api/plushies";
 
 import type {
     UserInventoryItem,

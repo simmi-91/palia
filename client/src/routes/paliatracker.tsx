@@ -2,10 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
 import { useAuth } from "../context/AuthContext";
 
-import { selectAllArtifacts } from "../features/slices/ArtifactsSlice";
-import { selectAllPlushies } from "../features/slices/PlushiesSlice";
-import { selectAllPotatoPods } from "../features/slices/PotatoPodsSlice";
-import { selectAllStickers } from "../features/slices/StickerSlice";
+import { selectAllItems } from "../api/items";
 
 import { mapItems } from "../features/trackerMapping/mainMapper";
 
@@ -15,29 +12,7 @@ export const Route = createFileRoute("/paliatracker")({
 
 function ImportTracker() {
   const { profile, bulkUpdateInventory } = useAuth();
-  const {
-    data: artifactData,
-    isLoading: LoadArtifact,
-    isError: ErrArtifact,
-  } = selectAllArtifacts();
-
-  const {
-    data: plushiesData,
-    isLoading: LoadPlushies,
-    isError: ErrPlushies,
-  } = selectAllPlushies();
-
-  const {
-    data: podData,
-    isLoading: LoadPods,
-    isError: ErrPod,
-  } = selectAllPotatoPods();
-
-  const {
-    data: stickerData,
-    isLoading: LoadSticker,
-    isError: ErrSticker,
-  } = selectAllStickers();
+  const { data: allItems, isLoading, isError } = selectAllItems();
 
   const [selectedFile, setSelectedFile] = useState<File | undefined>();
   const [uploadStatus, setUploadStatus] = useState("");
@@ -95,27 +70,23 @@ function ImportTracker() {
     setExtraxtionMsgType("info");
     const json = JSON.parse(fileContent);
 
-    let databaseData;
-    let rawJsonData;
+    const rawJsonKeyMap: Record<string, string> = {
+      artifacts: "trackedArtifact",
+      plushies: "trackedPlush",
+      potatopods: "trackedFurniture",
+      stickers: "trackedStickers",
+    };
 
-    if (category === "artifacts") {
-      databaseData = artifactData;
-      rawJsonData = json.trackedArtifact;
-    } else if (category === "plushies") {
-      databaseData = plushiesData;
-      rawJsonData = json.trackedPlush;
-    } else if (category === "potatopods") {
-      databaseData = podData;
-      rawJsonData = json.trackedFurniture;
-    } else if (category === "stickers") {
-      databaseData = stickerData;
-      rawJsonData = json.trackedStickers;
-    } else {
+    const rawJsonKey = rawJsonKeyMap[category];
+    if (!rawJsonKey) {
       setExtractedFileContent("");
       setExtraxtionMsgType("warning");
       setExtraxtionMsg(`category ${category} not defined for extraction`);
       return;
     }
+
+    const databaseData = allItems?.filter((i) => i.category === category);
+    const rawJsonData = json[rawJsonKey];
 
     if (rawJsonData && rawJsonData) {
       const mappedData = mapItems(
@@ -212,69 +183,37 @@ function ImportTracker() {
                 <button
                   className="btn btn-primary shadow-sm m-1"
                   onClick={() => extractData("artifacts")}
-                  disabled={
-                    profile && artifactData && fileContent ? false : true
-                  }
+                  disabled={!profile || !allItems || !fileContent}
                 >
                   <i className="bi bi-file-earmark-code me-1"></i>
-                  {LoadArtifact
-                    ? "Loading Artifacts..."
-                    : ErrArtifact
-                      ? "Failed getting Artifacts"
-                      : !LoadArtifact && !ErrArtifact && artifactData
-                        ? "Extract Artifacts"
-                        : null}
+                  {isLoading ? "Loading..." : isError ? "Failed loading data" : "Extract Artifacts"}
                 </button>
 
                 <button
                   className="btn btn-primary shadow-sm m-1"
                   onClick={() => extractData("plushies")}
-                  disabled={
-                    profile && plushiesData && fileContent ? false : true
-                  }
+                  disabled={!profile || !allItems || !fileContent}
                 >
                   <i className="bi bi-file-earmark-code me-1"></i>
-                  {LoadPlushies
-                    ? "Loading Plushies..."
-                    : ErrPlushies
-                      ? "Failed getting Plushies"
-                      : !LoadPlushies && !ErrPlushies && plushiesData
-                        ? "Extract Plushies"
-                        : null}
+                  {isLoading ? "Loading..." : isError ? "Failed loading data" : "Extract Plushies"}
                 </button>
 
                 <button
                   className="btn btn-primary shadow-sm m-1"
                   onClick={() => extractData("potatopods")}
-                  disabled={
-                    profile && plushiesData && fileContent ? false : true
-                  }
+                  disabled={!profile || !allItems || !fileContent}
                 >
                   <i className="bi bi-file-earmark-code me-1"></i>
-                  {LoadPods
-                    ? "Loading Potato Pods..."
-                    : ErrPod
-                      ? "Failed getting Potato Pods"
-                      : !LoadPods && !ErrPod && podData
-                        ? "Extract Potato Pods"
-                        : null}
+                  {isLoading ? "Loading..." : isError ? "Failed loading data" : "Extract Potato Pods"}
                 </button>
 
                 <button
                   className="btn btn-primary shadow-sm m-1"
                   onClick={() => extractData("stickers")}
-                  disabled={
-                    profile && plushiesData && fileContent ? false : true
-                  }
+                  disabled={!profile || !allItems || !fileContent}
                 >
                   <i className="bi bi-file-earmark-code me-1"></i>
-                  {LoadSticker
-                    ? "Loading Stickers..."
-                    : ErrSticker
-                      ? "Failed getting Stickers"
-                      : !LoadSticker && !ErrSticker && stickerData
-                        ? "Extract Stickers"
-                        : null}
+                  {isLoading ? "Loading..." : isError ? "Failed loading data" : "Extract Stickers"}
                 </button>
               </div>
               <pre className="d-none" style={{ height: "100%" }}>

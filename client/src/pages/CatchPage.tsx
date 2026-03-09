@@ -10,9 +10,9 @@ import RarityTag from "../components/display/RarityTag";
 import { type UseQueryResult } from "@tanstack/react-query";
 import type { FavoriteItem } from "../app/types/userTypes";
 import type { CatchableEntry, MultilistEntry } from "../app/types/wikiTypes";
-import { selectAllBugs } from "../features/slices/BugsSlice";
-import { selectAllFish } from "../features/slices/FishSlice";
-import { selectAllFavorites } from "../features/slices/FavoritesSlice";
+import { selectAllBugs } from "../api/bugs";
+import { selectAllFish } from "../api/fish";
+import { selectAllFavorites } from "../api/favorites";
 import { useRemoveFavorite } from "../hooks/useFavoriteMutations";
 
 type ItemSelector = () => UseQueryResult<CatchableEntry[] | undefined, Error>;

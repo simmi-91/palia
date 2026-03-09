@@ -6,13 +6,13 @@ import Footer from "../components/Footer";
 import { SubmenuProvider } from "../context/SubmenuContext";
 
 const RootLayout = () => (
-  <SubmenuProvider>
-    <Navbar />
-    <main className="pb-5 mb-5">
-      <Outlet />
-    </main>
-    <Footer />
-  </SubmenuProvider>
+    <SubmenuProvider>
+        <Navbar />
+        <main className="pb-5 mb-5">
+            <Outlet />
+        </main>
+        <Footer />
+    </SubmenuProvider>
 );
 
 export const Route = createRootRoute({ component: RootLayout });

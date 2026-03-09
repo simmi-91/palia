@@ -1,5 +1,5 @@
-import { TREATS, CATEGORIES } from "../../app/shared/RANCHINGTREAT";
-import type { TreatEntry, TreatCategoryEntry } from "../../app/types/types";
+import { TREATS, CATEGORIES } from "../app/shared/RANCHINGTREAT";
+import type { TreatEntry, TreatCategoryEntry } from "../app/types/types";
 
 export const selectAllTreats = (): TreatEntry[] => {
   return TREATS;

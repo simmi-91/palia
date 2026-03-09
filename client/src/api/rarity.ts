@@ -1,4 +1,4 @@
-import { RARITY } from "../../app/shared/RARITY";
+import { RARITY } from "../app/shared/RARITY";
 export type RARITY_Entry = {
   name: string;
   value: number;

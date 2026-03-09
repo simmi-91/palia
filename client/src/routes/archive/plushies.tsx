@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 
 import PlushiesPage from "../../pages/wiki/PlushiesPage";
 
-export const Route = createFileRoute("/wiki/plushies")({
+export const Route = createFileRoute("/archive/plushies")({
   component: Plushies,
 });
 

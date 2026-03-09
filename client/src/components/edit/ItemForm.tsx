@@ -1,19 +1,45 @@
 import React, { useState } from "react";
 import { Formik, Form, Field, FieldArray, ErrorMessage, useFormikContext } from "formik";
+
 import { createDynamicValidationSchema } from "../../utils/dynamicSchema";
 import { CLOCK_PHASES, parseTimePhases, buildTimeString } from "../../utils/clockPhases";
+import { getMultiListProps } from "../../utils/multilistProperties";
 
 import type { EntityOption } from "../../app/types/entityTypes";
 import type { MainItemEntry, MultilistProps } from "../../app/types/wikiTypes";
-import { getMultiListProps } from "../../utils/multilistProperties";
-import { selectRarityByNumber } from "../../features/slices/RaritySlice";
+import { selectRarityByNumber } from "../../api/rarity";
 
 import {
     useLocationEntities,
     useNeededForEntities,
     useHowToObtainEntities,
-} from "../../features/slices/EntitySlice";
-import { usePotatoPodFamilies } from "../../features/slices/PotatoPodsSlice";
+} from "../../api/entities";
+import {
+    useItemFamilies,
+    useItemBehaviors,
+    useItemBaits,
+    useItemCategories,
+} from "../../api/items";
+
+const NullableNumberField = ({ label, name }: { label: string; name: string }) => {
+    const { values, setFieldValue } = useFormikContext<Record<string, unknown>>();
+    return (
+        <div className="input-group my-2 flex-column">
+            <div className="input-group">
+                <span className="input-group-text">{label}</span>
+                <input
+                    type="number"
+                    className="form-control"
+                    value={(values[name] as number | null) ?? ""}
+                    onChange={(e) =>
+                        setFieldValue(name, e.target.value === "" ? null : Number(e.target.value))
+                    }
+                />
+            </div>
+            <ErrorMessage name={name} component="div" className="text-danger small" />
+        </div>
+    );
+};
 
 const FormikInput = ({
     label,
@@ -166,13 +192,9 @@ const TimeCheckboxField = () => {
     );
 };
 
-const COMBO_OPTIONS: Record<string, string[]> = {
-    behavior: ["running", "flying", "jumping", "dashing"],
-    bait: ["No bait", "Worm", "Glow Worm"],
-};
-
 const ComboField = ({ element }: { element: string }) => {
-    const options = COMBO_OPTIONS[element] ?? [];
+    const { data: behaviors = [] } = useItemBehaviors();
+    const options = element === "behavior" ? behaviors : [];
     const label = element.charAt(0).toUpperCase() + element.slice(1);
 
     return (
@@ -210,8 +232,84 @@ const ComboField = ({ element }: { element: string }) => {
     );
 };
 
+const BaitRadioField = () => {
+    const { data: options = [] } = useItemBaits();
+    const { values, setFieldValue } = useFormikContext<MainItemEntry & { bait?: string | null }>();
+    const isNull = values.bait === null || values.bait === undefined || values.bait === "";
+    return (
+        <div className="my-2">
+            <div className="d-flex align-items-center gap-3">
+                <span className="input-group-text">Bait</span>
+                <div className="form-check form-check-inline">
+                    <input
+                        className="form-check-input"
+                        type="radio"
+                        id="bait-null"
+                        name="bait"
+                        checked={isNull}
+                        onChange={() => setFieldValue("bait", null)}
+                    />
+                    <label className="form-check-label fst-italic" htmlFor="bait-null">
+                        Not relevant
+                    </label>
+                </div>
+                {options.map((opt) => (
+                    <div key={opt} className="form-check form-check-inline">
+                        <input
+                            className="form-check-input"
+                            type="radio"
+                            id={`bait-${opt}`}
+                            name="bait"
+                            value={opt}
+                            checked={values.bait === opt}
+                            onChange={() => setFieldValue("bait", opt)}
+                        />
+                        <label className="form-check-label" htmlFor={`bait-${opt}`}>
+                            {opt}
+                        </label>
+                    </div>
+                ))}
+            </div>
+            <ErrorMessage name="bait" component="div" className="text-danger small" />
+        </div>
+    );
+};
+
+const CategoryField = () => {
+    const { data: categories = [] } = useItemCategories();
+    return (
+        <div className="input-group my-2 flex-column">
+            <div className="input-group">
+                <span className="input-group-text">Category</span>
+                <Field name="category">
+                    {({
+                        field,
+                    }: {
+                        field: {
+                            name: string;
+                            value: string;
+                            onChange: React.ChangeEventHandler;
+                            onBlur: React.FocusEventHandler;
+                        };
+                    }) => (
+                        <>
+                            <input {...field} list="category-options" className="form-control" />
+                            <datalist id="category-options">
+                                {categories.map((f) => (
+                                    <option key={f} value={f} />
+                                ))}
+                            </datalist>
+                        </>
+                    )}
+                </Field>
+            </div>
+            <ErrorMessage name="category" component="div" className="text-danger small" />
+        </div>
+    );
+};
+
 const FamilyField = () => {
-    const { data: families = [] } = usePotatoPodFamilies();
+    const { data: families = [] } = useItemFamilies();
     return (
         <div className="input-group my-2 flex-column">
             <div className="input-group">
@@ -269,11 +367,12 @@ const genericFields = (keys: string[]) => {
                             />
                         );
                     if (element === "baseValue")
-                        return <FormikInput key={element} label="Base Value" name="baseValue" />;
+                        return <NullableNumberField key={element} label="Base Value" name="baseValue" />;
                     if (element === "time") return <TimeCheckboxField key={element} />;
                     if (element === "behavior")
                         return <ComboField key={element} element={element} />;
-                    if (element === "bait") return <ComboField key={element} element={element} />;
+                    if (element === "bait") return <BaitRadioField key={element} />;
+                    if (element === "category") return <CategoryField key={element} />;
                     if (element === "family") return <FamilyField key={element} />;
                     {
                         const label = element

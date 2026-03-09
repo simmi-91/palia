@@ -1,5 +1,5 @@
 import { Fragment, useEffect, useState } from "react";
-import { selectAllFoods } from "../features/slices/FoodSlice";
+import { selectAllFoods } from "../api/food";
 import type { FoodEntry, FoodDetail } from "../app/types/types";
 import {
   textIcon,

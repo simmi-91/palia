@@ -19,14 +19,15 @@ import { Route as GardenRouteImport } from './routes/garden'
 import { Route as CatchRouteImport } from './routes/catch'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as WikiIndexRouteImport } from './routes/wiki/index'
+import { Route as ArchiveIndexRouteImport } from './routes/archive/index'
 import { Route as AdminIndexRouteImport } from './routes/admin/index'
-import { Route as WikiStickersRouteImport } from './routes/wiki/stickers'
-import { Route as WikiPotatopodsRouteImport } from './routes/wiki/potatopods'
-import { Route as WikiPlushiesRouteImport } from './routes/wiki/plushies'
-import { Route as WikiFishRouteImport } from './routes/wiki/fish'
-import { Route as WikiBugsRouteImport } from './routes/wiki/bugs'
-import { Route as WikiArtifactsRouteImport } from './routes/wiki/artifacts'
+import { Route as WikiCatRouteImport } from './routes/wiki/$cat'
+import { Route as ArchiveStickersRouteImport } from './routes/archive/stickers'
+import { Route as ArchivePotatopodsRouteImport } from './routes/archive/potatopods'
+import { Route as ArchivePlushiesRouteImport } from './routes/archive/plushies'
+import { Route as ArchiveFishRouteImport } from './routes/archive/fish'
+import { Route as ArchiveBugsRouteImport } from './routes/archive/bugs'
+import { Route as ArchiveArtifactsRouteImport } from './routes/archive/artifacts'
 import { Route as AdminEditItemsRouteImport } from './routes/admin/edit-items'
 
 const WormfarmRoute = WormfarmRouteImport.update({
@@ -79,45 +80,50 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const WikiIndexRoute = WikiIndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => WikiRoute,
+const ArchiveIndexRoute = ArchiveIndexRouteImport.update({
+  id: '/archive/',
+  path: '/archive/',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const AdminIndexRoute = AdminIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => AdminRoute,
 } as any)
-const WikiStickersRoute = WikiStickersRouteImport.update({
-  id: '/stickers',
-  path: '/stickers',
+const WikiCatRoute = WikiCatRouteImport.update({
+  id: '/$cat',
+  path: '/$cat',
   getParentRoute: () => WikiRoute,
 } as any)
-const WikiPotatopodsRoute = WikiPotatopodsRouteImport.update({
-  id: '/potatopods',
-  path: '/potatopods',
-  getParentRoute: () => WikiRoute,
+const ArchiveStickersRoute = ArchiveStickersRouteImport.update({
+  id: '/archive/stickers',
+  path: '/archive/stickers',
+  getParentRoute: () => rootRouteImport,
 } as any)
-const WikiPlushiesRoute = WikiPlushiesRouteImport.update({
-  id: '/plushies',
-  path: '/plushies',
-  getParentRoute: () => WikiRoute,
+const ArchivePotatopodsRoute = ArchivePotatopodsRouteImport.update({
+  id: '/archive/potatopods',
+  path: '/archive/potatopods',
+  getParentRoute: () => rootRouteImport,
 } as any)
-const WikiFishRoute = WikiFishRouteImport.update({
-  id: '/fish',
-  path: '/fish',
-  getParentRoute: () => WikiRoute,
+const ArchivePlushiesRoute = ArchivePlushiesRouteImport.update({
+  id: '/archive/plushies',
+  path: '/archive/plushies',
+  getParentRoute: () => rootRouteImport,
 } as any)
-const WikiBugsRoute = WikiBugsRouteImport.update({
-  id: '/bugs',
-  path: '/bugs',
-  getParentRoute: () => WikiRoute,
+const ArchiveFishRoute = ArchiveFishRouteImport.update({
+  id: '/archive/fish',
+  path: '/archive/fish',
+  getParentRoute: () => rootRouteImport,
 } as any)
-const WikiArtifactsRoute = WikiArtifactsRouteImport.update({
-  id: '/artifacts',
-  path: '/artifacts',
-  getParentRoute: () => WikiRoute,
+const ArchiveBugsRoute = ArchiveBugsRouteImport.update({
+  id: '/archive/bugs',
+  path: '/archive/bugs',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ArchiveArtifactsRoute = ArchiveArtifactsRouteImport.update({
+  id: '/archive/artifacts',
+  path: '/archive/artifacts',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const AdminEditItemsRoute = AdminEditItemsRouteImport.update({
   id: '/edit-items',
@@ -137,14 +143,15 @@ export interface FileRoutesByFullPath {
   '/wiki': typeof WikiRouteWithChildren
   '/wormfarm': typeof WormfarmRoute
   '/admin/edit-items': typeof AdminEditItemsRoute
-  '/wiki/artifacts': typeof WikiArtifactsRoute
-  '/wiki/bugs': typeof WikiBugsRoute
-  '/wiki/fish': typeof WikiFishRoute
-  '/wiki/plushies': typeof WikiPlushiesRoute
-  '/wiki/potatopods': typeof WikiPotatopodsRoute
-  '/wiki/stickers': typeof WikiStickersRoute
+  '/archive/artifacts': typeof ArchiveArtifactsRoute
+  '/archive/bugs': typeof ArchiveBugsRoute
+  '/archive/fish': typeof ArchiveFishRoute
+  '/archive/plushies': typeof ArchivePlushiesRoute
+  '/archive/potatopods': typeof ArchivePotatopodsRoute
+  '/archive/stickers': typeof ArchiveStickersRoute
+  '/wiki/$cat': typeof WikiCatRoute
   '/admin/': typeof AdminIndexRoute
-  '/wiki/': typeof WikiIndexRoute
+  '/archive': typeof ArchiveIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -154,16 +161,18 @@ export interface FileRoutesByTo {
   '/profile': typeof ProfileRoute
   '/ranching': typeof RanchingRoute
   '/trade': typeof TradeRoute
+  '/wiki': typeof WikiRouteWithChildren
   '/wormfarm': typeof WormfarmRoute
   '/admin/edit-items': typeof AdminEditItemsRoute
-  '/wiki/artifacts': typeof WikiArtifactsRoute
-  '/wiki/bugs': typeof WikiBugsRoute
-  '/wiki/fish': typeof WikiFishRoute
-  '/wiki/plushies': typeof WikiPlushiesRoute
-  '/wiki/potatopods': typeof WikiPotatopodsRoute
-  '/wiki/stickers': typeof WikiStickersRoute
+  '/archive/artifacts': typeof ArchiveArtifactsRoute
+  '/archive/bugs': typeof ArchiveBugsRoute
+  '/archive/fish': typeof ArchiveFishRoute
+  '/archive/plushies': typeof ArchivePlushiesRoute
+  '/archive/potatopods': typeof ArchivePotatopodsRoute
+  '/archive/stickers': typeof ArchiveStickersRoute
+  '/wiki/$cat': typeof WikiCatRoute
   '/admin': typeof AdminIndexRoute
-  '/wiki': typeof WikiIndexRoute
+  '/archive': typeof ArchiveIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -178,14 +187,15 @@ export interface FileRoutesById {
   '/wiki': typeof WikiRouteWithChildren
   '/wormfarm': typeof WormfarmRoute
   '/admin/edit-items': typeof AdminEditItemsRoute
-  '/wiki/artifacts': typeof WikiArtifactsRoute
-  '/wiki/bugs': typeof WikiBugsRoute
-  '/wiki/fish': typeof WikiFishRoute
-  '/wiki/plushies': typeof WikiPlushiesRoute
-  '/wiki/potatopods': typeof WikiPotatopodsRoute
-  '/wiki/stickers': typeof WikiStickersRoute
+  '/archive/artifacts': typeof ArchiveArtifactsRoute
+  '/archive/bugs': typeof ArchiveBugsRoute
+  '/archive/fish': typeof ArchiveFishRoute
+  '/archive/plushies': typeof ArchivePlushiesRoute
+  '/archive/potatopods': typeof ArchivePotatopodsRoute
+  '/archive/stickers': typeof ArchiveStickersRoute
+  '/wiki/$cat': typeof WikiCatRoute
   '/admin/': typeof AdminIndexRoute
-  '/wiki/': typeof WikiIndexRoute
+  '/archive/': typeof ArchiveIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -201,14 +211,15 @@ export interface FileRouteTypes {
     | '/wiki'
     | '/wormfarm'
     | '/admin/edit-items'
-    | '/wiki/artifacts'
-    | '/wiki/bugs'
-    | '/wiki/fish'
-    | '/wiki/plushies'
-    | '/wiki/potatopods'
-    | '/wiki/stickers'
+    | '/archive/artifacts'
+    | '/archive/bugs'
+    | '/archive/fish'
+    | '/archive/plushies'
+    | '/archive/potatopods'
+    | '/archive/stickers'
+    | '/wiki/$cat'
     | '/admin/'
-    | '/wiki/'
+    | '/archive'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -218,16 +229,18 @@ export interface FileRouteTypes {
     | '/profile'
     | '/ranching'
     | '/trade'
+    | '/wiki'
     | '/wormfarm'
     | '/admin/edit-items'
-    | '/wiki/artifacts'
-    | '/wiki/bugs'
-    | '/wiki/fish'
-    | '/wiki/plushies'
-    | '/wiki/potatopods'
-    | '/wiki/stickers'
+    | '/archive/artifacts'
+    | '/archive/bugs'
+    | '/archive/fish'
+    | '/archive/plushies'
+    | '/archive/potatopods'
+    | '/archive/stickers'
+    | '/wiki/$cat'
     | '/admin'
-    | '/wiki'
+    | '/archive'
   id:
     | '__root__'
     | '/'
@@ -241,14 +254,15 @@ export interface FileRouteTypes {
     | '/wiki'
     | '/wormfarm'
     | '/admin/edit-items'
-    | '/wiki/artifacts'
-    | '/wiki/bugs'
-    | '/wiki/fish'
-    | '/wiki/plushies'
-    | '/wiki/potatopods'
-    | '/wiki/stickers'
+    | '/archive/artifacts'
+    | '/archive/bugs'
+    | '/archive/fish'
+    | '/archive/plushies'
+    | '/archive/potatopods'
+    | '/archive/stickers'
+    | '/wiki/$cat'
     | '/admin/'
-    | '/wiki/'
+    | '/archive/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -262,6 +276,13 @@ export interface RootRouteChildren {
   TradeRoute: typeof TradeRoute
   WikiRoute: typeof WikiRouteWithChildren
   WormfarmRoute: typeof WormfarmRoute
+  ArchiveArtifactsRoute: typeof ArchiveArtifactsRoute
+  ArchiveBugsRoute: typeof ArchiveBugsRoute
+  ArchiveFishRoute: typeof ArchiveFishRoute
+  ArchivePlushiesRoute: typeof ArchivePlushiesRoute
+  ArchivePotatopodsRoute: typeof ArchivePotatopodsRoute
+  ArchiveStickersRoute: typeof ArchiveStickersRoute
+  ArchiveIndexRoute: typeof ArchiveIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -336,12 +357,12 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/wiki/': {
-      id: '/wiki/'
-      path: '/'
-      fullPath: '/wiki/'
-      preLoaderRoute: typeof WikiIndexRouteImport
-      parentRoute: typeof WikiRoute
+    '/archive/': {
+      id: '/archive/'
+      path: '/archive'
+      fullPath: '/archive'
+      preLoaderRoute: typeof ArchiveIndexRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/admin/': {
       id: '/admin/'
@@ -350,47 +371,54 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminIndexRouteImport
       parentRoute: typeof AdminRoute
     }
-    '/wiki/stickers': {
-      id: '/wiki/stickers'
-      path: '/stickers'
-      fullPath: '/wiki/stickers'
-      preLoaderRoute: typeof WikiStickersRouteImport
+    '/wiki/$cat': {
+      id: '/wiki/$cat'
+      path: '/$cat'
+      fullPath: '/wiki/$cat'
+      preLoaderRoute: typeof WikiCatRouteImport
       parentRoute: typeof WikiRoute
     }
-    '/wiki/potatopods': {
-      id: '/wiki/potatopods'
-      path: '/potatopods'
-      fullPath: '/wiki/potatopods'
-      preLoaderRoute: typeof WikiPotatopodsRouteImport
-      parentRoute: typeof WikiRoute
+    '/archive/stickers': {
+      id: '/archive/stickers'
+      path: '/archive/stickers'
+      fullPath: '/archive/stickers'
+      preLoaderRoute: typeof ArchiveStickersRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/wiki/plushies': {
-      id: '/wiki/plushies'
-      path: '/plushies'
-      fullPath: '/wiki/plushies'
-      preLoaderRoute: typeof WikiPlushiesRouteImport
-      parentRoute: typeof WikiRoute
+    '/archive/potatopods': {
+      id: '/archive/potatopods'
+      path: '/archive/potatopods'
+      fullPath: '/archive/potatopods'
+      preLoaderRoute: typeof ArchivePotatopodsRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/wiki/fish': {
-      id: '/wiki/fish'
-      path: '/fish'
-      fullPath: '/wiki/fish'
-      preLoaderRoute: typeof WikiFishRouteImport
-      parentRoute: typeof WikiRoute
+    '/archive/plushies': {
+      id: '/archive/plushies'
+      path: '/archive/plushies'
+      fullPath: '/archive/plushies'
+      preLoaderRoute: typeof ArchivePlushiesRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/wiki/bugs': {
-      id: '/wiki/bugs'
-      path: '/bugs'
-      fullPath: '/wiki/bugs'
-      preLoaderRoute: typeof WikiBugsRouteImport
-      parentRoute: typeof WikiRoute
+    '/archive/fish': {
+      id: '/archive/fish'
+      path: '/archive/fish'
+      fullPath: '/archive/fish'
+      preLoaderRoute: typeof ArchiveFishRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/wiki/artifacts': {
-      id: '/wiki/artifacts'
-      path: '/artifacts'
-      fullPath: '/wiki/artifacts'
-      preLoaderRoute: typeof WikiArtifactsRouteImport
-      parentRoute: typeof WikiRoute
+    '/archive/bugs': {
+      id: '/archive/bugs'
+      path: '/archive/bugs'
+      fullPath: '/archive/bugs'
+      preLoaderRoute: typeof ArchiveBugsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/archive/artifacts': {
+      id: '/archive/artifacts'
+      path: '/archive/artifacts'
+      fullPath: '/archive/artifacts'
+      preLoaderRoute: typeof ArchiveArtifactsRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/admin/edit-items': {
       id: '/admin/edit-items'
@@ -415,23 +443,11 @@ const AdminRouteChildren: AdminRouteChildren = {
 const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 
 interface WikiRouteChildren {
-  WikiArtifactsRoute: typeof WikiArtifactsRoute
-  WikiBugsRoute: typeof WikiBugsRoute
-  WikiFishRoute: typeof WikiFishRoute
-  WikiPlushiesRoute: typeof WikiPlushiesRoute
-  WikiPotatopodsRoute: typeof WikiPotatopodsRoute
-  WikiStickersRoute: typeof WikiStickersRoute
-  WikiIndexRoute: typeof WikiIndexRoute
+  WikiCatRoute: typeof WikiCatRoute
 }
 
 const WikiRouteChildren: WikiRouteChildren = {
-  WikiArtifactsRoute: WikiArtifactsRoute,
-  WikiBugsRoute: WikiBugsRoute,
-  WikiFishRoute: WikiFishRoute,
-  WikiPlushiesRoute: WikiPlushiesRoute,
-  WikiPotatopodsRoute: WikiPotatopodsRoute,
-  WikiStickersRoute: WikiStickersRoute,
-  WikiIndexRoute: WikiIndexRoute,
+  WikiCatRoute: WikiCatRoute,
 }
 
 const WikiRouteWithChildren = WikiRoute._addFileChildren(WikiRouteChildren)
@@ -447,6 +463,13 @@ const rootRouteChildren: RootRouteChildren = {
   TradeRoute: TradeRoute,
   WikiRoute: WikiRouteWithChildren,
   WormfarmRoute: WormfarmRoute,
+  ArchiveArtifactsRoute: ArchiveArtifactsRoute,
+  ArchiveBugsRoute: ArchiveBugsRoute,
+  ArchiveFishRoute: ArchiveFishRoute,
+  ArchivePlushiesRoute: ArchivePlushiesRoute,
+  ArchivePotatopodsRoute: ArchivePotatopodsRoute,
+  ArchiveStickersRoute: ArchiveStickersRoute,
+  ArchiveIndexRoute: ArchiveIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

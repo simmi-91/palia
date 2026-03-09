@@ -7,7 +7,7 @@ import {
 } from "../../components/CommonStates";
 import CustomCard from "../../components/display/CustomCard";
 
-import { selectAllArtifacts } from "../../features/slices/ArtifactsSlice";
+import { selectAllArtifacts } from "../../api/artifacts";
 
 const ArtifactsPage = () => {
   const curCategory = "artifacts";

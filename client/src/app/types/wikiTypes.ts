@@ -46,3 +46,25 @@ export type PotatoPodEntry = MainItemEntry & {
 export type StickerEntry = MainItemEntry & {
   rarity: number;
 };
+
+export type CategoryEntry = {
+  id: string;
+  display_name: string;
+  is_visible: boolean;
+  is_tradeable: boolean;
+  is_favoritable: boolean;
+};
+
+export type ItemEntry = MainItemEntry & {
+  category: string;
+  rarity: number | null;
+  description: string | null;
+  time: string | null;
+  baseValue: number | null;
+  behavior: string | null;
+  bait: string | null;
+  family: string | null;
+  location: MultilistEntry[];
+  neededFor: MultilistEntry[];
+  howToObtain: MultilistEntry[];
+};

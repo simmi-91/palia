@@ -44,7 +44,7 @@ async function migrate() {
             },
             {
                 table: "potato_pods",
-                category: "potato_pods",
+                category: "potatopods",
                 columns: { name: "name", image: "image", url: "url", family: "family" },
             },
             {

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { selectAllCrops } from "../features/slices/GardenSlice";
+import { selectAllCrops } from "../api/garden";
 import type { CROP_Entry } from "../app/types/gardenTypes";
 import { useSubmenu } from "../context/SubmenuContext";
 

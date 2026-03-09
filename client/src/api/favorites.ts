@@ -1,5 +1,5 @@
 import { useQuery, type UseQueryResult } from "@tanstack/react-query";
-import type { FavoriteItem } from "../../app/types/userTypes";
+import type { FavoriteItem } from "../app/types/userTypes";
 
 const fetchFavorites = async (profileId: string): Promise<FavoriteItem[]> => {
   const response = await fetch(

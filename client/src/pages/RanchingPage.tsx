@@ -3,7 +3,7 @@ import { useState } from "react";
 import {
   selectAllTreats,
   selectAllTreatCategories,
-} from "../features/slices/RanchingTreatSlice";
+} from "../api/ranching-treats";
 import type { TreatEntry } from "../app/types/types";
 
 import RarityTag from "../components/display/RarityTag";

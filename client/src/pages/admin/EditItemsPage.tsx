@@ -1,97 +1,18 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useAuth } from "../../context/AuthContext";
 
-import { type UseQueryResult, useQueryClient } from "@tanstack/react-query";
-import type {
-    MainItemEntry,
-    CatchableEntry,
-    ArtifactEntry,
-    StickerEntry,
-    PotatoPodEntry,
-    PlushiesEntry,
-    BugsEntry,
-    FishEntry,
-} from "../../app/types/wikiTypes";
+import { useQueryClient } from "@tanstack/react-query";
+import type { MainItemEntry, ItemEntry } from "../../app/types/wikiTypes";
 
+import { LoadingState, ErrorState, EmptyCategoryState } from "../../components/CommonStates";
 import ItemForm from "../../components/edit/ItemForm";
+import ItemFilters from "../../components/ItemFilters";
 
-import { selectAllArtifacts } from "../../features/slices/ArtifactsSlice";
-import { selectAllPlushies } from "../../features/slices/PlushiesSlice";
-import { selectAllStickers } from "../../features/slices/StickerSlice";
-import { selectAllPotatoPods } from "../../features/slices/PotatoPodsSlice";
-import { selectAllBugs } from "../../features/slices/BugsSlice";
-import { selectAllFish } from "../../features/slices/FishSlice";
+import { selectAllItems } from "../../api/items";
+import { selectAllCategories } from "../../api/categories";
 
-type ItemSelector = () => UseQueryResult<MainItemEntry[] | CatchableEntry[] | undefined, Error>;
+const ITEMS_QUERY_KEY = "ItemsData";
 
-const selectorMap: { [key: string]: ItemSelector } = {
-    artifacts: selectAllArtifacts,
-    plushies: selectAllPlushies,
-    stickers: selectAllStickers,
-    potatopods: selectAllPotatoPods,
-    bugs: selectAllBugs,
-    fish: selectAllFish,
-};
-
-const collectionRouteMap: Record<string, string> = {
-    artifacts: "artifacts",
-    plushies: "plushies",
-    stickers: "stickers",
-    potatopods: "potato_pods",
-    bugs: "bugs",
-    fish: "fish",
-};
-
-const collectionQueryKeyMap: Record<string, string> = {
-    artifacts: "ArtifactsData",
-    plushies: "PlushiesData",
-    stickers: "StickerData",
-    potatopods: "PotatoPodsData",
-    bugs: "BugsData",
-    fish: "FishData",
-};
-
-const blank = <T extends MainItemEntry>(entry: T): MainItemEntry => entry;
-
-const blankItemMap: Record<string, MainItemEntry> = {
-    artifacts: blank<ArtifactEntry>({ id: 0, name: "", url: "", image: "" }),
-    stickers: blank<StickerEntry>({ id: 0, name: "", url: "", image: "", rarity: 1 }),
-    potatopods: blank<PotatoPodEntry>({ id: 0, name: "", url: "", image: "", family: "" }),
-    bugs: blank<BugsEntry>({
-        id: 0,
-        name: "",
-        url: "",
-        image: "",
-        description: "",
-        rarity: 1,
-        time: "",
-        behavior: "",
-        baseValue: 0,
-        location: [],
-        neededFor: [],
-    }),
-    fish: blank<FishEntry>({
-        id: 0,
-        name: "",
-        url: "",
-        image: "",
-        description: "",
-        rarity: 1,
-        time: "",
-        bait: "",
-        baseValue: 0,
-        location: [],
-        neededFor: [],
-    }),
-    plushies: blank<PlushiesEntry>({
-        id: 0,
-        name: "",
-        url: "",
-        image: "",
-        rarity: 1,
-        howToObtain: [],
-    }),
-};
 const requiredFieldsMap: Record<string, string[]> = {
     bugs: ["image", "location"],
     fish: ["image", "location", "bait"],
@@ -101,8 +22,8 @@ const requiredFieldsMap: Record<string, string[]> = {
     potatopods: ["image", "family"],
 };
 
-const getMissingFields = (item: MainItemEntry, collectionName: string): string[] => {
-    const fields = requiredFieldsMap[collectionName] ?? [];
+const getMissingFields = (item: ItemEntry): string[] => {
+    const fields = requiredFieldsMap[item.category] ?? [];
     return fields.filter((field) => {
         const value = (item as Record<string, unknown>)[field];
         if (Array.isArray(value)) return value.length === 0;
@@ -110,145 +31,199 @@ const getMissingFields = (item: MainItemEntry, collectionName: string): string[]
     });
 };
 
+const createBlankItem = (category: string): ItemEntry => ({
+    id: 0,
+    name: "",
+    url: "",
+    image: "",
+    category,
+    rarity: null,
+    description: null,
+    time: null,
+    baseValue: null,
+    behavior: null,
+    bait: null,
+    family: null,
+    location: [],
+    neededFor: [],
+    howToObtain: [],
+});
+
 const EditItemsPage = () => {
     const { profile, makeAuthenticatedRequest } = useAuth();
     const queryClient = useQueryClient();
-    const [activeItemCollection, setActiveItemCollection] = useState("bugs");
-    const [activeItem, setActiveItem] = useState<MainItemEntry | undefined>();
+    const [activeCategory, setActiveCategory] = useState("bugs");
+    const [activeItem, setActiveItem] = useState<ItemEntry | undefined>();
+    const [searchQuery, setSearchQuery] = useState("");
+    const [activeFilters, setActiveFilters] = useState<Record<string, string>>({});
 
-    const useItemSelector = selectorMap[activeItemCollection] ?? selectorMap.bugs;
-    const { data: itemCollection, isLoading } = useItemSelector();
+    const { data: allItems, isLoading: itemLoad, isError: itemErr, error: itemError } = selectAllItems();
+    const { data: categoryData, isLoading: catLoad, isError: catErr, error: catError } = selectAllCategories();
+
+    const categoryItems = useMemo(() => {
+        if (activeCategory === "all") return allItems ?? [];
+        return (allItems ?? []).filter((item) => item.category === activeCategory);
+    }, [allItems, activeCategory]);
+
+    const filteredItems = useMemo(() => {
+        const q = searchQuery.trim().toLowerCase();
+        let result = q
+            ? categoryItems.filter(
+                  (item) =>
+                      item.name.toLowerCase().includes(q)
+              )
+            : categoryItems;
+
+        for (const [filterType, selected] of Object.entries(activeFilters)) {
+            if (selected && selected !== "all") {
+                result = result.filter((item) => {
+                    const itemValue = (item as Record<string, unknown>)[filterType];
+                    return String(itemValue) === selected;
+                });
+            }
+        }
+        return result;
+    }, [categoryItems, searchQuery, activeFilters]);
 
     if (!profile) return null;
+    if (itemLoad || catLoad) return <LoadingState color="dark" />;
+    if (itemErr || catErr) return <ErrorState error={itemError ?? catError} />;
+    if (!allItems || allItems.length === 0) return <EmptyCategoryState />;
 
-    const handleSave = async (values: MainItemEntry | CatchableEntry) => {
-        const routeName = collectionRouteMap[activeItemCollection] ?? activeItemCollection;
-        const isNew = values.id === 0;
+    const handleSave = async (values: MainItemEntry) => {
+        const typedValues = values as ItemEntry;
+        const isNew = typedValues.id === 0;
         const method = isNew ? "POST" : "PUT";
         const url = isNew
-            ? `${import.meta.env.VITE_API_URL}/${routeName}`
-            : `${import.meta.env.VITE_API_URL}/${routeName}/${values.id}`;
+            ? `${import.meta.env.VITE_API_URL}/items`
+            : `${import.meta.env.VITE_API_URL}/items/${typedValues.id}`;
         const response = await makeAuthenticatedRequest(url, {
             method,
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(values),
+            body: JSON.stringify(typedValues),
         });
         if (!response.ok) throw new Error("Failed to save item");
         if (isNew) {
             const data = await response.json();
-            setActiveItem({ ...values, id: data.id } as MainItemEntry);
+            setActiveItem({ ...typedValues, id: data.id });
         }
-        const queryKey = collectionQueryKeyMap[activeItemCollection];
-        if (queryKey) queryClient.invalidateQueries({ queryKey: [queryKey] });
+        queryClient.invalidateQueries({ queryKey: [ITEMS_QUERY_KEY] });
     };
 
     const handleDelete = async (id: number) => {
-        const routeName = collectionRouteMap[activeItemCollection] ?? activeItemCollection;
-        const url = `${import.meta.env.VITE_API_URL}/${routeName}/${id}`;
+        const url = `${import.meta.env.VITE_API_URL}/items/${id}`;
         const response = await makeAuthenticatedRequest(url, { method: "DELETE" });
         if (!response.ok) throw new Error("Failed to delete item");
         setActiveItem(undefined);
-        const queryKey = collectionQueryKeyMap[activeItemCollection];
-        if (queryKey) queryClient.invalidateQueries({ queryKey: [queryKey] });
+        queryClient.invalidateQueries({ queryKey: [ITEMS_QUERY_KEY] });
     };
 
-    const handleSelectCollection = (value: string) => {
-        setActiveItemCollection(value);
+    const handleSelectCategory = (value: string) => {
+        setActiveCategory(value);
         setActiveItem(undefined);
-    };
-
-    const handleSelectItem = (id: number) => {
-        if (id < 0 || !itemCollection) {
-            return;
-        }
-        const itemObject = itemCollection.find((item) => item.id === id);
-        setActiveItem(itemObject);
+        setSearchQuery("");
+        setActiveFilters({});
     };
 
     return (
         <div className="container-fluid">
-            <div className="row my-1 align-items-end">
-                <div className="col-12 col-sm-6">
+            <div className="row my-1 align-items-end g-2">
+                <div className="col-12 col-sm-5">
                     <div className="form-floating">
                         <select
                             className="form-select"
                             id="selectItemCollection"
-                            aria-label="Select Item collection"
-                            defaultValue={activeItemCollection}
-                            onChange={(e) => {
-                                handleSelectCollection(e.target.value);
-                            }}>
-                            {Object.keys(selectorMap).map((item) => {
-                                return (
-                                    <option key={item} value={item}>
-                                        {item}
-                                    </option>
-                                );
-                            })}
+                            aria-label="Select category"
+                            value={activeCategory}
+                            onChange={(e) => handleSelectCategory(e.target.value)}>
+                            <option value="all">All categories</option>
+                            {categoryData?.map((cat) => (
+                                <option key={cat.id} value={cat.id}>
+                                    {cat.display_name}
+                                </option>
+                            ))}
                         </select>
-                        <label htmlFor="selectItemCollection">Item collection:</label>
+                        <label htmlFor="selectItemCollection">Category</label>
                     </div>
                 </div>
-                <div className="col-auto mt-2 mt-sm-0">
+                <div className="col-12 col-sm-5">
+                    <div className="form-floating">
+                        <input
+                            id="searchItems"
+                            type="text"
+                            className="form-control"
+                            placeholder="Search"
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                        />
+                        <label htmlFor="searchItems">Search by name</label>
+                    </div>
+                </div>
+                <div className="col-auto">
                     <button
                         className="btn btn-success"
-                        onClick={() => setActiveItem(blankItemMap[activeItemCollection])}>
+                        disabled={activeCategory === "all"}
+                        onClick={() => setActiveItem(createBlankItem(activeCategory))}>
                         New Item
                     </button>
                 </div>
             </div>
 
-            {isLoading && (
-                <div className="row">
-                    <div className="spinner-border text-dark" role="status">
-                        <span className="visually-hidden">Loading...</span>
-                    </div>
+            <div className="row px-2 mb-2">
+                <div className="col d-flex align-items-center gap-2">
+                    <ItemFilters
+                        data={categoryItems}
+                        activeFilters={activeFilters}
+                        onChange={setActiveFilters}
+                    />
+                    {(searchQuery || Object.values(activeFilters).some((v) => v && v !== "all")) && (
+                        <button
+                            className="btn btn-sm btn-outline-secondary"
+                            onClick={() => { setSearchQuery(""); setActiveFilters({}); }}>
+                            Reset filters
+                        </button>
+                    )}
                 </div>
-            )}
+            </div>
 
-            {itemCollection && (
-                <div className="row px-2">
-                    <div
-                        className="col-12 col-md-3 overflow-y-scroll border"
-                        style={{ height: window.innerWidth < 768 ? "150px" : "70vh" }}>
-                        {itemCollection.map((item) => {
-                            return (
-                                <div key={item.id} className="col d-flex p-1">
-                                    <button
-                                        onClick={() => handleSelectItem(item.id)}
-                                        className={
-                                            activeItem && item.id === activeItem.id
-                                                ? "btn-info btn mx-1 flex-fill text-start"
-                                                : "btn-primary btn mx-1 flex-fill text-start "
-                                        }>
-                                        {item.id} - {item.name}
-                                        {getMissingFields(item, activeItemCollection).length >
-                                            0 && (
-                                            <i
-                                                className="bi bi-exclamation-triangle-fill text-warning float-end"
-                                                title={`Missing: ${getMissingFields(item, activeItemCollection).join(", ")}`}
-                                            />
-                                        )}
-                                    </button>
-                                </div>
-                            );
-                        })}
-                    </div>
-
-                    <div className="col-9">
-                        {activeItem ? (
-                            <ItemForm
-                                item={activeItem}
-                                collectionName={activeItemCollection}
-                                onSave={handleSave}
-                                onDelete={handleDelete}
-                            />
-                        ) : (
-                            <div className="text-center">Select an item to edit</div>
-                        )}
-                    </div>
+            <div className="row px-2">
+                <div
+                    className="col-12 col-md-3 overflow-y-scroll border"
+                    style={{ height: window.innerWidth < 768 ? "150px" : "70vh" }}>
+                    {filteredItems.map((item) => (
+                        <div key={item.id} className="col d-flex p-1">
+                            <button
+                                onClick={() => setActiveItem(item)}
+                                className={
+                                    activeItem && item.id === activeItem.id
+                                        ? "btn-info btn mx-1 flex-fill text-start"
+                                        : "btn-primary btn mx-1 flex-fill text-start"
+                                }>
+                                {item.id} - {item.name}
+                                {getMissingFields(item).length > 0 && (
+                                    <i
+                                        className="bi bi-exclamation-triangle-fill text-warning float-end"
+                                        title={`Missing: ${getMissingFields(item).join(", ")}`}
+                                    />
+                                )}
+                            </button>
+                        </div>
+                    ))}
                 </div>
-            )}
+
+                <div className="col-9">
+                    {activeItem ? (
+                        <ItemForm
+                            item={activeItem}
+                            collectionName={activeItem.category}
+                            onSave={handleSave}
+                            onDelete={handleDelete}
+                        />
+                    ) : (
+                        <div className="text-center">Select an item to edit</div>
+                    )}
+                </div>
+            </div>
         </div>
     );
 };

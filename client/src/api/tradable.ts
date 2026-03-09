@@ -1,5 +1,5 @@
 import { useQuery, type UseQueryResult } from "@tanstack/react-query";
-import type { UserInventoryItem } from "../../app/types/userTypes";
+import type { UserInventoryItem } from "../app/types/userTypes";
 
 const fetchTradeable = async (
   profileId: string

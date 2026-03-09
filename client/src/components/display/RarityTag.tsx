@@ -1,4 +1,4 @@
-import { selectRarityByNumber } from "../../features/slices/RaritySlice";
+import { selectRarityByNumber } from "../../api/rarity";
 import Tag from "./Tag";
 
 const RarityTag = ({ number }: { number: number }) => {

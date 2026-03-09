@@ -1,5 +1,5 @@
 import { useQuery, type UseQueryResult } from "@tanstack/react-query";
-import type { EntityOption } from "../../app/types/entityTypes";
+import type { EntityOption } from "../app/types/entityTypes";
 
 const fetchEntities = async (entityType: string): Promise<EntityOption[]> => {
   const response = await fetch(

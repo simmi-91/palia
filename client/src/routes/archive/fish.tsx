@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 
 import FishPage from "../../pages/wiki/FishPage";
 
-export const Route = createFileRoute("/wiki/fish")({
+export const Route = createFileRoute("/archive/fish")({
   component: Fish,
 });
 

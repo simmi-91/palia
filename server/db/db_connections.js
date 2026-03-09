@@ -11,6 +11,10 @@ function initializePool() {
     database: process.env.DB_NAME,
     waitForConnections: true,
     connectionLimit: 10,
+    typeCast: (field, next) => {
+      if (field.type === "TINY" && field.length === 1) return field.string() === "1";
+      return next();
+    },
   });
 }
 

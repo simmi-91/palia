@@ -1,6 +1,6 @@
 import { createFileRoute, redirect } from "@tanstack/react-router";
 
-export const Route = createFileRoute("/wiki/")({
+export const Route = createFileRoute("/archive/")({
     beforeLoad: () => {
         throw redirect({
             to: "/wiki/bugs",

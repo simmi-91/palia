@@ -7,7 +7,7 @@ import {
 } from "../../components/CommonStates";
 import CustomCard from "../../components/display/CustomCard";
 
-import { selectAllPotatoPods } from "../../features/slices/PotatoPodsSlice";
+import { selectAllPotatoPods } from "../../api/potato-pods";
 
 const PotatoPodsPage = () => {
   const curCategory = "potatopods";

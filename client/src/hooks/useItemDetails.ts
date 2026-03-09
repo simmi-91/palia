@@ -1,10 +1,10 @@
 import { type UseQueryResult } from "@tanstack/react-query";
 import type { MainItemEntry, CatchableEntry } from "../app/types/wikiTypes";
 
-import { selectArtifactById } from "../features/slices/ArtifactsSlice";
-import { selectPlushById } from "../features/slices/PlushiesSlice";
-import { selectStickerById } from "../features/slices/StickerSlice";
-import { selectPotatoPodById } from "../features/slices/PotatoPodsSlice";
+import { selectArtifactById } from "../api/artifacts";
+import { selectPlushById } from "../api/plushies";
+import { selectStickerById } from "../api/stickers";
+import { selectPotatoPodById } from "../api/potato-pods";
 
 type ItemSelector = (
   itemId: number

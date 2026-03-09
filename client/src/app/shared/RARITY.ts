@@ -1,4 +1,4 @@
-import type { RARITY_Entry } from "../../features/slices/RaritySlice";
+import type { RARITY_Entry } from "../../api/rarity";
 
 export const RARITY: RARITY_Entry[] = [
   {

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 
 import missingImg from "../../assets/images/missing.png";
-import { useItemDetails } from "../../hooks/useItemDetails";
+import { selectItemById } from "../../api/items";
 import { type TradeDisplayItem } from "../../app/types/userTypes";
 
 type InventoryItemDisplayProps = {
@@ -17,10 +17,7 @@ const InventoryItemDisplay: React.FC<InventoryItemDisplayProps> = ({
 }) => {
   const [tradeWithUsers, setTradeWithUsers] = useState("");
 
-  const { itemObject, isItemLoading } = useItemDetails(
-    item.category,
-    item.itemId
-  );
+  const { data: itemObject, isLoading: isItemLoading } = selectItemById(item.itemId);
   const amount = item.amount - 1;
   if (amount === 0) {
     return;

@@ -7,23 +7,17 @@ import PhaseCountdown from "../components/display/PhaseCountdown";
 
 import RarityTag from "../components/display/RarityTag";
 
-import { type UseQueryResult } from "@tanstack/react-query";
 import type { FavoriteItem } from "../app/types/userTypes";
-import type { CatchableEntry, MultilistEntry } from "../app/types/wikiTypes";
-import { selectAllBugs } from "../api/bugs";
-import { selectAllFish } from "../api/fish";
+import type { ItemEntry, MultilistEntry } from "../app/types/wikiTypes";
+import { selectAllItems } from "../api/items";
 import { selectAllFavorites } from "../api/favorites";
 import { useRemoveFavorite } from "../hooks/useFavoriteMutations";
 
-type ItemSelector = () => UseQueryResult<CatchableEntry[] | undefined, Error>;
-const selectorMap: { [key: string]: ItemSelector } = {
-    bugs: selectAllBugs,
-    fish: selectAllFish,
-};
+type fullFavoriteEntry = ItemEntry & FavoriteItem;
 
-type fullFavoriteEntry = CatchableEntry & FavoriteItem;
+const CATCHABLE_CATEGORIES = ["bugs", "fish"];
 
-const itemTimeIncludesPhase = (itemTime: string, phase: string): boolean => {
+const itemTimeIncludesPhase = (itemTime: string | null, phase: string): boolean => {
     if (!itemTime || itemTime.toLowerCase().includes("any time")) {
         return true;
     }
@@ -52,22 +46,8 @@ const CatchPage = ({ profile }: { profile: GoogleProfile }) => {
 
     const { remove: removeFavoriteMutate, isPending: removingId } = useRemoveFavorite(profileId);
 
-    const categoryData = Object.entries(selectorMap).map(([category, selector]) => {
-        const { data, isLoading, isError } = selector();
-        return {
-            category,
-            data,
-            isLoading,
-            isError,
-        };
-    });
-
-    const {
-        data: favoritesData,
-        isLoading: favLoad,
-        isError: favIsErr,
-        error: favErr,
-    } = selectAllFavorites(profileId);
+    const { data: allItems, isLoading: itemsLoad, isError: itemsErr, error: itemsError } = selectAllItems();
+    const { data: favoritesData, isLoading: favLoad, isError: favIsErr, error: favErr } = selectAllFavorites(profileId);
 
     useEffect(() => {
         const tick = () => {
@@ -81,55 +61,40 @@ const CatchPage = ({ profile }: { profile: GoogleProfile }) => {
     }, []);
 
     if (!profile) return;
+    if (itemsLoad || favLoad) return <LoadingState color="dark" />;
+    if (itemsErr) return <ErrorState error={itemsError} />;
+    if (favIsErr) return <ErrorState error={favErr} />;
+    if (!favoritesData || !allItems) return <EmptyCategoryState />;
 
-    if (favLoad) {
-        return <LoadingState color="dark" />;
-    }
-    if (favIsErr) {
-        return <ErrorState error={favErr} />;
-    }
-    if (!favoritesData || !categoryData) {
-        return <EmptyCategoryState />;
-    }
+    const catchableItems = allItems.filter((item) => CATCHABLE_CATEGORIES.includes(item.category));
 
-    const fullFavoriteItems: fullFavoriteEntry[] = categoryData
-        .filter(
-            (categoryInfo) => !categoryInfo.isLoading && !categoryInfo.isError && categoryInfo.data
-        )
-        .sort((a, b) => a.category.localeCompare(b.category))
-        .flatMap((categoryInfo) => {
-            const categoryFavorites = favoritesData.filter(
-                (fav) => fav.category === categoryInfo.category
+    const fullFavoriteItems: fullFavoriteEntry[] = favoritesData
+        .filter((fav) => CATCHABLE_CATEGORIES.includes(fav.category))
+        .flatMap((favorite) => {
+            const itemData = catchableItems.find(
+                (item) => item.id === favorite.itemId && item.category === favorite.category
             );
-            return categoryFavorites.flatMap((favorite) => {
-                const itemData = categoryInfo.data?.find((item) => item.id === favorite.itemId);
-                return itemData
-                    ? [
-                          {
-                              ...itemData,
-                              favoriteId: favorite.favoriteId,
-                              category: categoryInfo.category,
-                          } as fullFavoriteEntry,
-                      ]
-                    : [];
-            });
-        });
+            return itemData
+                ? [{ ...itemData, favoriteId: favorite.favoriteId } as fullFavoriteEntry]
+                : [];
+        })
+        .sort((a, b) => a.category.localeCompare(b.category));
 
     const nowItems = fullFavoriteItems.filter((item) => {
         if (!item) return false;
-        if (item.time.toLowerCase().includes("any time")) return true;
+        if (!item.time || item.time.toLowerCase().includes("any time")) return true;
         return itemTimeIncludesPhase(item.time, currentPhaseText);
     });
 
     const nextItems = fullFavoriteItems.filter((item) => {
         if (!item) return false;
-        if (item.time.toLowerCase().includes("any time")) return false;
+        if (!item.time || item.time.toLowerCase().includes("any time")) return false;
         return itemTimeIncludesPhase(item.time, nextPhase);
     });
 
     const laterItems = fullFavoriteItems.filter((item) => {
         if (!item) return false;
-        if (item.time.toLowerCase().includes("any time")) return false;
+        if (!item.time || item.time.toLowerCase().includes("any time")) return false;
         return laterPhases.some((phase) => itemTimeIncludesPhase(item.time, phase));
     });
 
@@ -139,10 +104,10 @@ const CatchPage = ({ profile }: { profile: GoogleProfile }) => {
     };
 
     const generateInfotext = (item: fullFavoriteEntry) => {
-        let infoText: string[] = [];
-        infoText.push(item.time.replace(/\s*\([^)]*\)\s*$/, ""));
+        const infoText: string[] = [];
+        if (item.time) infoText.push(item.time.replace(/\s*\([^)]*\)\s*$/, ""));
 
-        if ("bait" in item && typeof item.bait === "string") {
+        if (item.bait) {
             infoText.push(item.bait);
         }
 
@@ -200,10 +165,7 @@ const CatchPage = ({ profile }: { profile: GoogleProfile }) => {
                                                         <img
                                                             src={item.image}
                                                             alt={item.name}
-                                                            style={{
-                                                                width: "40px",
-                                                                height: "40px",
-                                                            }}
+                                                            style={{ width: "40px", height: "40px" }}
                                                         />
                                                     )}
                                                 </div>
@@ -218,40 +180,26 @@ const CatchPage = ({ profile }: { profile: GoogleProfile }) => {
                                                     </div>
 
                                                     <div className="m-0">
-                                                        <RarityTag number={item.rarity} />
+                                                        <RarityTag number={item.rarity ?? 0} />
                                                     </div>
 
                                                     <div className="row">
                                                         <small className="text-muted">
-                                                            {generateInfotext(item).map(
-                                                                (line, idx) => {
-                                                                    return (
-                                                                        <span key={idx}>
-                                                                            {idx > 0 && (
-                                                                                <i className="bi bi-dot"></i>
-                                                                            )}
-                                                                            {line}
-                                                                        </span>
-                                                                    );
-                                                                }
-                                                            )}
+                                                            {generateInfotext(item).map((line, idx) => (
+                                                                <span key={idx}>
+                                                                    {idx > 0 && <i className="bi bi-dot"></i>}
+                                                                    {line}
+                                                                </span>
+                                                            ))}
                                                         </small>
                                                     </div>
                                                 </div>
                                                 <div className="col flex-grow-0 align-content-center">
                                                     <button
-                                                        onClick={() =>
-                                                            handleFavorite(
-                                                                item.favoriteId,
-                                                                item.name
-                                                            )
-                                                        }
+                                                        onClick={() => handleFavorite(item.favoriteId, item.name)}
                                                         className="btn btn-outline-dark rounded-circle p-0 m-0"
                                                         disabled={removingId}
-                                                        style={{
-                                                            width: 25,
-                                                            height: 25,
-                                                        }}>
+                                                        style={{ width: 25, height: 25 }}>
                                                         <i className="bi bi-star-fill"></i>
                                                     </button>
                                                 </div>

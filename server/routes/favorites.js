@@ -24,6 +24,12 @@ const router = Router();
  *               type: array
  *               items:
  *                 $ref: '#/components/schemas/FavoriteItem'
+ *       503:
+ *         description: Database service unavailable
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
  *   post:
  *     summary: Add a favorite
  *     tags: [Favorites]
@@ -44,8 +50,14 @@ const router = Router();
  *               category: { type: string }
  *               itemId: { type: integer }
  *     responses:
- *       200:
+ *       201:
  *         description: Favorite added
+ *       503:
+ *         description: Database service unavailable
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
  *   delete:
  *     summary: Remove a favorite
  *     tags: [Favorites]
@@ -67,6 +79,12 @@ const router = Router();
  *     responses:
  *       200:
  *         description: Favorite removed
+ *       503:
+ *         description: Database service unavailable
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
  */
 
 router.get("/:profileId", async (req, res) => {

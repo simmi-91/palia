@@ -25,6 +25,12 @@ const router = Router();
  *               type: array
  *               items:
  *                 $ref: '#/components/schemas/MultilistEntry'
+ *       503:
+ *         description: Database service unavailable
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
  *   post:
  *     summary: Add a new entity entry
  *     tags: [Entity]
@@ -39,10 +45,20 @@ const router = Router();
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/MultilistEntry'
+ *             type: object
+ *             required: [newItem]
+ *             properties:
+ *               newItem:
+ *                 $ref: '#/components/schemas/MultilistEntry'
  *     responses:
- *       201:
- *         description: Entity created
+ *       200:
+ *         description: Entity added
+ *       503:
+ *         description: Database service unavailable
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
  *   put:
  *     summary: Update an entity entry
  *     tags: [Entity]
@@ -61,12 +77,23 @@ const router = Router();
  *             required: [id]
  *             properties:
  *               id: { type: integer }
- *               title: { type: string }
- *               url: { type: string }
- *               category: { type: string }
+ *               newItem:
+ *                 $ref: '#/components/schemas/MultilistEntry'
  *     responses:
  *       200:
  *         description: Entity updated
+ *       500:
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *       503:
+ *         description: Database service unavailable
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
  *   delete:
  *     summary: Delete an entity entry
  *     tags: [Entity]
@@ -88,6 +115,18 @@ const router = Router();
  *     responses:
  *       200:
  *         description: Entity deleted
+ *       500:
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *       503:
+ *         description: Database service unavailable
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
  */
 
 router.get("/:entity", async (req, res) => {

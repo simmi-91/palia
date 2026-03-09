@@ -28,6 +28,18 @@ const router = Router();
  *               properties:
  *                 exists: { type: boolean }
  *                 isAdmin: { type: boolean }
+ *       400:
+ *         description: Bad request – missing or invalid fields
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *       503:
+ *         description: Database service unavailable
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
  *
  * /users/register:
  *   post:
@@ -46,8 +58,26 @@ const router = Router();
  *               given_name: { type: string }
  *               picture: { type: string }
  *     responses:
- *       200:
- *         description: User registered or already exists
+ *       201:
+ *         description: User successfully registered
+ *       400:
+ *         description: Bad request – missing or invalid fields
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *       409:
+ *         description: Conflict – user with that email is already registered
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *       503:
+ *         description: Database service unavailable
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
  */
 
 router.get("/", async (req, res) => {

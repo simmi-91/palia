@@ -24,6 +24,12 @@ const router = Router();
  *                   url: { type: string }
  *                   logo: { type: string, nullable: true }
  *                   description: { type: string, nullable: true }
+ *       503:
+ *         description: Database service unavailable
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
  */
 
 router.get("/", async (req, res) => {

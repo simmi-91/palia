@@ -36,6 +36,18 @@ const router = Router();
  *     responses:
  *       201:
  *         description: Item created
+ *       400:
+ *         description: Bad request – missing or invalid fields
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *       500:
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
  *       503:
  *         description: Database unavailable
  *
@@ -58,8 +70,30 @@ const router = Router();
  *     responses:
  *       200:
  *         description: Item updated
+ *       400:
+ *         description: Bad request – missing or invalid fields
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
  *       404:
- *         description: Item not found
+ *         description: Not found – resource with given ID does not exist
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *       500:
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *       503:
+ *         description: Database service unavailable
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
  *   delete:
  *     summary: Delete an item
  *     tags: [Items]
@@ -72,8 +106,30 @@ const router = Router();
  *     responses:
  *       200:
  *         description: Item deleted
+ *       400:
+ *         description: Bad request – missing or invalid fields
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
  *       404:
- *         description: Item not found
+ *         description: Not found – resource with given ID does not exist
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *       500:
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *       503:
+ *         description: Database service unavailable
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
  */
 
 router.get("/", async (req, res) => {

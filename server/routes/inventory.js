@@ -24,6 +24,12 @@ const router = Router();
  *               type: array
  *               items:
  *                 $ref: '#/components/schemas/InventoryItem'
+ *       503:
+ *         description: Database service unavailable
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
  *
  * /inventory/tradeable/{profileId}:
  *   get:
@@ -38,6 +44,12 @@ const router = Router();
  *     responses:
  *       200:
  *         description: List of tradeable items from other users
+ *       503:
+ *         description: Database service unavailable
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
  *
  * /inventory:
  *   post:
@@ -58,6 +70,24 @@ const router = Router();
  *     responses:
  *       200:
  *         description: Inventory updated
+ *       400:
+ *         description: Bad request – missing or invalid fields
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *       500:
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *       503:
+ *         description: Database service unavailable
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
  *
  * /inventory/bulk-update:
  *   post:
@@ -79,6 +109,24 @@ const router = Router();
  *     responses:
  *       200:
  *         description: Bulk update successful
+ *       400:
+ *         description: Bad request – missing or invalid fields
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *       500:
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *       503:
+ *         description: Database service unavailable
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
  */
 
 router.get("/:profileId", async (req, res) => {

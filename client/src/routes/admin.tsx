@@ -17,6 +17,10 @@ function Admin() {
         {
           label: "Edit items",
           href: "/admin/edit-items",
+        },
+        {
+          label: "Categories",
+          href: "/admin/categories",
           icon: "",
         },
       ]);

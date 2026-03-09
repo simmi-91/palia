@@ -14,12 +14,8 @@ import {
     useNeededForEntities,
     useHowToObtainEntities,
 } from "../../api/entities";
-import {
-    useItemFamilies,
-    useItemBehaviors,
-    useItemBaits,
-    useItemCategories,
-} from "../../api/items";
+import { useItemFamilies, useItemBehaviors, useItemBaits } from "../../api/items";
+import { selectAllCategories } from "../../api/categories";
 
 const NullableNumberField = ({ label, name }: { label: string; name: string }) => {
     const { values, setFieldValue } = useFormikContext<Record<string, unknown>>();
@@ -276,31 +272,17 @@ const BaitRadioField = () => {
 };
 
 const CategoryField = () => {
-    const { data: categories = [] } = useItemCategories();
+    const { data: categories = [] } = selectAllCategories();
     return (
         <div className="input-group my-2 flex-column">
             <div className="input-group">
                 <span className="input-group-text">Category</span>
-                <Field name="category">
-                    {({
-                        field,
-                    }: {
-                        field: {
-                            name: string;
-                            value: string;
-                            onChange: React.ChangeEventHandler;
-                            onBlur: React.FocusEventHandler;
-                        };
-                    }) => (
-                        <>
-                            <input {...field} list="category-options" className="form-control" />
-                            <datalist id="category-options">
-                                {categories.map((f) => (
-                                    <option key={f} value={f} />
-                                ))}
-                            </datalist>
-                        </>
-                    )}
+                <Field name="category" as="select" className="form-select">
+                    {categories.map((cat) => (
+                        <option key={cat.id} value={cat.id}>
+                            {cat.display_name}
+                        </option>
+                    ))}
                 </Field>
             </div>
             <ErrorMessage name="category" component="div" className="text-danger small" />

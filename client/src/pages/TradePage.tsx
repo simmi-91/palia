@@ -1,6 +1,4 @@
 import { selectAllTradeable } from "../api/tradable";
-import { selectAllArtifacts } from "../api/artifacts";
-import { selectAllPlushies } from "../api/plushies";
 
 import type {
     UserInventoryItem,
@@ -132,10 +130,7 @@ const TradePage = ({
         isError,
         error,
     } = selectAllTradeable(profile.id);
-    const { isLoading: loadingArtifacts } = selectAllArtifacts();
-    const { isLoading: loadingPlushies } = selectAllPlushies();
-
-    if (loadingTradeData || loadingArtifacts || loadingPlushies) {
+    if (loadingTradeData) {
         return (
             <div className="text-center my-3">
                 <div className="spinner-border text-dark" role="status">

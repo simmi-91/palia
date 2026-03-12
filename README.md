@@ -11,7 +11,8 @@ This project is a mini‑wiki for the game Palia. It provides a quick reference 
   - Google OAuth (client library present)
 - Backend
   - Node.js, Express 5, CORS, dotenv
-  - MySQL (via mysql2) or Local JSON (via LowDB) depending on env
+  - MySQL (via mysql2)
+  - Swagger (swagger-jsdoc, swagger-ui-express) — API docs at `/palia/api-docs`
 - General
   - ESLint setup for the client
 
@@ -24,7 +25,7 @@ This project is a mini‑wiki for the game Palia. It provides a quick reference 
 ### Prerequisites
 
 - Node.js 18+ and npm
-- Optional: MySQL server if running with a real database
+- MySQL server
 
 ### Environment
 
@@ -38,7 +39,6 @@ Common variables:
 - `DB_PASSWORD` MySQL password
 - `DB_NAME` MySQL database name
 
-If `DB_HOST` is not set, the backend falls back to a local JSON storage layer (LowDB) for development.
 
 ### Running Locally
 

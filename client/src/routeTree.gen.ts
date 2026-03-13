@@ -20,9 +20,9 @@ import { Route as CatchRouteImport } from './routes/catch'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminIndexRouteImport } from './routes/admin/index'
-import { Route as WikiCatRouteImport } from './routes/wiki/$cat'
 import { Route as AdminEditItemsRouteImport } from './routes/admin/edit-items'
 import { Route as AdminCategoriesRouteImport } from './routes/admin/categories'
+import { Route as WikiCategoryCatRouteImport } from './routes/wiki/category.$cat'
 import { Route as WikiBundleBundleIdRouteImport } from './routes/wiki/bundle.$bundleId'
 
 const WormfarmRoute = WormfarmRouteImport.update({
@@ -80,11 +80,6 @@ const AdminIndexRoute = AdminIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AdminRoute,
 } as any)
-const WikiCatRoute = WikiCatRouteImport.update({
-  id: '/$cat',
-  path: '/$cat',
-  getParentRoute: () => WikiRoute,
-} as any)
 const AdminEditItemsRoute = AdminEditItemsRouteImport.update({
   id: '/edit-items',
   path: '/edit-items',
@@ -94,6 +89,11 @@ const AdminCategoriesRoute = AdminCategoriesRouteImport.update({
   id: '/categories',
   path: '/categories',
   getParentRoute: () => AdminRoute,
+} as any)
+const WikiCategoryCatRoute = WikiCategoryCatRouteImport.update({
+  id: '/category/$cat',
+  path: '/category/$cat',
+  getParentRoute: () => WikiRoute,
 } as any)
 const WikiBundleBundleIdRoute = WikiBundleBundleIdRouteImport.update({
   id: '/bundle/$bundleId',
@@ -114,9 +114,9 @@ export interface FileRoutesByFullPath {
   '/wormfarm': typeof WormfarmRoute
   '/admin/categories': typeof AdminCategoriesRoute
   '/admin/edit-items': typeof AdminEditItemsRoute
-  '/wiki/$cat': typeof WikiCatRoute
   '/admin/': typeof AdminIndexRoute
   '/wiki/bundle/$bundleId': typeof WikiBundleBundleIdRoute
+  '/wiki/category/$cat': typeof WikiCategoryCatRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -130,9 +130,9 @@ export interface FileRoutesByTo {
   '/wormfarm': typeof WormfarmRoute
   '/admin/categories': typeof AdminCategoriesRoute
   '/admin/edit-items': typeof AdminEditItemsRoute
-  '/wiki/$cat': typeof WikiCatRoute
   '/admin': typeof AdminIndexRoute
   '/wiki/bundle/$bundleId': typeof WikiBundleBundleIdRoute
+  '/wiki/category/$cat': typeof WikiCategoryCatRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -148,9 +148,9 @@ export interface FileRoutesById {
   '/wormfarm': typeof WormfarmRoute
   '/admin/categories': typeof AdminCategoriesRoute
   '/admin/edit-items': typeof AdminEditItemsRoute
-  '/wiki/$cat': typeof WikiCatRoute
   '/admin/': typeof AdminIndexRoute
   '/wiki/bundle/$bundleId': typeof WikiBundleBundleIdRoute
+  '/wiki/category/$cat': typeof WikiCategoryCatRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -167,9 +167,9 @@ export interface FileRouteTypes {
     | '/wormfarm'
     | '/admin/categories'
     | '/admin/edit-items'
-    | '/wiki/$cat'
     | '/admin/'
     | '/wiki/bundle/$bundleId'
+    | '/wiki/category/$cat'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -183,9 +183,9 @@ export interface FileRouteTypes {
     | '/wormfarm'
     | '/admin/categories'
     | '/admin/edit-items'
-    | '/wiki/$cat'
     | '/admin'
     | '/wiki/bundle/$bundleId'
+    | '/wiki/category/$cat'
   id:
     | '__root__'
     | '/'
@@ -200,9 +200,9 @@ export interface FileRouteTypes {
     | '/wormfarm'
     | '/admin/categories'
     | '/admin/edit-items'
-    | '/wiki/$cat'
     | '/admin/'
     | '/wiki/bundle/$bundleId'
+    | '/wiki/category/$cat'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -297,13 +297,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminIndexRouteImport
       parentRoute: typeof AdminRoute
     }
-    '/wiki/$cat': {
-      id: '/wiki/$cat'
-      path: '/$cat'
-      fullPath: '/wiki/$cat'
-      preLoaderRoute: typeof WikiCatRouteImport
-      parentRoute: typeof WikiRoute
-    }
     '/admin/edit-items': {
       id: '/admin/edit-items'
       path: '/edit-items'
@@ -317,6 +310,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/admin/categories'
       preLoaderRoute: typeof AdminCategoriesRouteImport
       parentRoute: typeof AdminRoute
+    }
+    '/wiki/category/$cat': {
+      id: '/wiki/category/$cat'
+      path: '/category/$cat'
+      fullPath: '/wiki/category/$cat'
+      preLoaderRoute: typeof WikiCategoryCatRouteImport
+      parentRoute: typeof WikiRoute
     }
     '/wiki/bundle/$bundleId': {
       id: '/wiki/bundle/$bundleId'
@@ -343,13 +343,13 @@ const AdminRouteChildren: AdminRouteChildren = {
 const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 
 interface WikiRouteChildren {
-  WikiCatRoute: typeof WikiCatRoute
   WikiBundleBundleIdRoute: typeof WikiBundleBundleIdRoute
+  WikiCategoryCatRoute: typeof WikiCategoryCatRoute
 }
 
 const WikiRouteChildren: WikiRouteChildren = {
-  WikiCatRoute: WikiCatRoute,
   WikiBundleBundleIdRoute: WikiBundleBundleIdRoute,
+  WikiCategoryCatRoute: WikiCategoryCatRoute,
 }
 
 const WikiRouteWithChildren = WikiRoute._addFileChildren(WikiRouteChildren)

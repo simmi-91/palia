@@ -38,6 +38,7 @@ Significantly increases the rate at which your animal ages.`,
     category: CATEGORIES[0],
     image:
       "https://palia.wiki.gg/images/thumb/Fast-Grow_Cookie.png/200px-Fast-Grow_Cookie.png",
+    url: "https://palia.wiki.gg/wiki/Fast-Grow_Cookie",
   },
   {
     name: "Faster-Grow Cookie",
@@ -47,6 +48,7 @@ Greatly increases the rate at which your animal ages.`,
     category: CATEGORIES[0],
     image:
       "https://palia.wiki.gg/images/thumb/Faster-Grow_Cookie.png/200px-Faster-Grow_Cookie.png?572199",
+    url: "https://palia.wiki.gg/wiki/Faster-Grow_Cookie",
   },
   {
     name: "Fastest-Grow Cookie",
@@ -54,7 +56,8 @@ Greatly increases the rate at which your animal ages.`,
 Massively increases the rate at which your animal ages.`,
     rarity: 4,
     category: CATEGORIES[0],
-    image: null,
+    image: "https://palia.wiki.gg/images/Fastest-Grow_Cookie.png?f37acd",
+    url: "https://palia.wiki.gg/wiki/Fastest-Grow_Cookie",
   },
   {
     name: "Insta-Grow Cookie",
@@ -63,6 +66,7 @@ Instantly ages your animal to the next life stage.`,
     rarity: 4,
     category: CATEGORIES[0],
     image: "https://palia.wiki.gg/images/Insta-Grow_Cookie.png?3696a2",
+    url: "https://palia.wiki.gg/wiki/Insta-Grow_Cookie",
   },
   {
     name: "Never-Grow Cookie",
@@ -72,6 +76,7 @@ When fed to a baby animal, prevents them from growing into the next life stage.`
     category: CATEGORIES[0],
     image:
       "https://palia.wiki.gg/images/thumb/Never-Grow_Cookie.png/200px-Never-Grow_Cookie.png?18f597",
+    url: "https://palia.wiki.gg/wiki/Never-Grow_Cookie",
   },
   {
     name: "Divine Doughnut",
@@ -81,6 +86,7 @@ Allows a venerable animal to become a baby again, while maintaining all of its t
     category: CATEGORIES[0],
     image:
       "https://palia.wiki.gg/images/thumb/Divine_Doughnut.png/200px-Divine_Doughnut.png?1ad088",
+    url: "https://palia.wiki.gg/wiki/Divine_Doughnut",
   },
   // Trait Cookies 1
   {
@@ -91,6 +97,7 @@ Clears any active treat effects on your animal.`,
     category: CATEGORIES[1],
     image:
       "https://palia.wiki.gg/images/thumb/Plain_Cookie.png/100px-Plain_Cookie.png?40f7c7",
+    url: "https://palia.wiki.gg/wiki/Plain_Cookie",
   },
   {
     name: "Roulette Cookie",
@@ -100,6 +107,7 @@ Feed this to an animal to grant it a single random trait.`,
     category: CATEGORIES[1],
     image:
       "https://palia.wiki.gg/images/thumb/Roulette_Cookie.png/100px-Roulette_Cookie.png?8f52c5",
+    url: "https://palia.wiki.gg/wiki/Roulette_Cookie",
   },
   {
     name: "Trait Treat",
@@ -109,6 +117,7 @@ Feed this to an animal to grant it a single random functional trait.`,
     category: CATEGORIES[1],
     image:
       "https://palia.wiki.gg/images/thumb/Trait_Treat.png/100px-Trait_Treat.png?ae7501",
+    url: "https://palia.wiki.gg/wiki/Trait_Treat",
   },
   {
     name: "Cookie of the Day",
@@ -118,6 +127,7 @@ Feed this to an animal to grant it a single random cosmetic trait.`,
     category: CATEGORIES[1],
     image:
       "https://palia.wiki.gg/images/thumb/Cookie_of_the_Day.png/100px-Cookie_of_the_Day.png?45ae74",
+    url: "https://palia.wiki.gg/wiki/Cookie_of_the_Day",
   },
   {
     name: "Predictable Cookie",
@@ -127,6 +137,7 @@ Blocks your animal from randomly gaining new traits.`,
     category: CATEGORIES[1],
     image:
       "https://palia.wiki.gg/images/thumb/Predictable_Cookie.png/100px-Predictable_Cookie.png?df2e10",
+    url: "https://palia.wiki.gg/wiki/Predictable_Cookie",
   },
   {
     name: "Oopsie Cookie",
@@ -136,6 +147,7 @@ Feed this to an animal to remove a single random trait.`,
     category: CATEGORIES[1],
     image:
       "https://palia.wiki.gg/images/thumb/Oopsie_Cookie.png/100px-Oopsie_Cookie.png?69e566",
+    url: "https://palia.wiki.gg/wiki/Oopsie_Cookie",
   },
   {
     name: "Reroll Cookie",
@@ -145,6 +157,7 @@ Randomizes the tier of each of your animal's traits.`,
     category: CATEGORIES[1],
     image:
       "https://palia.wiki.gg/images/thumb/Reroll_Cookie.png/100px-Reroll_Cookie.png?719cec",
+    url: "https://palia.wiki.gg/wiki/Reroll_Cookie",
   },
   {
     name: "Tasty Trait Treat",
@@ -154,6 +167,7 @@ Adds a random functional trait to your animal that scales with the number of cos
     category: CATEGORIES[1],
     image:
       "https://palia.wiki.gg/images/thumb/Tasty_Trait_Treat.png/100px-Tasty_Trait_Treat.png?f95c7d",
+    url: "https://palia.wiki.gg/wiki/Tasty_Trait_Treat",
   },
   // Breeding Cookies 2
   {
@@ -164,6 +178,7 @@ Moderately reduces the likelihood of your animal's traits to be passed down the 
     category: CATEGORIES[2],
     image:
       "https://palia.wiki.gg/images/thumb/Bad_Breed_Biscuit.png/100px-Bad_Breed_Biscuit.png?88547f",
+    url: "https://palia.wiki.gg/wiki/Bad_Breed_Biscuit",
   },
   {
     name: "Fancy Breed Biscuit",
@@ -173,6 +188,7 @@ Allows your animal to pass on up to three traits to its offspring when breeding.
     category: CATEGORIES[2],
     image:
       "https://palia.wiki.gg/images/thumb/Fancy_Breed_Biscuit.png/100px-Fancy_Breed_Biscuit.png?a4f0e6",
+    url: "https://palia.wiki.gg/wiki/Fancy_Breed_Biscuit",
   },
   {
     name: "Fancier Breed Biscuit",
@@ -182,6 +198,7 @@ Allows your animal to pass on up to four traits to its offspring when breeding.`
     category: CATEGORIES[2],
     image:
       "https://palia.wiki.gg/images/thumb/Fancier_Breed_Biscuit.png/100px-Fancier_Breed_Biscuit.png?67fdbc",
+    url: "https://palia.wiki.gg/wiki/Fancier_Breed_Biscuit",
   },
   {
     name: "Worse Breed Biscuit",
@@ -191,6 +208,7 @@ Significantly reduces the likelihood of your animal's traits to be passed down t
     category: CATEGORIES[2],
     image:
       "https://palia.wiki.gg/images/thumb/Worse_Breed_Biscuit.png/100px-Worse_Breed_Biscuit.png?3b0fd7",
+    url: "https://palia.wiki.gg/wiki/Worse_Breed_Biscuit",
   },
   {
     name: "Fanciest Breed Biscuit",
@@ -200,6 +218,7 @@ Allows you animal to pass on up to five traits to its offspring when breeding.`,
     category: CATEGORIES[2],
     image:
       "https://palia.wiki.gg/images/thumb/Fanciest_Breed_Biscuit.png/100px-Fanciest_Breed_Biscuit.png?ea548e",
+    url: "https://palia.wiki.gg/wiki/Fanciest_Breed_Biscuit",
   },
   {
     name: "Worst Breed Biscuit",
@@ -209,6 +228,7 @@ Greatly reduces the likelihood of your animal's traits to be passed down the nex
     category: CATEGORIES[2],
     image:
       "https://palia.wiki.gg/images/thumb/Worst_Breed_Biscuit.png/100px-Worst_Breed_Biscuit.png?4b05aa",
+    url: "https://palia.wiki.gg/wiki/Worst_Breed_Biscuit",
   },
   {
     name: "Immaculate Confection",
@@ -218,6 +238,7 @@ Creates a baby using your animal as the singular parent.`,
     category: CATEGORIES[2],
     image:
       "https://static.paliapedia.com/images/items/128/anh-treat-instantselfbreed.webp",
+    url: "https://palia.wiki.gg/wiki/Immaculate_Confection",
   },
   // Happiness Cookies 3
   {
@@ -228,6 +249,7 @@ Slightly increases your animal's happiness gain the next time you feed it.`,
     category: CATEGORIES[3],
     image:
       "https://palia.wiki.gg/images/thumb/Tasty_Treat.png/100px-Tasty_Treat.png?64f851",
+    url: "https://palia.wiki.gg/wiki/Tasty_Treat",
   },
   {
     name: "Feel Good Cookie",
@@ -237,6 +259,7 @@ Grants a slight amount of happiness`,
     category: CATEGORIES[3],
     image:
       "https://palia.wiki.gg/images/thumb/Feel_Good_Cookie.png/100px-Feel_Good_Cookie.png?d38fa0",
+    url: "https://palia.wiki.gg/wiki/Feel_Good_Cookie",
   },
   {
     name: "Feel Great Cookie",
@@ -246,6 +269,7 @@ Grants a moderate amount of happiness.`,
     category: CATEGORIES[3],
     image:
       "https://palia.wiki.gg/images/thumb/Feel_Great_Cookie.png/100px-Feel_Great_Cookie.png?620e3a",
+    url: "https://palia.wiki.gg/wiki/Feel_Great_Cookie",
   },
   {
     name: "Very Tasty Treat",
@@ -255,6 +279,7 @@ Moderately increases your animal's happiness gain the next time you feed it.`,
     category: CATEGORIES[3],
     image:
       "https://palia.wiki.gg/images/thumb/Very_Tasty_Treat.png/100px-Very_Tasty_Treat.png?92d81e",
+    url: "https://palia.wiki.gg/wiki/Very_Tasty_Treat",
   },
   {
     name: "Feel Amazing Cookie",
@@ -264,6 +289,7 @@ Grants a great amount of happiness.`,
     category: CATEGORIES[3],
     image:
       "https://static.paliapedia.com/images/items/128/anh-treat-happyboost3.webp",
+    url: "https://palia.wiki.gg/wiki/Feel_Amazing_Cookie",
   },
   {
     name: "Extremely Tasty Treat",
@@ -273,6 +299,7 @@ Greatly increases your animal's happiness gain the next time you feed it.`,
     category: CATEGORIES[3],
     image:
       "https://palia.wiki.gg/images/thumb/Extremely_Tasty_Treat.png/100px-Extremely_Tasty_Treat.png?c6703f",
+    url: "https://palia.wiki.gg/wiki/Extremely_Tasty_Treat",
   },
   {
     name: "The Tastiest Treat",
@@ -282,6 +309,7 @@ Massively increases your animal's happiness gain the next time you feed it.`,
     category: CATEGORIES[3],
     image:
       "https://palia.wiki.gg/images/thumb/The_Tastiest_Treat.png/100px-The_Tastiest_Treat.png?bc3bec",
+    url: "https://palia.wiki.gg/wiki/The_Tastiest_Treat",
   },
   // Donation Cookies 4
   {
@@ -290,7 +318,8 @@ Massively increases your animal's happiness gain the next time you feed it.`,
 Slightly increases the donation value of your animal.`,
     rarity: 3,
     category: CATEGORIES[4],
-    image: null,
+    image: "https://palia.wiki.gg/images/Good_Value_Biscuit.png?8e1b1a",
+    url: "https://palia.wiki.gg/wiki/Good_Value_Biscuit",
   },
   {
     name: "Great Value Biscuit",
@@ -299,6 +328,7 @@ Moderately increases the donation value of your animal.`,
     rarity: 4,
     category: CATEGORIES[4],
     image: null,
+    url: "https://palia.wiki.gg/wiki/Great_Value_Biscuit",
   },
   {
     name: "Best Value Biscuit",
@@ -306,7 +336,8 @@ Moderately increases the donation value of your animal.`,
 Significantly increases the donation value of your animal.`,
     rarity: 5,
     category: CATEGORIES[4],
-    image: null,
+    image: "https://palia.wiki.gg/images/Best_Value_Biscuit.png?e7554e",
+    url: "https://palia.wiki.gg/wiki/Best_Value_Biscuit",
   },
   // Heart/Animal Effect Cookies 5
   {
@@ -317,6 +348,7 @@ Ensures that your animal's traits have priority for inheritance when breeding.`,
     category: CATEGORIES[5],
     image:
       "https://palia.wiki.gg/images/thumb/Me-First_Cookie.png/100px-Me-First_Cookie.png?60f381",
+    url: "https://palia.wiki.gg/wiki/Me-First_Cookie",
   },
   {
     name: "Namewell Cookie",
@@ -324,7 +356,8 @@ Ensures that your animal's traits have priority for inheritance when breeding.`,
 Allows an animal to be renamed once.`,
     rarity: 3,
     category: CATEGORIES[5],
-    image: null,
+    image: "https://palia.wiki.gg/images/Namewell_Cookie.png?dbde9e",
+    url: "https://palia.wiki.gg/wiki/Namewell_Cookie",
   },
   {
     name: "Go Next Cookie",
@@ -334,6 +367,7 @@ Clears the breeding cooldown for your animal.`,
     category: CATEGORIES[5],
     image:
       "https://static.paliapedia.com/images/items/128/anh-treat-removebreedingcooldown.webp",
+    url: "https://palia.wiki.gg/wiki/Go_Next_Cookie",
   },
   // Palsnax 6
   {
@@ -343,6 +377,7 @@ Slightly increases how quickly your animal's production bar fills a single time.
     rarity: 2,
     category: CATEGORIES[6],
     image: null,
+    url: "https://palia.wiki.gg/wiki/PalSnax%E2%84%A2",
   },
   {
     name: "PalSnax™ Plus",
@@ -350,7 +385,8 @@ Slightly increases how quickly your animal's production bar fills a single time.
 Moderately increases how quickly your animal's production bar fills a single time.`,
     rarity: 3,
     category: CATEGORIES[6],
-    image: null,
+    image: "https://palia.wiki.gg/images/PalSnax%E2%84%A2_Plus.png?7ccdfb",
+    url: "https://palia.wiki.gg/wiki/PalSnax%E2%84%A2_Plus",
   },
   {
     name: "PalSnax™ Ultra",
@@ -360,6 +396,7 @@ Significantly increases how quickly your animal's production bar fills a single 
     category: CATEGORIES[6],
     image:
       "https://palia.wiki.gg/images/thumb/PalSnax%E2%84%A2_Ultra.png/100px-PalSnax%E2%84%A2_Ultra.png?25df29",
+    url: "https://palia.wiki.gg/wiki/PalSnax%E2%84%A2_Ultra",
   },
   {
     name: "PalSnax™ Premium",
@@ -369,5 +406,6 @@ Greatly increases how quickly your animal's production bar fills a single time.`
     category: CATEGORIES[6],
     image:
       "https://palia.wiki.gg/images/thumb/PalSnax%E2%84%A2_Premium.png/100px-PalSnax%E2%84%A2_Premium.png?c46b14",
+    url: "https://palia.wiki.gg/wiki/PalSnax%E2%84%A2_Premium",
   },
 ];

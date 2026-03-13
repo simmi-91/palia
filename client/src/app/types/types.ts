@@ -26,6 +26,7 @@ export type TreatEntry = {
   rarity: number;
   category: TreatCategoryEntry;
   image: string | null;
+  url: string | null;
 };
 
 export type TreatCategoryEntry = {

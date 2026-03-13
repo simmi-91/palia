@@ -23,6 +23,11 @@ function Admin() {
           href: "/admin/categories",
           icon: "",
         },
+        {
+          label: "Entities",
+          href: "/admin/entities",
+          icon: "",
+        },
       ]);
 
       return () => clearSubmenuItems();

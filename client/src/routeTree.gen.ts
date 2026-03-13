@@ -20,6 +20,7 @@ import { Route as CatchRouteImport } from './routes/catch'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminIndexRouteImport } from './routes/admin/index'
+import { Route as AdminEntitiesRouteImport } from './routes/admin/entities'
 import { Route as AdminEditItemsRouteImport } from './routes/admin/edit-items'
 import { Route as AdminCategoriesRouteImport } from './routes/admin/categories'
 import { Route as WikiCategoryCatRouteImport } from './routes/wiki/category.$cat'
@@ -80,6 +81,11 @@ const AdminIndexRoute = AdminIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminEntitiesRoute = AdminEntitiesRouteImport.update({
+  id: '/entities',
+  path: '/entities',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminEditItemsRoute = AdminEditItemsRouteImport.update({
   id: '/edit-items',
   path: '/edit-items',
@@ -114,6 +120,7 @@ export interface FileRoutesByFullPath {
   '/wormfarm': typeof WormfarmRoute
   '/admin/categories': typeof AdminCategoriesRoute
   '/admin/edit-items': typeof AdminEditItemsRoute
+  '/admin/entities': typeof AdminEntitiesRoute
   '/admin/': typeof AdminIndexRoute
   '/wiki/bundle/$bundleId': typeof WikiBundleBundleIdRoute
   '/wiki/category/$cat': typeof WikiCategoryCatRoute
@@ -130,6 +137,7 @@ export interface FileRoutesByTo {
   '/wormfarm': typeof WormfarmRoute
   '/admin/categories': typeof AdminCategoriesRoute
   '/admin/edit-items': typeof AdminEditItemsRoute
+  '/admin/entities': typeof AdminEntitiesRoute
   '/admin': typeof AdminIndexRoute
   '/wiki/bundle/$bundleId': typeof WikiBundleBundleIdRoute
   '/wiki/category/$cat': typeof WikiCategoryCatRoute
@@ -148,6 +156,7 @@ export interface FileRoutesById {
   '/wormfarm': typeof WormfarmRoute
   '/admin/categories': typeof AdminCategoriesRoute
   '/admin/edit-items': typeof AdminEditItemsRoute
+  '/admin/entities': typeof AdminEntitiesRoute
   '/admin/': typeof AdminIndexRoute
   '/wiki/bundle/$bundleId': typeof WikiBundleBundleIdRoute
   '/wiki/category/$cat': typeof WikiCategoryCatRoute
@@ -167,6 +176,7 @@ export interface FileRouteTypes {
     | '/wormfarm'
     | '/admin/categories'
     | '/admin/edit-items'
+    | '/admin/entities'
     | '/admin/'
     | '/wiki/bundle/$bundleId'
     | '/wiki/category/$cat'
@@ -183,6 +193,7 @@ export interface FileRouteTypes {
     | '/wormfarm'
     | '/admin/categories'
     | '/admin/edit-items'
+    | '/admin/entities'
     | '/admin'
     | '/wiki/bundle/$bundleId'
     | '/wiki/category/$cat'
@@ -200,6 +211,7 @@ export interface FileRouteTypes {
     | '/wormfarm'
     | '/admin/categories'
     | '/admin/edit-items'
+    | '/admin/entities'
     | '/admin/'
     | '/wiki/bundle/$bundleId'
     | '/wiki/category/$cat'
@@ -297,6 +309,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminIndexRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/entities': {
+      id: '/admin/entities'
+      path: '/entities'
+      fullPath: '/admin/entities'
+      preLoaderRoute: typeof AdminEntitiesRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/edit-items': {
       id: '/admin/edit-items'
       path: '/edit-items'
@@ -331,12 +350,14 @@ declare module '@tanstack/react-router' {
 interface AdminRouteChildren {
   AdminCategoriesRoute: typeof AdminCategoriesRoute
   AdminEditItemsRoute: typeof AdminEditItemsRoute
+  AdminEntitiesRoute: typeof AdminEntitiesRoute
   AdminIndexRoute: typeof AdminIndexRoute
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
   AdminCategoriesRoute: AdminCategoriesRoute,
   AdminEditItemsRoute: AdminEditItemsRoute,
+  AdminEntitiesRoute: AdminEntitiesRoute,
   AdminIndexRoute: AdminIndexRoute,
 }
 

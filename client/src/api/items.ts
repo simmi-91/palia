@@ -74,3 +74,13 @@ export const useItemFamilies = (): UseQueryResult<string[], Error> =>
     staleTime: 1000 * 60 * 5,
     select: (data) => [...new Set(data.flatMap((item) => (item.family ? [item.family] : [])))],
   });
+
+export const selectItemsByNeededFor = (
+  title: string,
+): UseQueryResult<ItemEntry[], Error> =>
+  useQuery({
+    queryKey: [QUERYKEY],
+    queryFn: fetchItems,
+    staleTime: 1000 * 60 * 5,
+    select: (data) => data.filter((item) => item.neededFor.some((n) => n.title === title)),
+  });

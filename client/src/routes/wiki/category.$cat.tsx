@@ -8,7 +8,7 @@ import { selectAllCategories } from "../../api/categories";
 import { selectFavoritesByCategory } from "../../api/favorites";
 import ItemFilters from "../../components/ItemFilters";
 
-export const Route = createFileRoute("/wiki/$cat")({
+export const Route = createFileRoute("/wiki/category/$cat")({
     component: WikiCategoryPage,
 });
 

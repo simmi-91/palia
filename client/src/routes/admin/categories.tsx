@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { selectAllCategories, usePatchCategory } from "../../api/categories";
+import { useState } from "react";
+import { selectAllCategories, useAddCategory, usePatchCategory } from "../../api/categories";
 import { LoadingState, ErrorState } from "../../components/CommonStates";
 import type { CategoryEntry } from "../../app/types/wikiTypes";
 
@@ -35,6 +36,78 @@ const BoolToggle = ({
     );
 };
 
+const empty: CategoryEntry = { id: "", display_name: "", is_visible: false, is_tradeable: false, is_favoritable: false };
+
+const AddCategoryForm = () => {
+    const [form, setForm] = useState<CategoryEntry>(empty);
+    const add = useAddCategory();
+
+    const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!form.id || !form.display_name) return;
+        add.mutate(form, { onSuccess: () => setForm(empty) });
+    };
+
+    return (
+        <form className="row g-2 align-items-center mb-3" onSubmit={handleSubmit}>
+            <div className="col-auto">
+                <input
+                    className="form-control form-control-sm"
+                    placeholder="ID (e.g. bugs)"
+                    value={form.id}
+                    onChange={(e) => setForm((f) => ({ ...f, id: e.target.value }))}
+                    required
+                />
+            </div>
+            <div className="col-auto">
+                <input
+                    className="form-control form-control-sm"
+                    placeholder="Display name"
+                    value={form.display_name}
+                    onChange={(e) => setForm((f) => ({ ...f, display_name: e.target.value }))}
+                    required
+                />
+            </div>
+            <div className="col-auto form-check form-switch ms-2 mb-0">
+                <input
+                    className="form-check-input"
+                    type="checkbox"
+                    id="new-visible"
+                    checked={form.is_visible}
+                    onChange={(e) => setForm((f) => ({ ...f, is_visible: e.target.checked }))}
+                />
+                <label className="form-check-label" htmlFor="new-visible">Visible</label>
+            </div>
+            <div className="col-auto form-check form-switch mb-0">
+                <input
+                    className="form-check-input"
+                    type="checkbox"
+                    id="new-tradeable"
+                    checked={form.is_tradeable}
+                    onChange={(e) => setForm((f) => ({ ...f, is_tradeable: e.target.checked }))}
+                />
+                <label className="form-check-label" htmlFor="new-tradeable">Tradeable</label>
+            </div>
+            <div className="col-auto form-check form-switch mb-0">
+                <input
+                    className="form-check-input"
+                    type="checkbox"
+                    id="new-favoritable"
+                    checked={form.is_favoritable}
+                    onChange={(e) => setForm((f) => ({ ...f, is_favoritable: e.target.checked }))}
+                />
+                <label className="form-check-label" htmlFor="new-favoritable">Favoritable</label>
+            </div>
+            <div className="col-auto">
+                <button className="btn btn-sm btn-dark" type="submit" disabled={add.isPending}>
+                    Add category
+                </button>
+            </div>
+            {add.isError && <div className="col-auto text-danger small">{add.error?.message}</div>}
+        </form>
+    );
+};
+
 function EditCategoriesPage() {
     const { data: categories, isLoading, isError, error } = selectAllCategories();
 
@@ -43,6 +116,7 @@ function EditCategoriesPage() {
 
     return (
         <div className="container-fluid mt-2">
+            <AddCategoryForm />
             <table className="table table-bordered table-sm align-middle">
                 <thead className="table-dark">
                     <tr>

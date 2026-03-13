@@ -24,7 +24,7 @@ export const useAddCategory = () => {
             fetch(`${BASE_URL()}/${newCategory.id}`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(newCategory),
+                body: JSON.stringify({ newCategory }),
             }).then((r) => r.json()),
         onSuccess: () => queryClient.invalidateQueries({ queryKey: [QUERYKEY] }),
     });
@@ -37,7 +37,7 @@ export const useUpdateCategory = () => {
             fetch(`${BASE_URL()}/${category.id}`, {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(category),
+                body: JSON.stringify({ newCategory: category }),
             }).then((r) => r.json()),
         onSuccess: () => queryClient.invalidateQueries({ queryKey: [QUERYKEY] }),
     });

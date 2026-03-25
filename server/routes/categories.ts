@@ -1,5 +1,7 @@
 import { Router } from "express";
+import type { Request, Response } from "express";
 import { createDB } from "../db/db_categories.js";
+import type { IdParam, CreateCategoryBody, UpdateCategoryBody, PatchCategoryBody } from "../types/requests.js";
 
 const router = Router();
 
@@ -175,7 +177,7 @@ const router = Router();
  *               $ref: '#/components/schemas/Error'
  */
 
-router.get("/", async (req, res) => {
+router.get("/", async (req: Request, res: Response) => {
     let db;
     try {
         db = await createDB();
@@ -193,7 +195,7 @@ router.get("/", async (req, res) => {
     }
 });
 
-router.post("/:id", async (req, res) => {
+router.post("/:id", async (req: Request<IdParam, unknown, CreateCategoryBody>, res: Response) => {
     const { id } = req.params;
     const { newCategory } = req.body;
 
@@ -214,7 +216,7 @@ router.post("/:id", async (req, res) => {
     }
 });
 
-router.put("/:id", async (req, res) => {
+router.put("/:id", async (req: Request<IdParam, unknown, UpdateCategoryBody>, res: Response) => {
     const { id } = req.params;
     const { newCategory } = req.body;
 
@@ -235,7 +237,7 @@ router.put("/:id", async (req, res) => {
     }
 });
 
-router.patch("/:id", async (req, res) => {
+router.patch("/:id", async (req: Request<IdParam, unknown, PatchCategoryBody>, res: Response) => {
     const { id } = req.params;
 
     let db;
@@ -256,7 +258,7 @@ router.patch("/:id", async (req, res) => {
     }
 });
 
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", async (req: Request<IdParam>, res: Response) => {
     const { id } = req.params;
 
     let db;

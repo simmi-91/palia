@@ -1,4 +1,5 @@
 import { Router } from "express";
+import type { Request, Response } from "express";
 import { createDB } from "../db/db_links.js";
 
 const router = Router();
@@ -32,7 +33,7 @@ const router = Router();
  *               $ref: '#/components/schemas/Error'
  */
 
-router.get("/", async (req, res) => {
+router.get("/", async (req: Request, res: Response) => {
   let db;
   try {
     db = await createDB();

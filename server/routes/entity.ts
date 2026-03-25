@@ -1,5 +1,8 @@
 import { Router } from "express";
+import type { Request, Response } from "express";
 import { createDB } from "../db/db_entity.js";
+import type { EntityType } from "../types/models.js";
+import type { EntityParam, CreateEntityBody, UpdateEntityBody, DeleteEntityBody } from "../types/requests.js";
 
 const router = Router();
 
@@ -129,8 +132,8 @@ const router = Router();
  *               $ref: '#/components/schemas/Error'
  */
 
-router.get("/:entity", async (req, res) => {
-  const { entity } = req.params;
+router.get("/:entity", async (req: Request<EntityParam>, res: Response) => {
+  const entity = req.params.entity as EntityType;
 
   let db;
   try {
@@ -144,8 +147,8 @@ router.get("/:entity", async (req, res) => {
   res.json(result);
 });
 
-router.post("/:entity", async (req, res) => {
-  const { entity } = req.params;
+router.post("/:entity", async (req: Request<EntityParam, unknown, CreateEntityBody>, res: Response) => {
+  const entity = req.params.entity as EntityType;
   const { newItem } = req.body;
 
   let db;
@@ -160,8 +163,8 @@ router.post("/:entity", async (req, res) => {
   res.json(result);
 });
 
-router.put("/:entity", async (req, res) => {
-  const { entity } = req.params;
+router.put("/:entity", async (req: Request<EntityParam, unknown, UpdateEntityBody>, res: Response) => {
+  const entity = req.params.entity as EntityType;
   const { id, newItem } = req.body;
 
   let db;
@@ -181,8 +184,8 @@ router.put("/:entity", async (req, res) => {
   }
 });
 
-router.delete("/:entity", async (req, res) => {
-  const { entity } = req.params;
+router.delete("/:entity", async (req: Request<EntityParam, unknown, DeleteEntityBody>, res: Response) => {
+  const entity = req.params.entity as EntityType;
   const { id } = req.body;
 
   let db;

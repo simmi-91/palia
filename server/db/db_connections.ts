@@ -1,8 +1,10 @@
 import mysql from "mysql2/promise";
+import type { Pool } from "mysql2/promise";
 
-let pool;
-function initializePool() {
-  if (pool) return pool;
+let pool: Pool | undefined;
+
+function initializePool(): void {
+  if (pool) return;
 
   pool = mysql.createPool({
     host: process.env.DB_HOST,

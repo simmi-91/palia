@@ -1,37 +1,41 @@
 import { pool } from "./db_connections.js";
+import type { RowDataPacket,ResultSetHeader } from "mysql2/promise";
+import type { EntityType, MultilistEntry,DbResultWithId } from "../types/models.ts";
+import type { EntityDb } from "../types/db.js";
 
 const allowedEntities = new Set(["location_entity", "needed_for_entity", "how_to_obtain_entity"]);
-const ensureAllowedEntity = (entity) => {
+const ensureAllowedEntity = (entity:EntityType) => {
     if (!allowedEntities.has(entity)) {
         throw new Error(`Disallowed entity/table: ${entity}`);
     }
 };
 
-let db;
+let db: EntityDb | undefined;
+
 const createDB = async () => {
     if (db) return db;
 
     db = {
         getAllEntities: async (entity) => {
             ensureAllowedEntity(entity);
-            const [rows] = await pool.query(
+            const [rows] = await pool!.query<RowDataPacket[]>(
                 `SELECT id, title, url, category FROM \`${entity}\` ORDER BY category DESC, title ASC`
             );
-            return rows;
+            return rows as MultilistEntry[];
         },
 
         addEntitiy: async (entity, newItem) => {
             ensureAllowedEntity(entity);
             const sql = `INSERT INTO \`${entity}\` (title, url, category) VALUES (?, ?, ?)`;
-            const [result] = await pool.execute(sql, [
+            const [result] = await pool!.execute<ResultSetHeader>(sql, [
                 newItem.title,
                 newItem.url,
                 newItem.category,
             ]);
-            return { success: true, id: result?.insertId };
+            return { success: true, id: result?.insertId } as DbResultWithId;
         },
 
-        updateEntitiy: async (entity, id, newItem) => {
+        updateEntitiy: async (entity: EntityType, id: number, newItem: MultilistEntry) => {
             ensureAllowedEntity(entity);
             const fields = [];
             const values = [];
@@ -50,15 +54,15 @@ const createDB = async () => {
             if (fields.length === 0) return { success: true, id };
             values.push(id);
             const sql = `UPDATE \`${entity}\` SET ${fields.join(", ")} WHERE id = ?`;
-            const [result] = await pool.execute(sql, values);
+            const [result] = await pool!.execute<ResultSetHeader>(sql, values);
             if (!(result?.affectedRows ?? 0)) return { success: false, id, error: "Not found" };
             return { success: true, id };
         },
 
-        deleteEntitiy: async (entity, id) => {
+        deleteEntitiy: async (entity: EntityType, id: number) => {
             ensureAllowedEntity(entity);
             const sql = `DELETE FROM \`${entity}\` WHERE id = ?`;
-            const [result] = await pool.execute(sql, [id]);
+            const [result] = await pool!.execute<ResultSetHeader>(sql, [id]);
             if (!(result?.affectedRows ?? 0)) return { success: false, id, error: "Not found" };
             return { success: true, id };
         },

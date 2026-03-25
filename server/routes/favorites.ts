@@ -1,5 +1,7 @@
 import { Router } from "express";
+import type { Request, Response } from "express";
 import { createDB } from "../db/db_favorites.js";
+import type { AddFavoriteBody, DeleteFavoriteBody, ProfileIdParam } from "../types/requests.js";
 
 const router = Router();
 
@@ -87,7 +89,7 @@ const router = Router();
  *               $ref: '#/components/schemas/Error'
  */
 
-router.get("/:profileId", async (req, res) => {
+router.get("/:profileId", async (req: Request<ProfileIdParam>, res: Response) => {
   const { profileId } = req.params;
   let db;
   try {
@@ -101,7 +103,7 @@ router.get("/:profileId", async (req, res) => {
   res.json(favorites);
 });
 
-router.post("/:profileId", async (req, res) => {
+router.post("/:profileId", async (req: Request<ProfileIdParam, unknown, AddFavoriteBody>, res: Response) => {
   const { profileId } = req.params;
   const { category, itemId } = req.body;
   let db;
@@ -117,7 +119,7 @@ router.post("/:profileId", async (req, res) => {
   res.json(result);
 });
 
-router.delete("/:profileId", async (req, res) => {
+router.delete("/:profileId", async (req: Request<ProfileIdParam, unknown, DeleteFavoriteBody>, res: Response) => {
   const { profileId } = req.params;
   const { favoriteId } = req.body;
   let db;

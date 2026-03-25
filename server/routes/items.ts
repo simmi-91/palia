@@ -1,5 +1,7 @@
 import { Router } from "express";
+import type { Request, Response } from "express";
 import { createDB } from "../db/db_items.js";
+import type { IdParam, CreateItemBody, UpdateItemBody } from "../types/requests.js";
 
 const router = Router();
 
@@ -132,7 +134,7 @@ const router = Router();
  *               $ref: '#/components/schemas/Error'
  */
 
-router.get("/", async (req, res) => {
+router.get("/", async (req: Request, res: Response) => {
     let db;
     try {
         db = await createDB();
@@ -145,7 +147,7 @@ router.get("/", async (req, res) => {
     res.json(items);
 });
 
-router.post("/", async (req, res) => {
+router.post("/", async (req: Request<unknown, unknown, CreateItemBody>, res: Response) => {
     let db;
     try {
         db = await createDB();
@@ -164,7 +166,7 @@ router.post("/", async (req, res) => {
     }
 });
 
-router.put("/:id", async (req, res) => {
+router.put("/:id", async (req: Request<IdParam, unknown, UpdateItemBody>, res: Response) => {
     const id = parseInt(req.params.id, 10);
     if (isNaN(id)) return res.status(400).json({ error: "Invalid id" });
 
@@ -186,7 +188,7 @@ router.put("/:id", async (req, res) => {
     }
 });
 
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", async (req: Request<IdParam>, res: Response) => {
     const id = parseInt(req.params.id, 10);
     if (isNaN(id)) return res.status(400).json({ error: "Invalid id" });
 

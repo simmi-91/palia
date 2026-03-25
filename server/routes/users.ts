@@ -1,5 +1,7 @@
 import { Router } from "express";
+import type { Request, Response } from "express";
 import { createDB } from "../db/db_users.js";
+import type { CheckUserBody, CheckUserResponse, RegisterUserBody } from "../types/requests.js";
 
 const router = Router();
 
@@ -80,11 +82,11 @@ const router = Router();
  *               $ref: '#/components/schemas/Error'
  */
 
-router.get("/", async (req, res) => {
+router.get("/", async (req: Request, res: Response) => {
   res.send("Users API.");
 });
 
-router.post("/check", async (req, res) => {
+router.post("/check", async (req: Request<unknown, unknown, CheckUserBody>, res: Response) => {
   let db;
   try {
     db = await createDB();
@@ -112,7 +114,7 @@ router.post("/check", async (req, res) => {
   }
 });
 
-router.post("/register", async (req, res) => {
+router.post("/register", async (req: Request<unknown, unknown, RegisterUserBody>, res: Response) => {
   let db;
   try {
     db = await createDB();

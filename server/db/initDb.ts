@@ -2,25 +2,26 @@ import { readFileSync, existsSync } from "fs";
 import { fileURLToPath } from "url";
 import { dirname, join } from "path";
 import { pool } from "./db_connections.js";
+import type { RowDataPacket } from "mysql2/promise";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
-const seedFromJson = async (tableName, jsonPath) => {
+const seedFromJson = async (tableName: string, jsonPath: string): Promise<void> => {
     if (!existsSync(jsonPath)) return;
-    const [[{ count }]] = await pool.query(`SELECT COUNT(*) as count FROM \`${tableName}\``);
+    const [[{ count }]] = await pool!.query<RowDataPacket[]>(`SELECT COUNT(*) as count FROM \`${tableName}\``);
     if (Number(count) > 0) return;
 
-    const data = JSON.parse(readFileSync(jsonPath, "utf-8"));
+    const data = JSON.parse(readFileSync(jsonPath, "utf-8")) as Record<string, unknown>[];
     if (!data.length) return;
 
-    const [columnRows] = await pool.query(`SHOW COLUMNS FROM \`${tableName}\``);
-    const tableColumns = new Set(columnRows.map((r) => r.Field));
+    const [columnRows] = await pool!.query<RowDataPacket[]>(`SHOW COLUMNS FROM \`${tableName}\``);
+    const tableColumns = new Set(columnRows.map((r) => r.Field as string));
     const columns = Object.keys(data[0]).filter((c) => tableColumns.has(c));
     const placeholders = columns.map(() => "?").join(", ");
     const colList = columns.map((c) => `\`${c}\``).join(", ");
 
     for (const row of data) {
-        await pool.execute(
+        await pool!.execute(
             `INSERT INTO \`${tableName}\` (${colList}) VALUES (${placeholders})`,
             columns.map((c) => row[c] ?? null)
         );
@@ -128,9 +129,9 @@ const CREATE_STATEMENTS = [
   )`,
 ];
 
-export async function initDb() {
+export async function initDb(): Promise<void> {
     for (const sql of CREATE_STATEMENTS) {
-        await pool.execute(sql);
+        await pool!.execute(sql);
     }
     console.log("Database tables initialized.");
 

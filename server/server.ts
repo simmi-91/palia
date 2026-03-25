@@ -2,18 +2,21 @@ import dotenv from "dotenv";
 dotenv.config({ path: "../env/.env.palia" });
 
 import express from "express";
+import type { Application } from "express";
 import cors from "cors";
+
 import swaggerUi from "swagger-ui-express";
+import { swaggerSpec } from "./swagger.js";
+
 import { initializePool } from "./db/db_connections.js";
 import { initDb } from "./db/initDb.js";
 import apiRouter from "./routes/index.js";
-import { swaggerSpec } from "./swagger.js";
 
-async function main() {
+async function main(): Promise<void> {
     initializePool();
     if (process.env.DB_HOST) await initDb();
 
-    const app = express();
+    const app: Application = express();
 
     const FRONTEND_ORIGIN = process.env.FRONTEND_URL || "http://localhost:5173";
     const corsOptions = {
@@ -22,7 +25,6 @@ async function main() {
     };
 
     app.use(cors(corsOptions));
-
     app.use(express.json());
 
     const PORT = 8080;

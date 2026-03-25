@@ -6,7 +6,8 @@
     "type": "module",
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
-        "start": "node server.js"
+        "start": "tsx server.ts",
+        "typecheck": "tsc --noEmit"
     },
     "keywords": [],
     "author": "",
@@ -18,5 +19,14 @@
         "mysql2": "^3.15.1",
         "swagger-jsdoc": "^6.2.8",
         "swagger-ui-express": "^5.0.1"
+    },
+    "devDependencies": {
+        "@types/cors": "^2.8.19",
+        "@types/express": "^5.0.6",
+        "@types/node": "^25.5.0",
+        "@types/swagger-jsdoc": "^6.0.4",
+        "@types/swagger-ui-express": "^4.1.8",
+        "tsx": "^4.21.0",
+        "typescript": "^6.0.2"
     }
 }

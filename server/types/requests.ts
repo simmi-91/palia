@@ -43,6 +43,7 @@ export type PatchCategoryBody = {
   is_visible?: boolean;
   is_tradeable?: boolean;
   is_favoritable?: boolean;
+  sort_order?: number;
 };
 
 // ---------------------------------------------------------------------------

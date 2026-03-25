@@ -14,6 +14,7 @@ export type CategoryEntry = {
   is_visible: boolean;
   is_tradeable: boolean;
   is_favoritable: boolean;
+  sort_order: number;
 };
 
 export type ItemEntry = {

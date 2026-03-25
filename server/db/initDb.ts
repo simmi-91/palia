@@ -125,7 +125,8 @@ const CREATE_STATEMENTS = [
     display_name VARCHAR(100) NOT NULL,
     is_visible BOOLEAN NOT NULL DEFAULT TRUE,
     is_tradeable BOOLEAN NOT NULL DEFAULT FALSE,
-    is_favoritable BOOLEAN NOT NULL DEFAULT FALSE
+    is_favoritable BOOLEAN NOT NULL DEFAULT FALSE,
+    sort_order INT NOT NULL DEFAULT 99
   )`,
 ];
 

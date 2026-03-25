@@ -8,6 +8,37 @@ export const Route = createFileRoute("/admin/categories")({
     component: EditCategoriesPage,
 });
 
+const InlinePatchField = ({
+    category,
+    field,
+    type = "text",
+}: {
+    category: CategoryEntry;
+    field: keyof Pick<CategoryEntry, "display_name" | "sort_order">;
+    type?: "text" | "number";
+}) => {
+    const patch = usePatchCategory();
+    const [value, setValue] = useState<string>(String(category[field]));
+
+    const handleBlur = () => {
+        const parsed = type === "number" ? Number(value) : value;
+        if (parsed !== category[field]) {
+            patch.mutate({ id: category.id, data: { [field]: parsed } });
+        }
+    };
+
+    return (
+        <input
+            className="form-control form-control-sm"
+            type={type}
+            value={value}
+            onChange={(e) => setValue(e.target.value)}
+            onBlur={handleBlur}
+            style={{ minWidth: type === "number" ? 70 : 140 }}
+        />
+    );
+};
+
 const BoolToggle = ({
     category,
     field,
@@ -36,7 +67,7 @@ const BoolToggle = ({
     );
 };
 
-const empty: CategoryEntry = { id: "", display_name: "", is_visible: false, is_tradeable: false, is_favoritable: false };
+const empty: CategoryEntry = { id: "", display_name: "", is_visible: false, is_tradeable: false, is_favoritable: false, sort_order: 99 };
 
 const AddCategoryForm = () => {
     const [form, setForm] = useState<CategoryEntry>(empty);
@@ -66,6 +97,16 @@ const AddCategoryForm = () => {
                     value={form.display_name}
                     onChange={(e) => setForm((f) => ({ ...f, display_name: e.target.value }))}
                     required
+                />
+            </div>
+            <div className="col-auto">
+                <input
+                    className="form-control form-control-sm"
+                    type="number"
+                    placeholder="Order"
+                    style={{ maxWidth: 80 }}
+                    value={form.sort_order}
+                    onChange={(e) => setForm((f) => ({ ...f, sort_order: Number(e.target.value) }))}
                 />
             </div>
             <div className="col-auto form-check form-switch ms-2 mb-0">
@@ -122,6 +163,7 @@ function EditCategoriesPage() {
                     <tr>
                         <th>ID</th>
                         <th>Display name</th>
+                        <th>Order</th>
                         <th>Visible</th>
                         <th>Tradeable</th>
                         <th>Favoritable</th>
@@ -131,7 +173,8 @@ function EditCategoriesPage() {
                     {categories?.map((cat) => (
                         <tr key={cat.id}>
                             <td className="text-muted small">{cat.id}</td>
-                            <td>{cat.display_name}</td>
+                            <td><InlinePatchField category={cat} field="display_name" /></td>
+                            <td><InlinePatchField category={cat} field="sort_order" type="number" /></td>
                             <td>
                                 <BoolToggle category={cat} field="is_visible" label="Visible" />
                             </td>

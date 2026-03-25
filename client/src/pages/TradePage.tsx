@@ -1,4 +1,5 @@
 import { selectAllTradeable } from "../api/tradable";
+import { selectAllCategories } from "../api/categories";
 
 import type {
     UserInventoryItem,
@@ -66,7 +67,8 @@ const groupInventoryByCategory = (inventory: UserInventoryItem[] | null): Groupe
 const listInventory = (
     inventory: GroupedUserInventory | GroupedTradeInventory | null,
     isTradeColumn: boolean,
-    userInventory: GroupedUserInventory | null
+    userInventory: GroupedUserInventory | null,
+    categoryOrder: Record<string, number>
 ) => {
     if (!inventory) return <div className="col">null</div>;
 
@@ -77,9 +79,15 @@ const listInventory = (
         );
     };
 
+    const sortedCategories = Object.keys(inventory).sort((a, b) => {
+        const orderA = categoryOrder[a] ?? 99;
+        const orderB = categoryOrder[b] ?? 99;
+        return orderA - orderB;
+    });
+
     return (
         <div className="col">
-            {Object.keys(inventory).map((category) => {
+            {sortedCategories.map((category) => {
                 const filteredItems = inventory[category].filter((item) => item.amount > 1);
                 if (filteredItems.length === 0) return null;
 
@@ -130,6 +138,10 @@ const TradePage = ({
         isError,
         error,
     } = selectAllTradeable(profile.id);
+    const { data: categoryData } = selectAllCategories();
+    const categoryOrder: Record<string, number> = Object.fromEntries(
+        (categoryData ?? []).map((c) => [c.id, c.sort_order])
+    );
     if (loadingTradeData) {
         return (
             <div className="text-center my-3">
@@ -171,7 +183,7 @@ const TradePage = ({
                                 <p>You need atleast 2 of an item for it to be visible here</p>
                             </div>
                         ) : (
-                            listInventory(groupedUserInventory, false, null)
+                            listInventory(groupedUserInventory, false, null, categoryOrder)
                         )}
                     </div>
                 </div>
@@ -180,7 +192,7 @@ const TradePage = ({
                     <h3 className="border-bottom mt-2">Others have:</h3>
                     <div className="row p-1">
                         {Object.keys(groupedTradeInventory).length > 0 ? (
-                            listInventory(groupedTradeInventory, true, groupedUserInventory)
+                            listInventory(groupedTradeInventory, true, groupedUserInventory, categoryOrder)
                         ) : (
                             <div className="alert alert-info text-center">
                                 <p>There are no other users with registered items</p>

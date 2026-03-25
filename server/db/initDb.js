@@ -101,19 +101,22 @@ const CREATE_STATEMENTS = [
     `CREATE TABLE IF NOT EXISTS item_location_link (
     item_id INT NOT NULL,
     location_id INT NOT NULL,
-    PRIMARY KEY (item_id, location_id)
+    PRIMARY KEY (item_id, location_id),
+    CONSTRAINT fk_ill_location FOREIGN KEY (location_id) REFERENCES location_entity(id) ON DELETE CASCADE
   )`,
 
     `CREATE TABLE IF NOT EXISTS item_needed_for_link (
     item_id INT NOT NULL,
     needed_for_id INT NOT NULL,
-    PRIMARY KEY (item_id, needed_for_id)
+    PRIMARY KEY (item_id, needed_for_id),
+    CONSTRAINT fk_infl_needed_for FOREIGN KEY (needed_for_id) REFERENCES needed_for_entity(id) ON DELETE CASCADE
   )`,
 
     `CREATE TABLE IF NOT EXISTS item_how_to_obtain_link (
     item_id INT NOT NULL,
     how_to_obtain_id INT NOT NULL,
-    PRIMARY KEY (item_id, how_to_obtain_id)
+    PRIMARY KEY (item_id, how_to_obtain_id),
+    CONSTRAINT fk_ihtol_how_to_obtain FOREIGN KEY (how_to_obtain_id) REFERENCES how_to_obtain_entity(id) ON DELETE CASCADE
   )`,
 
     `CREATE TABLE IF NOT EXISTS categories (

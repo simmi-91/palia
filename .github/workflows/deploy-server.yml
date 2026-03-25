@@ -61,7 +61,7 @@ jobs:
 
             # Restart server
             USER=${{ secrets.DEPLOY_RUN_AS_USER }}
-            sudo -u $USER pm2 restart palia || sudo -u $USER pm2 start server.js --name palia 
+            sudo -u $USER pm2 restart palia || sudo -u $USER pm2 start --name palia --interpreter tsx server.ts
 
             echo "Server deployment complete!"
             sudo -u $USER pm2 status

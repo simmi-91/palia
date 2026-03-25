@@ -1,11 +1,11 @@
 import type {
   MultilistEntry,
   MultilistProps,
-  MainItemEntry,
+  ItemEntry,
 } from "../app/types/wikiTypes";
 
 export const getMultiListProps = (
-  data: MainItemEntry,
+  data: ItemEntry,
   skipKeys?: [string],
   includeEmpty?: boolean
 ): MultilistProps[] => {
@@ -28,7 +28,7 @@ export const getMultiListProps = (
 
           multiListProperties.push({
             title: title,
-            list: value as MultilistEntry[],
+            list: value,
           });
         }
       }

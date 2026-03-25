@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useState, useMemo } from "react";
 import { useAuth } from "../../context/AuthContext";
 import { useQueryClient } from "@tanstack/react-query";
-import type { MainItemEntry, ItemEntry } from "../../app/types/wikiTypes";
+import type { ItemEntry } from "../../app/types/wikiTypes";
 
 import { LoadingState, ErrorState, EmptyCategoryState } from "../../components/CommonStates";
 import ItemForm from "../../components/edit/ItemForm";
@@ -101,22 +101,21 @@ function EditItems() {
     if (itemErr || catErr) return <ErrorState error={itemError ?? catError} />;
     if (!allItems || allItems.length === 0) return <EmptyCategoryState />;
 
-    const handleSave = async (values: MainItemEntry) => {
-        const typedValues = values as ItemEntry;
-        const isNew = typedValues.id === 0;
+    const handleSave = async (values: ItemEntry) => {
+        const isNew = values.id === 0;
         const method = isNew ? "POST" : "PUT";
         const url = isNew
             ? `${import.meta.env.VITE_API_URL}/items`
-            : `${import.meta.env.VITE_API_URL}/items/${typedValues.id}`;
+            : `${import.meta.env.VITE_API_URL}/items/${values.id}`;
         const response = await makeAuthenticatedRequest(url, {
             method,
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(typedValues),
+            body: JSON.stringify(values),
         });
         if (!response.ok) throw new Error("Failed to save item");
         if (isNew) {
             const data = await response.json();
-            setActiveItem({ ...typedValues, id: data.id });
+            setActiveItem({ ...values, id: data.id });
         }
         queryClient.invalidateQueries({ queryKey: [ITEMS_QUERY_KEY] });
     };

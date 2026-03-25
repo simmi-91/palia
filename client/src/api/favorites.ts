@@ -13,11 +13,11 @@ const fetchFavorites = async (profileId: string): Promise<FavoriteItem[]> => {
 };
 
 export const selectAllFavorites = (
-  profileId: string | null
+  profileId: string
 ): UseQueryResult<FavoriteItem[], Error> => {
   const query = useQuery({
     queryKey: ["FavoritesData", profileId],
-    queryFn: () => fetchFavorites(profileId as string),
+    queryFn: () => fetchFavorites(profileId),
     enabled: Boolean(profileId),
     staleTime: 1000 * 60 * 5,
   });
@@ -25,12 +25,12 @@ export const selectAllFavorites = (
 };
 
 export const selectFavoritesByCategory = (
-  profileId: string | null,
+  profileId: string,
   category: string
 ): UseQueryResult<FavoriteItem[], Error> => {
   return useQuery({
     queryKey: ["FavoritesData", profileId, category],
-    queryFn: () => fetchFavorites(profileId as string),
+    queryFn: () => fetchFavorites(profileId),
     enabled: Boolean(profileId),
     staleTime: 1000 * 60 * 5,
     select: (data) => data.filter((item) => item.category === category),

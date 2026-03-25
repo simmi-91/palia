@@ -1,5 +1,5 @@
 import * as Yup from "yup";
-import type { MainItemEntry } from "../app/types/wikiTypes";
+import type { ItemEntry } from "../app/types/wikiTypes";
 
 // type MultilistEntry
 const MultiListItemSchema = Yup.object({
@@ -10,10 +10,10 @@ const MultiListItemSchema = Yup.object({
 
 const skipKeys = ["id"] as const;
 
-export const createDynamicValidationSchema = (item: MainItemEntry) => {
+export const createDynamicValidationSchema = (item: ItemEntry) => {
   const schemaShape: Record<string, any> = {};
 
-  for (const key of Object.keys(item) as Array<string>) {
+  for (const key of Object.keys(item)) {
     if (skipKeys.includes(key as (typeof skipKeys)[number])) {
       continue;
     }
@@ -22,14 +22,14 @@ export const createDynamicValidationSchema = (item: MainItemEntry) => {
 
     // --- Handle Array/Multilist Fields ---
     if (Array.isArray(value)) {
-      schemaShape[key as string] = Yup.array()
+      schemaShape[key] = Yup.array()
         .of(MultiListItemSchema)
         .min(0, `At least one ${key} entry is recommended`);
       continue;
     }
 
     if (key === "rarity") {
-      schemaShape[key as string] = Yup.number()
+      schemaShape[key] = Yup.number()
         .typeError("Rarity must be a number")
         .nullable()
         .integer("Rarity must be a whole number")
@@ -39,7 +39,7 @@ export const createDynamicValidationSchema = (item: MainItemEntry) => {
     }
 
     if (key === "baseValue") {
-      schemaShape[key as string] = Yup.number()
+      schemaShape[key] = Yup.number()
         .typeError("Base Value must be a whole number")
         .nullable()
         .integer("Base Value must be a whole number")
@@ -51,17 +51,17 @@ export const createDynamicValidationSchema = (item: MainItemEntry) => {
 
     if (typeof value === "string" || value === null) {
       if (key === "image") {
-        schemaShape[key as string] = Yup.string().trim().nullable();
+        schemaShape[key] = Yup.string().trim().nullable();
         continue;
       }
       if (key === "url") {
-        schemaShape[key as string] = Yup.string().trim().required(`${key} is required`).url("Must be a valid URL");
+        schemaShape[key] = Yup.string().trim().required(`${key} is required`).url("Must be a valid URL");
         continue;
       }
       if (REQUIRED_STRINGS.includes(key)) {
-        schemaShape[key as string] = Yup.string().trim().required(`${key} is required`);
+        schemaShape[key] = Yup.string().trim().required(`${key} is required`);
       } else {
-        schemaShape[key as string] = Yup.string().trim().nullable();
+        schemaShape[key] = Yup.string().trim().nullable();
       }
       continue;
     }

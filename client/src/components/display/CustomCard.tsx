@@ -9,18 +9,13 @@ import { getMultiListProps } from "../../utils/multilistProperties";
 import { useAddFavorite, useRemoveFavorite } from "../../hooks/useFavoriteMutations";
 
 import type {
-    PlushiesEntry,
-    CatchableEntry,
-    FishEntry,
-    StickerEntry,
-    MainItemEntry,
+    ItemEntry,
     MultilistEntry,
     MultilistProps,
-    PotatoPodEntry,
 } from "../../app/types/wikiTypes";
 
 type CustomCardProps = {
-    dataObject: MainItemEntry;
+    dataObject: ItemEntry;
     category: string; // Passed from parent (e.g., 'artifacts', 'plushies')
     isTradeable: boolean;
     isFavoritable: boolean;
@@ -56,12 +51,9 @@ const CustomCard: React.FC<CustomCardProps> = ({
         imgurl = dataObject.image;
     }
 
-    const rarity =
-        "rarity" in dataObject
-            ? (dataObject as CatchableEntry | PlushiesEntry | StickerEntry).rarity
-            : 0;
-    const bait = "bait" in dataObject ? (dataObject as FishEntry).bait : "";
-    const family = "family" in dataObject ? (dataObject as PotatoPodEntry).family : "";
+    const rarity = dataObject.rarity ?? 0;
+    const bait = dataObject.bait ?? "";
+    const family = dataObject.family ?? "";
 
     const multilist = getMultiListProps(dataObject);
     let hasMultiList = false;

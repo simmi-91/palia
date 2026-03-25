@@ -5,12 +5,12 @@ import { addFavorite, removeFavorite } from "../api/favorites";
 type RemoveArgs = { favoriteId: number };
 type AddArgs = { category: string; itemId: number };
 
-export function useRemoveFavorite(profileId: string | null) {
+export function useRemoveFavorite(profileId: string) {
   const queryClient = useQueryClient();
 
   const { mutate, isPending } = useMutation({
     mutationFn: ({ favoriteId }: RemoveArgs) =>
-      removeFavorite(profileId as string, favoriteId),
+      removeFavorite(profileId, favoriteId),
     onMutate: async ({ favoriteId }) => {
       await queryClient.cancelQueries({
         queryKey: ["FavoritesData", profileId],
@@ -43,12 +43,12 @@ export function useRemoveFavorite(profileId: string | null) {
   return { remove: mutate, isPending };
 }
 
-export function useAddFavorite(profileId: string | null) {
+export function useAddFavorite(profileId: string) {
   const queryClient = useQueryClient();
 
   const { mutate, isPending } = useMutation({
     mutationFn: ({ category, itemId }: AddArgs) =>
-      addFavorite(profileId as string, category, itemId),
+      addFavorite(profileId, category, itemId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["FavoritesData", profileId] });
     },

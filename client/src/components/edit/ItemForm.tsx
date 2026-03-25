@@ -6,7 +6,7 @@ import { CLOCK_PHASES, parseTimePhases, buildTimeString } from "../../utils/cloc
 import { getMultiListProps } from "../../utils/multilistProperties";
 
 import type { EntityOption } from "../../app/types/entityTypes";
-import type { MainItemEntry, MultilistProps } from "../../app/types/wikiTypes";
+import type { ItemEntry, MultilistProps } from "../../app/types/wikiTypes";
 import { selectRarityByNumber } from "../../api/rarity";
 
 import {
@@ -60,7 +60,7 @@ const FormikInput = ({
 );
 
 const UrlField = () => {
-    const { values } = useFormikContext<MainItemEntry>();
+    const { values } = useFormikContext<ItemEntry>();
     return (
         <div className="input-group my-2 flex-column">
             <div className="input-group">
@@ -80,7 +80,7 @@ const UrlField = () => {
 };
 
 const ImgField = () => {
-    const { values } = useFormikContext<MainItemEntry>();
+    const { values } = useFormikContext<ItemEntry>();
     return (
         <div className="input-group my-2 flex-column">
             <div className="input-group">
@@ -122,8 +122,8 @@ const RarityField = () => {
 };
 
 const RarityNameDisplay = () => {
-    const { values } = useFormikContext<MainItemEntry & { rarity?: number }>();
-    if (values.rarity === undefined) return null;
+    const { values } = useFormikContext<ItemEntry>();
+    if (values.rarity == null) return null;
     const rarity = selectRarityByNumber(values.rarity);
     return (
         <span className="form-control w-auto" style={{ maxWidth: "120px" }}>
@@ -133,9 +133,7 @@ const RarityNameDisplay = () => {
 };
 
 const TimeCheckboxField = () => {
-    const { values, setFieldValue, setFieldTouched } = useFormikContext<
-        MainItemEntry & { time?: string }
-    >();
+    const { values, setFieldValue, setFieldTouched } = useFormikContext<ItemEntry>();
     const selected = parseTimePhases(values.time ?? "");
     const allSelected = selected.length === CLOCK_PHASES.length;
 
@@ -232,7 +230,7 @@ const ComboField = ({ element }: { element: string }) => {
 
 const BaitRadioField = () => {
     const { data: options = [] } = useItemBaits();
-    const { values, setFieldValue } = useFormikContext<MainItemEntry & { bait?: string | null }>();
+    const { values, setFieldValue } = useFormikContext<ItemEntry>();
     const isNull = values.bait === null || values.bait === undefined || values.bait === "";
     return (
         <div className="my-2">
@@ -372,9 +370,9 @@ const genericFields = (keys: string[]) => {
 
 const MultiFieldsArray = ({ title, allOptions }: { title: string; allOptions: EntityOption[] }) => {
     const name = toAllEntityKey(title);
-    const { values } = useFormikContext<MainItemEntry & Record<string, MultilistProps["list"]>>();
+    const { values } = useFormikContext<ItemEntry>();
     const list: MultilistProps["list"] =
-        ((values as Record<string, unknown>)[name] as MultilistProps["list"]) ?? [];
+        (values[name as keyof ItemEntry] as MultilistProps["list"]) ?? [];
 
     const [selectedTitle, setSelectedTitle] = useState("");
 
@@ -489,9 +487,9 @@ const ItemForm = ({
     onSave,
     onDelete,
 }: {
-    item: MainItemEntry;
+    item: ItemEntry;
     collectionName: string;
-    onSave: (values: MainItemEntry) => Promise<void>;
+    onSave: (values: ItemEntry) => Promise<void>;
     onDelete?: (id: number) => Promise<void>;
 }) => {
     const { data: locationData } = useLocationEntities();
@@ -510,7 +508,7 @@ const ItemForm = ({
     const validationSchema = createDynamicValidationSchema(item);
 
     const genericKeys = Object.keys(item).filter((key) => {
-        return !Array.isArray(item[key as keyof MainItemEntry]);
+        return !Array.isArray(item[key as keyof ItemEntry]);
     });
 
     return (
@@ -520,7 +518,7 @@ const ItemForm = ({
             validationSchema={validationSchema}
             onSubmit={async (values, { setSubmitting, setStatus }) => {
                 try {
-                    await onSave(values as MainItemEntry);
+                    await onSave(values);
                     setStatus({ success: true });
                 } catch (err) {
                     setStatus({

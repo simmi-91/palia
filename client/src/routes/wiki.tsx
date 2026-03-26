@@ -21,7 +21,7 @@ function WikiLayout() {
     if (isError) return <ErrorState error={error} />;
     if (!data || data.length === 0) return <EmptyCategoryState />;
 
-    const categories = data.filter((cat) => cat.is_visible === true);
+    const categories = data.filter((cat) => cat.isVisible === true);
     const bundles = neededForData?.filter((e) => e.title.includes("Bundle")) ?? [];
 
     return (
@@ -35,7 +35,7 @@ function WikiLayout() {
                         activeProps={{ className: activeLinkClass }}
                         style={{ minWidth: "80px" }}
                         key={cat.id}>
-                        {cat.display_name}
+                        {cat.displayName}
                     </Link>
                 ))}
             </div>

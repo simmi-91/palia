@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { selectAllCategories, useAddCategory, usePatchCategory } from "../../api/categories";
 import { LoadingState, ErrorState } from "../../components/CommonStates";
-import type { CategoryEntry } from "../../app/types/wikiTypes";
+import type { Category } from "../../app/types/wikiTypes";
 
 export const Route = createFileRoute("/admin/categories")({
     component: EditCategoriesPage,
@@ -13,8 +13,8 @@ const InlinePatchField = ({
     field,
     type = "text",
 }: {
-    category: CategoryEntry;
-    field: keyof Pick<CategoryEntry, "display_name" | "sort_order">;
+    category: Category;
+    field: keyof Pick<Category, "displayName" | "sortOrder">;
     type?: "text" | "number";
 }) => {
     const patch = usePatchCategory();
@@ -44,8 +44,8 @@ const BoolToggle = ({
     field,
     label,
 }: {
-    category: CategoryEntry;
-    field: keyof Pick<CategoryEntry, "is_visible" | "is_tradeable" | "is_favoritable">;
+    category: Category;
+    field: keyof Pick<Category, "isVisible" | "isTradeable" | "isFavoritable">;
     label: string;
 }) => {
     const patch = usePatchCategory();
@@ -67,15 +67,15 @@ const BoolToggle = ({
     );
 };
 
-const empty: CategoryEntry = { id: "", display_name: "", is_visible: false, is_tradeable: false, is_favoritable: false, sort_order: 99 };
+const empty: Category = { id: "", displayName: "", isVisible: false, isTradeable: false, isFavoritable: false, sortOrder: 99 };
 
 const AddCategoryForm = () => {
-    const [form, setForm] = useState<CategoryEntry>(empty);
+    const [form, setForm] = useState<Category>(empty);
     const add = useAddCategory();
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        if (!form.id || !form.display_name) return;
+        if (!form.id || !form.displayName) return;
         add.mutate(form, { onSuccess: () => setForm(empty) });
     };
 
@@ -94,8 +94,8 @@ const AddCategoryForm = () => {
                 <input
                     className="form-control form-control-sm"
                     placeholder="Display name"
-                    value={form.display_name}
-                    onChange={(e) => setForm((f) => ({ ...f, display_name: e.target.value }))}
+                    value={form.displayName}
+                    onChange={(e) => setForm((f) => ({ ...f, displayName: e.target.value }))}
                     required
                 />
             </div>
@@ -105,8 +105,8 @@ const AddCategoryForm = () => {
                     type="number"
                     placeholder="Order"
                     style={{ maxWidth: 80 }}
-                    value={form.sort_order}
-                    onChange={(e) => setForm((f) => ({ ...f, sort_order: Number(e.target.value) }))}
+                    value={form.sortOrder}
+                    onChange={(e) => setForm((f) => ({ ...f, sortOrder: Number(e.target.value) }))}
                 />
             </div>
             <div className="col-auto form-check form-switch ms-2 mb-0">
@@ -114,8 +114,8 @@ const AddCategoryForm = () => {
                     className="form-check-input"
                     type="checkbox"
                     id="new-visible"
-                    checked={form.is_visible}
-                    onChange={(e) => setForm((f) => ({ ...f, is_visible: e.target.checked }))}
+                    checked={form.isVisible}
+                    onChange={(e) => setForm((f) => ({ ...f, isVisible: e.target.checked }))}
                 />
                 <label className="form-check-label" htmlFor="new-visible">Visible</label>
             </div>
@@ -124,8 +124,8 @@ const AddCategoryForm = () => {
                     className="form-check-input"
                     type="checkbox"
                     id="new-tradeable"
-                    checked={form.is_tradeable}
-                    onChange={(e) => setForm((f) => ({ ...f, is_tradeable: e.target.checked }))}
+                    checked={form.isTradeable}
+                    onChange={(e) => setForm((f) => ({ ...f, isTradeable: e.target.checked }))}
                 />
                 <label className="form-check-label" htmlFor="new-tradeable">Tradeable</label>
             </div>
@@ -134,8 +134,8 @@ const AddCategoryForm = () => {
                     className="form-check-input"
                     type="checkbox"
                     id="new-favoritable"
-                    checked={form.is_favoritable}
-                    onChange={(e) => setForm((f) => ({ ...f, is_favoritable: e.target.checked }))}
+                    checked={form.isFavoritable}
+                    onChange={(e) => setForm((f) => ({ ...f, isFavoritable: e.target.checked }))}
                 />
                 <label className="form-check-label" htmlFor="new-favoritable">Favoritable</label>
             </div>
@@ -173,18 +173,18 @@ function EditCategoriesPage() {
                     {categories?.map((cat) => (
                         <tr key={cat.id}>
                             <td className="text-muted small">{cat.id}</td>
-                            <td><InlinePatchField category={cat} field="display_name" /></td>
-                            <td><InlinePatchField category={cat} field="sort_order" type="number" /></td>
+                            <td><InlinePatchField category={cat} field="displayName" /></td>
+                            <td><InlinePatchField category={cat} field="sortOrder" type="number" /></td>
                             <td>
-                                <BoolToggle category={cat} field="is_visible" label="Visible" />
+                                <BoolToggle category={cat} field="isVisible" label="Visible" />
                             </td>
                             <td>
-                                <BoolToggle category={cat} field="is_tradeable" label="Tradeable" />
+                                <BoolToggle category={cat} field="isTradeable" label="Tradeable" />
                             </td>
                             <td>
                                 <BoolToggle
                                     category={cat}
-                                    field="is_favoritable"
+                                    field="isFavoritable"
                                     label="Favoritable"
                                 />
                             </td>

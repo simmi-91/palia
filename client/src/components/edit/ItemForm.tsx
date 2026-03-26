@@ -6,7 +6,7 @@ import { CLOCK_PHASES, parseTimePhases, buildTimeString } from "../../utils/cloc
 import { getMultiListProps } from "../../utils/multilistProperties";
 
 import type { EntityOption } from "../../app/types/entityTypes";
-import type { ItemEntry, MultilistProps } from "../../app/types/wikiTypes";
+import type { Item, EntityLinkList } from "../../app/types/wikiTypes";
 import { selectRarityByNumber } from "../../api/rarity";
 
 import {
@@ -60,7 +60,7 @@ const FormikInput = ({
 );
 
 const UrlField = () => {
-    const { values } = useFormikContext<ItemEntry>();
+    const { values } = useFormikContext<Item>();
     return (
         <div className="input-group my-2 flex-column">
             <div className="input-group">
@@ -80,7 +80,7 @@ const UrlField = () => {
 };
 
 const ImgField = () => {
-    const { values } = useFormikContext<ItemEntry>();
+    const { values } = useFormikContext<Item>();
     return (
         <div className="input-group my-2 flex-column">
             <div className="input-group">
@@ -122,7 +122,7 @@ const RarityField = () => {
 };
 
 const RarityNameDisplay = () => {
-    const { values } = useFormikContext<ItemEntry>();
+    const { values } = useFormikContext<Item>();
     if (values.rarity == null) return null;
     const rarity = selectRarityByNumber(values.rarity);
     return (
@@ -133,7 +133,7 @@ const RarityNameDisplay = () => {
 };
 
 const TimeCheckboxField = () => {
-    const { values, setFieldValue, setFieldTouched } = useFormikContext<ItemEntry>();
+    const { values, setFieldValue, setFieldTouched } = useFormikContext<Item>();
     const selected = parseTimePhases(values.time ?? "");
     const allSelected = selected.length === CLOCK_PHASES.length;
 
@@ -230,7 +230,7 @@ const ComboField = ({ element }: { element: string }) => {
 
 const BaitRadioField = () => {
     const { data: options = [] } = useItemBaits();
-    const { values, setFieldValue } = useFormikContext<ItemEntry>();
+    const { values, setFieldValue } = useFormikContext<Item>();
     const isNull = values.bait === null || values.bait === undefined || values.bait === "";
     return (
         <div className="my-2">
@@ -280,7 +280,7 @@ const CategoryField = () => {
                 <Field name="category" as="select" className="form-select">
                     {categories.map((cat) => (
                         <option key={cat.id} value={cat.id}>
-                            {cat.display_name}
+                            {cat.displayName}
                         </option>
                     ))}
                 </Field>
@@ -370,9 +370,9 @@ const genericFields = (keys: string[]) => {
 
 const MultiFieldsArray = ({ title, allOptions }: { title: string; allOptions: EntityOption[] }) => {
     const name = toAllEntityKey(title);
-    const { values } = useFormikContext<ItemEntry>();
-    const list: MultilistProps["list"] =
-        (values[name as keyof ItemEntry] as MultilistProps["list"]) ?? [];
+    const { values } = useFormikContext<Item>();
+    const list: EntityLinkList["list"] =
+        (values[name as keyof Item] as EntityLinkList["list"]) ?? [];
 
     const [selectedTitle, setSelectedTitle] = useState("");
 
@@ -381,7 +381,7 @@ const MultiFieldsArray = ({ title, allOptions }: { title: string; allOptions: En
 
     return (
         <div className="card my-2 shadow" key={name}>
-            <h5 className="card-header">{title} (Link Table)</h5>
+            <h5 className="card-header">{title} (ExternalLink Table)</h5>
             <div className="card-body">
                 <FieldArray name={name}>
                     {({ push, remove }) => (
@@ -487,9 +487,9 @@ const ItemForm = ({
     onSave,
     onDelete,
 }: {
-    item: ItemEntry;
+    item: Item;
     collectionName: string;
-    onSave: (values: ItemEntry) => Promise<void>;
+    onSave: (values: Item) => Promise<void>;
     onDelete?: (id: number) => Promise<void>;
 }) => {
     const { data: locationData } = useLocationEntities();
@@ -508,7 +508,7 @@ const ItemForm = ({
     const validationSchema = createDynamicValidationSchema(item);
 
     const genericKeys = Object.keys(item).filter((key) => {
-        return !Array.isArray(item[key as keyof ItemEntry]);
+        return !Array.isArray(item[key as keyof Item]);
     });
 
     return (

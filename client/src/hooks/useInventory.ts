@@ -1,5 +1,5 @@
 import { useState, useCallback } from "react";
-import type { GoogleProfile, UserInventoryItem } from "../app/types/userTypes";
+import type { GoogleProfile, InventoryItem } from "../app/types/userTypes";
 import { debounce } from "../utils/debounce";
 
 const callApiUpdate = async (
@@ -50,7 +50,7 @@ const callApiBulkUpdate = async (
 };
 
 export const useInventory = (profile: GoogleProfile | null) => {
-  const [inventory, setInventory] = useState<UserInventoryItem[]>([]);
+  const [inventory, setInventory] = useState<InventoryItem[]>([]);
   const profileId = profile?.id;
 
   const debouncedApiUpdate = useCallback(
@@ -71,7 +71,7 @@ export const useInventory = (profile: GoogleProfile | null) => {
       const response = await fetch(
         import.meta.env.VITE_API_URL + `/inventory/${profileId}`
       );
-      const data: UserInventoryItem[] = await response.json();
+      const data: InventoryItem[] = await response.json();
       setInventory(data);
     } catch (error) {
       console.error("Error loading inventory:", error);
@@ -83,7 +83,7 @@ export const useInventory = (profile: GoogleProfile | null) => {
     category,
     itemId,
     amount,
-  }: UserInventoryItem) => {
+  }: InventoryItem) => {
     setInventory((prevInventory) => {
       if (!prevInventory) return [];
       const existingIndex = prevInventory.findIndex(
@@ -108,7 +108,7 @@ export const useInventory = (profile: GoogleProfile | null) => {
   };
 
   const bulkUpdateInventory = useCallback(
-    async (items: UserInventoryItem[]) => {
+    async (items: InventoryItem[]) => {
       if (!profileId) return { success: false, count: 0 };
       const result = await callApiBulkUpdate(profileId, items);
       if (result.success) {

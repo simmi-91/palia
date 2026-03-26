@@ -13,11 +13,11 @@ import type {
   InventoryItem,
   Item,
   ItemInput,
-  Link,
+  ExternalLink,
   EntityType,
-  MultilistEntry,
-  MultilistEntryInput,
-  TradeableItem,
+  EntityLink,
+  EntityLinkInput,
+  TradeOffer,
   User,
 } from "./models.js";
 
@@ -93,9 +93,9 @@ export type CategoriesDb = {
 };
 
 export type EntityDb = {
-  getAllEntities(entity: EntityType): Promise<MultilistEntry[]>;
-  addEntitiy(entity: EntityType, newItem: MultilistEntryInput): Promise<DbResultWithId>;
-  updateEntitiy(entity: EntityType, id: number, newItem: Partial<MultilistEntryInput>): Promise<DbResultWithId>;
+  getAllEntities(entity: EntityType): Promise<EntityLink[]>;
+  addEntity(entity: EntityType, newItem: EntityLinkInput): Promise<DbResultWithId>;
+  updateEntitiy(entity: EntityType, id: number, newItem: Partial<EntityLinkInput>): Promise<DbResultWithId>;
   deleteEntitiy(entity: EntityType, id: number): Promise<DbResultWithId>;
 };
 
@@ -109,12 +109,12 @@ export type InventoryDb = {
   getAll(profileId: string): Promise<InventoryItem[]>;
   update(profileId: string, category: string, itemId: number, amount: number): Promise<DbResultWithCount>;
   bulkUpdate(profileId: string, items: InventoryItem[]): Promise<DbResultWithCount>;
-  getTradeable(profileId: string): Promise<TradeableItem[]>;
+  getTradeable(profileId: string): Promise<TradeOffer[]>;
 };
 
-export type LinksDb = {
-  getAllLinks(): Promise<Link[]>;
-  addLink(newLink: Omit<Link, "id">): Promise<void>;
+export type ExternalLinksDb = {
+  getAllLinks(): Promise<ExternalLink[]>;
+  addLink(newLink: Omit<ExternalLink, "id">): Promise<void>;
 };
 
 export type UsersDb = {

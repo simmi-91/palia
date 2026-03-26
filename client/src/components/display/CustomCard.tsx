@@ -9,13 +9,13 @@ import { getMultiListProps } from "../../utils/multilistProperties";
 import { useAddFavorite, useRemoveFavorite } from "../../hooks/useFavoriteMutations";
 
 import type {
-    ItemEntry,
-    MultilistEntry,
-    MultilistProps,
+    Item,
+    EntityLink,
+    EntityLinkList,
 } from "../../app/types/wikiTypes";
 
 type CustomCardProps = {
-    dataObject: ItemEntry;
+    dataObject: Item;
     category: string; // Passed from parent (e.g., 'artifacts', 'plushies')
     isTradeable: boolean;
     isFavoritable: boolean;
@@ -122,11 +122,11 @@ const CustomCard: React.FC<CustomCardProps> = ({
     const multiTagBlock = () => {
         return (
             <div className="col d-flex">
-                {multilist.map((cat: MultilistProps) => (
+                {multilist.map((cat: EntityLinkList) => (
                     <div key={cat.title.replace(/\s/g, "").toLowerCase()} className="row">
                         <b className="text-s">{cat.title}:</b>
                         <div className="d-flex flex-wrap">
-                            {cat.list.map((listItem: MultilistEntry, idx: number) => {
+                            {cat.list.map((listItem: EntityLink, idx: number) => {
                                 let icon = "";
                                 if (listItem.category === "Bug Catching") {
                                     icon = "bi-bug-fill";

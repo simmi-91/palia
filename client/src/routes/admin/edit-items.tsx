@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useState, useMemo } from "react";
 import { useAuth } from "../../context/AuthContext";
 import { useQueryClient } from "@tanstack/react-query";
-import type { ItemEntry } from "../../app/types/wikiTypes";
+import type { Item } from "../../app/types/wikiTypes";
 
 import { LoadingState, ErrorState, EmptyCategoryState } from "../../components/CommonStates";
 import ItemForm from "../../components/edit/ItemForm";
@@ -26,7 +26,7 @@ const requiredFieldsMap: Record<string, string[]> = {
     potatopods: ["image", "family"],
 };
 
-const getMissingFields = (item: ItemEntry): string[] => {
+const getMissingFields = (item: Item): string[] => {
     const fields = requiredFieldsMap[item.category] ?? [];
     return fields.filter((field) => {
         const value = (item as Record<string, unknown>)[field];
@@ -35,19 +35,19 @@ const getMissingFields = (item: ItemEntry): string[] => {
     });
 };
 
-const createBlankItem = (category: string): ItemEntry => ({
+const createBlankItem = (category: string): Item => ({
     id: 0,
     name: "",
     url: "",
     image: "",
     category,
-    rarity: null,
-    description: null,
-    time: null,
-    baseValue: null,
-    behavior: null,
-    bait: null,
-    family: null,
+    rarity: undefined,
+    description: undefined,
+    time: undefined,
+    baseValue: undefined,
+    behavior: undefined,
+    bait: undefined,
+    family: undefined,
     location: [],
     neededFor: [],
     howToObtain: [],
@@ -57,7 +57,7 @@ function EditItems() {
     const { profile, makeAuthenticatedRequest } = useAuth();
     const queryClient = useQueryClient();
     const [activeCategory, setActiveCategory] = useState("bugs");
-    const [activeItem, setActiveItem] = useState<ItemEntry | undefined>();
+    const [activeItem, setActiveItem] = useState<Item | undefined>();
     const [searchQuery, setSearchQuery] = useState("");
     const [activeFilters, setActiveFilters] = useState<Record<string, string>>({});
 
@@ -101,7 +101,7 @@ function EditItems() {
     if (itemErr || catErr) return <ErrorState error={itemError ?? catError} />;
     if (!allItems || allItems.length === 0) return <EmptyCategoryState />;
 
-    const handleSave = async (values: ItemEntry) => {
+    const handleSave = async (values: Item) => {
         const isNew = values.id === 0;
         const method = isNew ? "POST" : "PUT";
         const url = isNew
@@ -149,7 +149,7 @@ function EditItems() {
                             <option value="all">All categories</option>
                             {categoryData?.map((cat) => (
                                 <option key={cat.id} value={cat.id}>
-                                    {cat.display_name}
+                                    {cat.displayName}
                                 </option>
                             ))}
                         </select>

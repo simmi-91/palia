@@ -27,7 +27,7 @@ const router = Router();
  *             schema:
  *               type: array
  *               items:
- *                 $ref: '#/components/schemas/MultilistEntry'
+ *                 $ref: '#/components/schemas/EntityLink'
  *       503:
  *         description: Database service unavailable
  *         content:
@@ -52,7 +52,7 @@ const router = Router();
  *             required: [newItem]
  *             properties:
  *               newItem:
- *                 $ref: '#/components/schemas/MultilistEntry'
+ *                 $ref: '#/components/schemas/EntityLink'
  *     responses:
  *       200:
  *         description: Entity added
@@ -81,7 +81,7 @@ const router = Router();
  *             properties:
  *               id: { type: integer }
  *               newItem:
- *                 $ref: '#/components/schemas/MultilistEntry'
+ *                 $ref: '#/components/schemas/EntityLink'
  *     responses:
  *       200:
  *         description: Entity updated
@@ -159,7 +159,7 @@ router.post("/:entity", async (req: Request<EntityParam, unknown, CreateEntityBo
     return res.status(503).json({ error: "Database service unavailable" });
   }
 
-  const result = await db.addEntitiy(entity, newItem);
+  const result = await db.addEntity(entity, newItem);
   res.json(result);
 });
 

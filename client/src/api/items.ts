@@ -1,18 +1,18 @@
 import { useQuery, type UseQueryResult } from "@tanstack/react-query";
-import type { ItemEntry } from "../app/types/wikiTypes";
+import type { Item } from "../app/types/wikiTypes";
 
 const QUERYKEY = "ItemsData";
 
-const fetchItems = async (): Promise<ItemEntry[]> => {
+const fetchItems = async (): Promise<Item[]> => {
   const response = await fetch(import.meta.env.VITE_API_URL + "/items");
   if (!response.ok) {
     throw new Error("Network response was not ok");
   }
-  const data: ItemEntry[] = await response.json();
+  const data: Item[] = await response.json();
   return data;
 };
 
-export const selectAllItems= (): UseQueryResult<ItemEntry[], Error> => {
+export const selectAllItems= (): UseQueryResult<Item[], Error> => {
   const query = useQuery({
     queryKey: [QUERYKEY],
     queryFn: fetchItems,
@@ -23,7 +23,7 @@ export const selectAllItems= (): UseQueryResult<ItemEntry[], Error> => {
 
 export const selectItemById = (
   itemId: number,
-): UseQueryResult<ItemEntry | undefined, Error> => {
+): UseQueryResult<Item | undefined, Error> => {
   return useQuery({
     queryKey: [QUERYKEY, itemId],
     queryFn: fetchItems,
@@ -34,7 +34,7 @@ export const selectItemById = (
 
 export const selectItemsByCategory = (
     category: string,
-  ): UseQueryResult<ItemEntry[], Error> => {
+  ): UseQueryResult<Item[], Error> => {
     return useQuery({
       queryKey: [QUERYKEY],
       queryFn: fetchItems,
@@ -77,7 +77,7 @@ export const useItemFamilies = (): UseQueryResult<string[], Error> =>
 
 export const selectItemsByNeededFor = (
   title: string,
-): UseQueryResult<ItemEntry[], Error> =>
+): UseQueryResult<Item[], Error> =>
   useQuery({
     queryKey: [QUERYKEY],
     queryFn: fetchItems,

@@ -1,9 +1,9 @@
 import { pool } from "./db_connections.js";
 import type { RowDataPacket } from "mysql2/promise";
-import type { Link } from "../types/models.js";
-import type { LinksDb } from "../types/db.js";
+import type { ExternalLink } from "../types/models.js";
+import type { ExternalLinksDb } from "../types/db.js";
 
-let db: LinksDb | undefined;
+let db: ExternalLinksDb | undefined;
 
 const createDB = async () => {
   if (db) return db;
@@ -11,7 +11,7 @@ const createDB = async () => {
   db = {
     getAllLinks: async () => {
       const [rows] = await pool!.query<RowDataPacket[]>("SELECT * FROM links");
-      return rows as Link[];
+      return rows as ExternalLink[];
     },
 
     addLink: async (newLink) => {

@@ -19,7 +19,7 @@ const UserIcon = () => {
         <div className="d-flex justify-content-end">
           <Link to="/profile" title="Go to profile">
             <img
-              alt={profile.given_name}
+              alt={profile.givenName}
               src={profile.picture}
               className="rounded-circle border border-2 border-dark "
               style={{ maxHeight: 50 }}
@@ -27,7 +27,7 @@ const UserIcon = () => {
             />
           </Link>
           <div className=" mx-1 row d-none d-sm-inline align-content-center">
-            <div className="row fw-bold fs-5 ">{profile.given_name}</div>
+            <div className="row fw-bold fs-5 ">{profile.givenName}</div>
             <Link
               to="/profile"
               className="text-nowrap text-decoration-none p-0 text-dark"

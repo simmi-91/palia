@@ -1,11 +1,11 @@
 import { useMemo } from "react";
-import type { ItemEntry } from "../app/types/wikiTypes";
+import type { Item } from "../app/types/wikiTypes";
 import { selectRarityByNumber } from "../api/rarity";
 
 const FILTER_TYPES = ["family", "behavior", "rarity", "time"];
 
 type ItemFiltersProps = {
-    data: ItemEntry[];
+    data: Item[];
     activeFilters: Record<string, string>;
     onChange: (filters: Record<string, string>) => void;
 };

@@ -143,7 +143,7 @@ router.get("/", async (req: Request, res: Response) => {
         return res.status(503).json({ error: "Database service unavailable" });
     }
 
-    const items = await db.getAll();
+    const items = await db!.getAll();
     res.json(items);
 });
 
@@ -157,7 +157,7 @@ router.post("/", async (req: Request<unknown, unknown, CreateItemBody>, res: Res
     }
 
     try {
-        const result = await db.addItem(req.body);
+        const result = await db!.addItem(req.body);
         if (!result.success) return res.status(500).json({ error: result.error });
         return res.status(201).json(result);
     } catch (error) {
@@ -179,7 +179,7 @@ router.put("/:id", async (req: Request<IdParam, unknown, UpdateItemBody>, res: R
     }
 
     try {
-        const result = await db.updateItem(id, req.body);
+        const result = await db!.updateItem(id, req.body);
         if (!result.success) return res.status(404).json({ error: result.error ?? "Not found" });
         return res.status(200).json(result);
     } catch (error) {
@@ -200,7 +200,7 @@ router.delete("/:id", async (req: Request<IdParam>, res: Response) => {
     }
 
     try {
-        const result = await db.deleteItem(id);
+        const result = await db!.deleteItem(id);
         if (!result.success) return res.status(404).json({ error: result.error ?? "Not found" });
         return res.status(200).json(result);
     } catch (error) {

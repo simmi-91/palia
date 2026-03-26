@@ -8,16 +8,16 @@ import PhaseCountdown from "../components/display/PhaseCountdown";
 import RarityTag from "../components/display/RarityTag";
 
 import type { FavoriteItem } from "../app/types/userTypes";
-import type { ItemEntry, MultilistEntry } from "../app/types/wikiTypes";
+import type { Item, EntityLink } from "../app/types/wikiTypes";
 import { selectAllItems } from "../api/items";
 import { selectAllFavorites } from "../api/favorites";
 import { useRemoveFavorite } from "../hooks/useFavoriteMutations";
 
-type fullFavoriteEntry = ItemEntry & FavoriteItem;
+type fullFavoriteEntry = Item & FavoriteItem;
 
 const CATCHABLE_CATEGORIES = ["bugs", "fish"];
 
-const itemTimeIncludesPhase = (itemTime: string | null, phase: string): boolean => {
+const itemTimeIncludesPhase = (itemTime: string | undefined, phase: string): boolean => {
     if (!itemTime || itemTime.toLowerCase().includes("any time")) {
         return true;
     }
@@ -112,7 +112,7 @@ const CatchPage = ({ profile }: { profile: GoogleProfile }) => {
         }
 
         if (Array.isArray(item.location) && item.location.length > 0) {
-            infoText.push(item.location.map((loc: MultilistEntry) => loc.title).join(", "));
+            infoText.push(item.location.map((loc: EntityLink) => loc.title).join(", "));
         }
 
         return infoText;

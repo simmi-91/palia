@@ -1,4 +1,4 @@
-import { type UserInventoryItem } from "../../app/types/userTypes";
+import { type InventoryItem } from "../../app/types/userTypes";
 
 import artifactMap, { type artifactMapType } from "./artifactMap";
 import stickerMap, { type stickersMapType } from "./stickerMap";
@@ -23,7 +23,7 @@ export const mapItems = (
   databaseData: DatabaseItem[] | undefined,
   rawJsonData: RawKeyDataItem[] | RawDataItem[],
   setUploadStatus: (status: string) => void
-): UserInventoryItem[] | null => {
+): InventoryItem[] | null => {
   if (!databaseData) {
     setUploadStatus(`Data for ${category} has not yet loaded. Please wait.`);
     return null;
@@ -34,7 +34,7 @@ export const mapItems = (
   );
   console.log(nameToItemMap);
 
-  const mappedData: UserInventoryItem[] = rawJsonData
+  const mappedData: InventoryItem[] = rawJsonData
     .map((item: RawKeyDataItem | RawDataItem) => {
       let nameToMap = "";
       let amount = 0;
@@ -73,7 +73,7 @@ export const mapItems = (
       }
       return null;
     })
-    .filter((item): item is UserInventoryItem => item !== null);
+    .filter((item): item is InventoryItem => item !== null);
 
   /*if (rawJsonData.length !== mappedData.length) {
     const mappedNames = new Set(mappedData.map((p) => p.name));

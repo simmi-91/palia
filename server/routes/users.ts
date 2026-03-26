@@ -123,8 +123,8 @@ router.post("/register", async (req: Request<unknown, unknown, RegisterUserBody>
     return res.status(503).json({ error: "Database service unavailable" });
   }
 
-  const { id, email, given_name, picture } = req.body;
-  if (!id || !email || !given_name) {
+  const { id, email, givenName, picture } = req.body;
+  if (!id || !email || !givenName) {
     return res
       .status(400)
       .json({ success: false, message: "Missing required user fields" });
@@ -137,7 +137,7 @@ router.post("/register", async (req: Request<unknown, unknown, RegisterUserBody>
       .json({ success: false, message: "User already registered" });
   }
 
-  const newProfile = { email, given_name, picture, id };
+  const newProfile = { email, givenName, picture, id };
   await db.createUser(newProfile);
   res
     .status(201)

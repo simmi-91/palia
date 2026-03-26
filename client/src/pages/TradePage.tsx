@@ -3,17 +3,17 @@ import { selectAllTradeable } from "../api/tradable";
 import { selectAllCategories } from "../api/categories";
 
 import type {
-    UserInventoryItem,
+    InventoryItem,
     GoogleProfile,
-    RawTradeItem,
+    TradeOffer,
     TradeDisplayItem,
 } from "../app/types/userTypes";
 import InventoryItemDisplay, { type DisplayStyle } from "../components/display/InventoryItemDisplay";
 
-type GroupedUserInventory = { [category: string]: UserInventoryItem[] };
+type GroupedUserInventory = { [category: string]: InventoryItem[] };
 type GroupedTradeInventory = { [category: string]: TradeDisplayItem[] };
 
-const groupTradeOffers = (rawTradeInventory: RawTradeItem[] | null): GroupedTradeInventory => {
+const groupTradeOffers = (rawTradeInventory: TradeOffer[] | null): GroupedTradeInventory => {
     if (!rawTradeInventory) return {};
     const acc: GroupedTradeInventory = {};
     rawTradeInventory.forEach((item) => {
@@ -31,7 +31,7 @@ const groupTradeOffers = (rawTradeInventory: RawTradeItem[] | null): GroupedTrad
     return acc;
 };
 
-const groupInventoryByCategory = (inventory: UserInventoryItem[] | null): GroupedUserInventory => {
+const groupInventoryByCategory = (inventory: InventoryItem[] | null): GroupedUserInventory => {
     if (!inventory) return {};
     return inventory.reduce((acc, item) => {
         if (item.amount <= 0) return acc;
@@ -104,7 +104,7 @@ const TradePage = ({
     inventory,
 }: {
     profile: GoogleProfile;
-    inventory: UserInventoryItem[];
+    inventory: InventoryItem[];
 }) => {
     const [displayStyle, setDisplayStyle] = useState<DisplayStyle>(
         () => (localStorage.getItem("tradeDisplayStyle") as DisplayStyle) ?? "card"
@@ -137,13 +137,13 @@ const TradePage = ({
         );
     }
 
-    const categories = (categoryData ?? []).filter((c) => c.is_tradeable);
+    const categories = (categoryData ?? []).filter((c) => c.isTradeable);
     const categoryOrder: Record<string, number> = Object.fromEntries(
-        categories.map((c) => [c.id, c.sort_order])
+        categories.map((c) => [c.id, c.sortOrder])
     );
 
     const groupedUserInventory = groupInventoryByCategory(inventory);
-    const groupedTradeInventory = groupTradeOffers((tradeableInventory as RawTradeItem[]) || null);
+    const groupedTradeInventory = groupTradeOffers((tradeableInventory as TradeOffer[]) || null);
     const wantedItems = getWantedItems(groupedTradeInventory, groupedUserInventory);
     const flatWantedItems = Object.keys(wantedItems)
         .sort((a, b) => (categoryOrder[a] ?? 99) - (categoryOrder[b] ?? 99))
@@ -226,7 +226,7 @@ const TradePage = ({
                                     onClick={() => {
                                         if (effectiveActive !== cat.id) setActiveCategory(cat.id);
                                     }}>
-                                    {cat.display_name} ({mine}/{others})
+                                    {cat.displayName} ({mine}/{others})
                                 </button>
                             );
                         })}

@@ -224,7 +224,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
               const GoogleProfile: GoogleProfile = {
                 id: googleProfile.id,
                 email: googleProfile.email,
-                given_name: googleProfile.given_name,
+                givenName: googleProfile.givenName,
                 picture: googleProfile.picture,
               };
 

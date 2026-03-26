@@ -65,10 +65,10 @@ function WikiCategoryPage() {
                             key={item.id}
                             dataObject={item}
                             isTradeable={
-                                categoryData?.find((c) => c.id === cat)?.is_tradeable ?? false
+                                categoryData?.find((c) => c.id === cat)?.isTradeable ?? false
                             }
                             isFavoritable={
-                                categoryData?.find((c) => c.id === cat)?.is_favoritable ?? false
+                                categoryData?.find((c) => c.id === cat)?.isFavoritable ?? false
                             }
                             favoriteId={favId}
                         />

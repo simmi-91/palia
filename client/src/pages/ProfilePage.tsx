@@ -20,7 +20,7 @@ const ProfilePage = () => {
     return (
         <div className="container p-2">
             <div className="row py-1">
-                <div className="col">Logged in as: {profile.given_name}</div>
+                <div className="col">Logged in as: {profile.givenName}</div>
                 <div className="col-12 col-sm-6 col-lg-2">
                     <div className=" float-end">
                         {/*isAdmin && (
@@ -43,7 +43,7 @@ const ProfilePage = () => {
             <div className="row py-1">
                 <div className="col">
                     <div className="col">Info from Google:</div>
-                    <div className="col">Name: {profile.given_name}</div>
+                    <div className="col">Name: {profile.givenName}</div>
                     <div className="col">Email: {profile.email}</div>
                 </div>
             </div>

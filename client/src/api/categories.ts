@@ -1,16 +1,16 @@
 import { useQuery, useMutation, useQueryClient, type UseQueryResult } from "@tanstack/react-query";
-import type { CategoryEntry } from "../app/types/wikiTypes";
+import type { Category } from "../app/types/wikiTypes";
 
 const QUERYKEY = "CategoryData";
 const BASE_URL = () => import.meta.env.VITE_API_URL + "/categories";
 
-const fetchCategories = async (): Promise<CategoryEntry[]> => {
+const fetchCategories = async (): Promise<Category[]> => {
     const response = await fetch(BASE_URL());
     if (!response.ok) throw new Error("Network response was not ok");
     return response.json();
 };
 
-export const selectAllCategories = (): UseQueryResult<CategoryEntry[], Error> =>
+export const selectAllCategories = (): UseQueryResult<Category[], Error> =>
     useQuery({
         queryKey: [QUERYKEY],
         queryFn: fetchCategories,
@@ -20,7 +20,7 @@ export const selectAllCategories = (): UseQueryResult<CategoryEntry[], Error> =>
 export const useAddCategory = () => {
     const queryClient = useQueryClient();
     return useMutation({
-        mutationFn: (newCategory: CategoryEntry) =>
+        mutationFn: (newCategory: Category) =>
             fetch(`${BASE_URL()}/${newCategory.id}`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -33,7 +33,7 @@ export const useAddCategory = () => {
 export const useUpdateCategory = () => {
     const queryClient = useQueryClient();
     return useMutation({
-        mutationFn: (category: CategoryEntry) =>
+        mutationFn: (category: Category) =>
             fetch(`${BASE_URL()}/${category.id}`, {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
@@ -46,7 +46,7 @@ export const useUpdateCategory = () => {
 export const usePatchCategory = () => {
     const queryClient = useQueryClient();
     return useMutation({
-        mutationFn: ({ id, data }: { id: string; data: Partial<CategoryEntry> }) =>
+        mutationFn: ({ id, data }: { id: string; data: Partial<Category> }) =>
             fetch(`${BASE_URL()}/${id}`, {
                 method: "PATCH",
                 headers: { "Content-Type": "application/json" },

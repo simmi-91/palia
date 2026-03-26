@@ -1,7 +1,7 @@
 // Typed req.body, req.params, and res.json shapes for route handlers
 // Use with Express's generic Request<Params, ResBody, ReqBody, Query>
 
-import type { ItemInput, InventoryItem, MultilistEntryInput, CategoryInput } from "./models.js";
+import type { ItemInput, InventoryItem, EntityLinkInput, CategoryInput } from "./models.js";
 
 // ---------------------------------------------------------------------------
 // Shared
@@ -39,11 +39,11 @@ export type UpdateCategoryBody = {
 };
 
 export type PatchCategoryBody = {
-  display_name?: string;
-  is_visible?: boolean;
-  is_tradeable?: boolean;
-  is_favoritable?: boolean;
-  sort_order?: number;
+  displayName?: string;
+  isVisible?: boolean;
+  isTradeable?: boolean;
+  isFavoritable?: boolean;
+  sortOrder?: number;
 };
 
 // ---------------------------------------------------------------------------
@@ -51,12 +51,12 @@ export type PatchCategoryBody = {
 // ---------------------------------------------------------------------------
 
 export type CreateEntityBody = {
-  newItem: MultilistEntryInput;
+  newItem: EntityLinkInput;
 };
 
 export type UpdateEntityBody = {
   id: number;
-  newItem: MultilistEntryInput;
+  newItem: EntityLinkInput;
 };
 
 export type DeleteEntityBody = {
@@ -103,7 +103,7 @@ export type CheckUserBody = {
 export type RegisterUserBody = {
   id: string;
   email: string;
-  given_name: string;
+  givenName: string;
   picture?: string;
 };
 

@@ -30,7 +30,18 @@ const createDB = async () => {
             const [rows] = await pool!.query<RowDataPacket[]>(sql);
 
             return (rows as RawItemRow[]).map((row) => ({
-                ...row,
+                id: row.id,
+                category: row.category,
+                name: row.name,
+                image: row.image ?? undefined,
+                url: row.url ?? undefined,
+                rarity: row.rarity ?? undefined,
+                description: row.description ?? undefined,
+                time: row.time ?? undefined,
+                baseValue: row.baseValue ?? undefined,
+                behavior: row.behavior ?? undefined,
+                bait: row.bait ?? undefined,
+                family: row.family ?? undefined,
                 location: JSON.parse(row.location),
                 neededFor: JSON.parse(row.neededFor),
                 howToObtain: JSON.parse(row.howToObtain),

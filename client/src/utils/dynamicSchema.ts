@@ -1,7 +1,7 @@
 import * as Yup from "yup";
-import type { ItemEntry } from "../app/types/wikiTypes";
+import type { Item } from "../app/types/wikiTypes";
 
-// type MultilistEntry
+// type EntityLink
 const MultiListItemSchema = Yup.object({
   title: Yup.string().required("Title is required for multi-list entry"),
   url: Yup.string().required("URL is required for multi-list entry"),
@@ -10,7 +10,7 @@ const MultiListItemSchema = Yup.object({
 
 const skipKeys = ["id"] as const;
 
-export const createDynamicValidationSchema = (item: ItemEntry) => {
+export const createDynamicValidationSchema = (item: Item) => {
   const schemaShape: Record<string, any> = {};
 
   for (const key of Object.keys(item)) {

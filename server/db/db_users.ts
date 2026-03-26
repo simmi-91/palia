@@ -10,14 +10,15 @@ const createDB = async () => {
 
   db = {
     getUserByEmail: async (email) => {
-      const [rows] = await pool!.query<RowDataPacket[]>("SELECT * FROM users WHERE email = ?", [email]);
+      const sql = "SELECT id, google_id, email, given_name AS givenName, picture, created_at, admin FROM users WHERE email = ?";
+      const [rows] = await pool!.query<RowDataPacket[]>(sql, [email]);
       return rows[0] as User | undefined;
     },
     createUser: async (profile) => {
       const sql =
         "INSERT INTO users (google_id, email, given_name, picture, created_at, admin) VALUES (?, ?, ?, ?, NOW(), ?)";
       const pictureValue = profile.picture === undefined ? null : profile.picture;
-      const values = [profile.id, profile.email, profile.given_name, pictureValue, false];
+      const values = [profile.id, profile.email, profile.givenName, pictureValue, false];
       await pool!.execute(sql, values);
     },
   };

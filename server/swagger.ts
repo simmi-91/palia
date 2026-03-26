@@ -12,7 +12,7 @@ const options: Options = {
         servers: [{ url: "/palia" }],
         components: {
             schemas: {
-                MultilistEntry: {
+                EntityLink: {
                     type: "object",
                     properties: {
                         title: { type: "string" },
@@ -35,9 +35,9 @@ const options: Options = {
                         behavior: { type: "string", nullable: true },
                         bait: { type: "string", nullable: true },
                         family: { type: "string", nullable: true },
-                        location: { type: "array", items: { $ref: "#/components/schemas/MultilistEntry" } },
-                        neededFor: { type: "array", items: { $ref: "#/components/schemas/MultilistEntry" } },
-                        howToObtain: { type: "array", items: { $ref: "#/components/schemas/MultilistEntry" } },
+                        location: { type: "array", items: { $ref: "#/components/schemas/EntityLink" } },
+                        neededFor: { type: "array", items: { $ref: "#/components/schemas/EntityLink" } },
+                        howToObtain: { type: "array", items: { $ref: "#/components/schemas/EntityLink" } },
                     },
                 },
                 Category: {

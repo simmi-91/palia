@@ -1,50 +1,50 @@
 [
     {
         "id": "bugs",
-        "display_name": "Bugs",
-        "is_visible": true,
-        "is_tradeable": false,
-        "is_favoritable": true,
-        "sort_order": 1
+        "displayName": "Bugs",
+        "isVisible": true,
+        "isTradeable": false,
+        "isFavoritable": true,
+        "sortOrder": 1
     },
     {
         "id": "fish",
-        "display_name": "Fish",
-        "is_visible": true,
-        "is_tradeable": false,
-        "is_favoritable": true,
-        "sort_order": 2
+        "displayName": "Fish",
+        "isVisible": true,
+        "isTradeable": false,
+        "isFavoritable": true,
+        "sortOrder": 2
     },
     {
         "id": "plushies",
-        "display_name": "Plushies",
-        "is_visible": true,
-        "is_tradeable": true,
-        "is_favoritable": false,
-        "sort_order": 3
+        "displayName": "Plushies",
+        "isVisible": true,
+        "isTradeable": true,
+        "isFavoritable": false,
+        "sortOrder": 3
     },
     {
         "id": "potatopods",
-        "display_name": "Potato Pods",
-        "is_visible": true,
-        "is_tradeable": true,
-        "is_favoritable": false,
-        "sort_order": 4
+        "displayName": "Potato Pods",
+        "isVisible": true,
+        "isTradeable": true,
+        "isFavoritable": false,
+        "sortOrder": 4
     },
     {
         "id": "stickers",
-        "display_name": "Stickers",
-        "is_visible": true,
-        "is_tradeable": true,
-        "is_favoritable": false,
-        "sort_order": 5
+        "displayName": "Stickers",
+        "isVisible": true,
+        "isTradeable": true,
+        "isFavoritable": false,
+        "sortOrder": 5
     },
     {
         "id": "artifacts",
-        "display_name": "Artifacts",
-        "is_visible": true,
-        "is_tradeable": true,
-        "is_favoritable": false,
-        "sort_order": 80
+        "displayName": "Artifacts",
+        "isVisible": true,
+        "isTradeable": true,
+        "isFavoritable": false,
+        "sortOrder": 80
     }
 ]

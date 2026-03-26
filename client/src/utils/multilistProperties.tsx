@@ -1,15 +1,15 @@
 import type {
-  MultilistEntry,
-  MultilistProps,
-  ItemEntry,
+  EntityLink,
+  EntityLinkList,
+  Item,
 } from "../app/types/wikiTypes";
 
 export const getMultiListProps = (
-  data: ItemEntry,
+  data: Item,
   skipKeys?: [string],
   includeEmpty?: boolean
-): MultilistProps[] => {
-  const multiListProperties: { title: string; list: MultilistEntry[] }[] = [];
+): EntityLinkList[] => {
+  const multiListProperties: { title: string; list: EntityLink[] }[] = [];
   for (const key in data) {
     if (skipKeys && skipKeys.includes(key)) {
       //skip

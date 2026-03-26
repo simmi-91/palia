@@ -1,39 +1,19 @@
 import { type TokenResponse } from "@react-oauth/google";
+import type {
+    GoogleProfile as BaseGoogleProfile,
+    TradeOffer,
+    InventoryItem,
+} from "@palia/shared";
+
+export type { FavoriteItem, InventoryItem, TradeOffer } from "@palia/shared";
 
 export interface ExtendedTokenResponse extends TokenResponse {
   refresh_token?: string;
 }
 
-export type GoogleProfile = {
-  id: string;
-  email: string;
-  given_name: string;
-  picture: string;
-  isAdmin?: boolean;
-};
+export type GoogleProfile = BaseGoogleProfile & { isAdmin?: boolean };
 
-export type UserInventoryItem = {
-  category: string; // e.g., 'artifacts', 'plushies'
-  itemId: number;
-  amount: number;
-};
-
-export type FavoriteItem = {
-  favoriteId: number;
-  userId: string;
-  category: string;
-  itemId: number;
-};
-
-export type RawTradeItem = {
-  category: string;
-  itemId: number;
-  amount: number;
-  userId: string;
-  userName: string;
-};
-
-export interface TradeDisplayItem extends RawTradeItem {
+export interface TradeDisplayItem extends TradeOffer {
   offeringUsers: string[];
 }
 
@@ -46,9 +26,9 @@ export type AuthContextType = {
     url: string,
     options?: RequestInit
   ) => Promise<Response>;
-  inventory: UserInventoryItem[] | [];
+  inventory: InventoryItem[] | [];
   loadInventory: () => Promise<void>;
-  updateInventoryAmount: (item: UserInventoryItem) => void;
+  updateInventoryAmount: (item: InventoryItem) => void;
   bulkUpdateInventory: (
     items: Array<{ category: string; itemId: number; amount: number }>
   ) => Promise<{ success: boolean; count?: number; error?: any }>;

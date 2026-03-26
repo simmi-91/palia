@@ -1,6 +1,6 @@
 import { pool } from "./db_connections.js";
 import type { RowDataPacket,ResultSetHeader } from "mysql2/promise";
-import type { EntityType, MultilistEntry,DbResultWithId } from "../types/models.ts";
+import type { EntityType, EntityLink,DbResultWithId } from "../types/models.ts";
 import type { EntityDb } from "../types/db.js";
 
 const allowedEntities = new Set(["location_entity", "needed_for_entity", "how_to_obtain_entity"]);
@@ -21,10 +21,10 @@ const createDB = async () => {
             const [rows] = await pool!.query<RowDataPacket[]>(
                 `SELECT id, title, url, category FROM \`${entity}\` ORDER BY category DESC, title ASC`
             );
-            return rows as MultilistEntry[];
+            return rows as EntityLink[];
         },
 
-        addEntitiy: async (entity, newItem) => {
+        addEntity: async (entity, newItem) => {
             ensureAllowedEntity(entity);
             const sql = `INSERT INTO \`${entity}\` (title, url, category) VALUES (?, ?, ?)`;
             const [result] = await pool!.execute<ResultSetHeader>(sql, [
@@ -35,7 +35,7 @@ const createDB = async () => {
             return { success: true, id: result?.insertId } as DbResultWithId;
         },
 
-        updateEntitiy: async (entity: EntityType, id: number, newItem: MultilistEntry) => {
+        updateEntitiy: async (entity: EntityType, id: number, newItem: EntityLink) => {
             ensureAllowedEntity(entity);
             const fields = [];
             const values = [];

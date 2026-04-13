@@ -1,6 +1,7 @@
 import { useMemo } from "react";
 import type { Item } from "../app/types/wikiTypes";
 import { selectRarityByNumber } from "../api/rarity";
+import { CLOCK_PHASES, parseTimePhases } from "../utils/clockPhases";
 
 const FILTER_TYPES = ["family", "behavior", "rarity", "time"];
 
@@ -13,10 +14,17 @@ type ItemFiltersProps = {
 const ItemFilters = ({ data, activeFilters, onChange }: ItemFiltersProps) => {
     const localFilters = useMemo(() => {
         return FILTER_TYPES.reduce((acc: Record<string, string[]>, filterType) => {
-            const values = data
-                .map((item) => (item as Record<string, unknown>)[filterType])
-                .filter((v) => v !== null && v !== undefined && v !== "");
-            if (values.length > 0) acc[filterType] = [...new Set(values as string[])];
+            if (filterType === "time") {
+                const phases = CLOCK_PHASES.map((p) => p.name).filter((phase) =>
+                    data.some((item) => parseTimePhases(item.time ?? "").includes(phase))
+                );
+                if (phases.length > 0) acc["time"] = phases;
+            } else {
+                const values = data
+                    .map((item) => (item as Record<string, unknown>)[filterType])
+                    .filter((v) => v !== null && v !== undefined && v !== "");
+                if (values.length > 0) acc[filterType] = [...new Set(values as string[])];
+            }
             return acc;
         }, {});
     }, [data]);

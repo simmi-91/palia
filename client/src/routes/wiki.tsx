@@ -22,7 +22,10 @@ function WikiLayout() {
     if (!data || data.length === 0) return <EmptyCategoryState />;
 
     const categories = data.filter((cat) => cat.isVisible === true);
-    const bundles = neededForData?.filter((e) => e.title.includes("Bundle")) ?? [];
+    const bundles =
+        neededForData
+            ?.filter((e) => e.title.includes("Bundle"))
+            .sort((a, b) => a.title.localeCompare(b.title)) ?? [];
 
     return (
         <div className="container-fluid py-1">

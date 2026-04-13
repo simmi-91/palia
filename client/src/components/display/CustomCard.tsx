@@ -5,14 +5,15 @@ import Tag from "./Tag";
 import RarityTag from "./RarityTag";
 import missingImg from "../../assets/images/missing.png";
 import { getMultiListProps } from "../../utils/multilistProperties";
-
+import { parseTimePhases } from "../../utils/clockPhases";
 import { useAddFavorite, useRemoveFavorite } from "../../hooks/useFavoriteMutations";
+import type { Item, EntityLink, EntityLinkList } from "../../app/types/wikiTypes";
+import { textIcon, urlWorm, urlGlowWorm } from "../../app/icons/common";
 
-import type {
-    Item,
-    EntityLink,
-    EntityLinkList,
-} from "../../app/types/wikiTypes";
+const baitIconMap: Record<string, string> = {
+    Worm: urlWorm,
+    "Glow Worm": urlGlowWorm,
+};
 
 type CustomCardProps = {
     dataObject: Item;
@@ -31,7 +32,7 @@ const CustomCard: React.FC<CustomCardProps> = ({
 }) => {
     const id = dataObject.id;
     const name = dataObject.name;
-    const [favoriteState, setFavoriteState] = useState(favoriteId > 0 ? true : false);
+    const [isFavorited, setIsFavorited] = useState(favoriteId > 0);
 
     const { profile, inventory, updateInventoryAmount } = useAuth();
     const profileId = profile ? profile.id : "";
@@ -46,20 +47,18 @@ const CustomCard: React.FC<CustomCardProps> = ({
     const showInventoryControls = isTradeable && profileId != "";
     const showFavoriteControls = isFavoritable && profileId != "";
 
-    let imgurl = missingImg;
+    let imgUrl = missingImg;
     if ("image" in dataObject && dataObject.image && dataObject.image != "") {
-        imgurl = dataObject.image;
+        imgUrl = dataObject.image;
     }
 
     const rarity = dataObject.rarity ?? 0;
     const bait = dataObject.bait ?? "";
     const family = dataObject.family ?? "";
+    const time = parseTimePhases(dataObject.time ?? "").join(", ") ?? "";
 
-    const multilist = getMultiListProps(dataObject);
-    let hasMultiList = false;
-    if (multilist && multilist.length > 0) {
-        hasMultiList = true;
-    }
+    const multiList = getMultiListProps(dataObject);
+    const hasEntityLinks = multiList && multiList.length > 0;
 
     let wikiUrl = dataObject.url || "";
     let baseUrl = "";
@@ -75,42 +74,42 @@ const CustomCard: React.FC<CustomCardProps> = ({
 
     const maxAmount = 99;
     const handleIncrement = () => {
-        const item = {
+        const inventoryUpdate = {
             category: category,
             itemId: id,
             amount: currentAmount + 1,
         };
         if (currentAmount < maxAmount) {
-            updateInventoryAmount(item);
+            updateInventoryAmount(inventoryUpdate);
         }
     };
 
     const handleDecrement = () => {
-        const item = {
+        const inventoryUpdate = {
             category: category,
             itemId: id,
             amount: currentAmount - 1,
         };
         if (currentAmount > 0) {
-            updateInventoryAmount(item);
+            updateInventoryAmount(inventoryUpdate);
         }
     };
 
     const handleFavorite = () => {
         if (!profileId) return;
         try {
-            if (favoriteState) {
+            if (isFavorited) {
                 removeFavoriteMutate(
                     { favoriteId },
                     {
-                        onSuccess: () => setFavoriteState(false),
+                        onSuccess: () => setIsFavorited(false),
                     }
                 );
             } else {
                 addFavoriteMutate(
                     { category, itemId: id },
                     {
-                        onSuccess: () => setFavoriteState(true),
+                        onSuccess: () => setIsFavorited(true),
                     }
                 );
             }
@@ -119,31 +118,33 @@ const CustomCard: React.FC<CustomCardProps> = ({
         }
     };
 
-    const multiTagBlock = () => {
+    const renderEntityLinks = () => {
         return (
-            <div className="col d-flex">
-                {multilist.map((cat: EntityLinkList) => (
-                    <div key={cat.title.replace(/\s/g, "").toLowerCase()} className="row">
-                        <b className="text-s">{cat.title}:</b>
+            <div
+                className={`col d-flex ${multiList.length > 1 && (showInventoryControls || showFavoriteControls) ? "flex-column flex-xxl-row" : ""}`}>
+                {multiList.map((group: EntityLinkList) => (
+                    <div key={group.title.replace(/\s/g, "").toLowerCase()} className="row">
+                        <b className="text-s">{group.title}:</b>
                         <div className="d-flex flex-wrap">
-                            {cat.list.map((listItem: EntityLink, idx: number) => {
+                            {group.list.map((entityLink: EntityLink, idx: number) => {
                                 let icon = "";
-                                if (listItem.category === "Bug Catching") {
+                                if (entityLink.category === "Bug Catching") {
                                     icon = "bi-bug-fill";
-                                } else if (listItem.category === "Fishing") {
+                                } else if (entityLink.category === "Fishing") {
                                     icon = "bi-droplet-fill";
-                                } else if (listItem.category === "Hunting") {
+                                } else if (entityLink.category === "Hunting") {
                                     icon = "bi-heart-arrow";
-                                } else if (listItem.category === "Rummage Pile") {
+                                } else if (entityLink.category === "Rummage Pile") {
                                     icon = "bi-virus";
                                 }
 
                                 return (
                                     <Tag
-                                        key={`${id}-${listItem.url}-${idx}`}
-                                        text={listItem.title}
-                                        title={listItem.category}
+                                        key={`${id}-${entityLink.url}-${idx}`}
+                                        text={entityLink.title}
+                                        title={entityLink.category}
                                         icon={icon}
+                                        wrap={true}
                                     />
                                 );
                             })}
@@ -154,7 +155,7 @@ const CustomCard: React.FC<CustomCardProps> = ({
         );
     };
 
-    const inventoryBlock = () => {
+    const renderInventory = () => {
         return (
             <>
                 <b className="text-s">Inventory:</b>
@@ -200,7 +201,7 @@ const CustomCard: React.FC<CustomCardProps> = ({
         );
     };
 
-    const favoriteBlock = () => {
+    const renderFavorite = () => {
         return (
             <>
                 <div className="input-group mb-1 flex-nowrap justify-content-end align-top">
@@ -214,7 +215,7 @@ const CustomCard: React.FC<CustomCardProps> = ({
                         }}
                         onClick={handleFavorite}
                         disabled={addingFav || removingFav}>
-                        {favoriteState ? (
+                        {isFavorited ? (
                             <i
                                 className="bi bi-star-fill fs-5"
                                 style={{
@@ -234,12 +235,12 @@ const CustomCard: React.FC<CustomCardProps> = ({
     return (
         <div key={id} className="col-12 col-sm-6 col-lg-4 col-xl-3 d-flex">
             <div
-                className="container border border-1 rounded-3"
+                className="container border border-1 rounded-3 d-flex flex-column"
                 style={{
                     background:
                         "linear-gradient(180deg,rgba(226, 229, 233, 1) 0%, rgba(226, 229, 233, 0.9) 40%, rgba(46, 127, 233, 0.5) 100%",
                 }}>
-                <div className="row py-1">
+                <div className="row py-1 flex-fill">
                     <div className="col d-flex row flex-column">
                         <h5 className="card-title">
                             {baseUrl ? (
@@ -255,47 +256,61 @@ const CustomCard: React.FC<CustomCardProps> = ({
                             )}
                         </h5>
 
-                        {rarity > 0 && (
-                            <div>
-                                <RarityTag number={rarity} />
+                        <div>
+                            {rarity > 0 && <RarityTag number={rarity} />}
+
+                            {family && family != "" && <Tag text={family} />}
+
+                            {bait && (
+                                <Tag
+                                    text={bait}
+                                    iconNode={
+                                        baitIconMap[bait] ? (
+                                            textIcon(baitIconMap[bait], "1em")
+                                        ) : (
+                                            <i className="bi bi-x-circle text-danger" />
+                                        )
+                                    }
+                                    bgColor={"#000"}
+                                />
+                            )}
+                        </div>
+
+                        {time && <em>{time}</em>}
+
+                        {dataObject.description && (
+                            <div className="text-s text-secondary d-none d-xxl-inline">
+                                {dataObject.description}
                             </div>
                         )}
 
-                        {family && family != "" && (
-                            <div>
-                                <Tag text={family} />
-                            </div>
-                        )}
-
-                        {bait && <div>{bait}</div>}
-
-                        {!hasMultiList && showInventoryControls && (
-                            <div className="">{inventoryBlock()}</div>
-                        )}
-                        {!hasMultiList && showFavoriteControls && (
-                            <div className="">{favoriteBlock()}</div>
+                        {!hasEntityLinks && showInventoryControls && (
+                            <div className="mt-auto">{renderInventory()}</div>
                         )}
                     </div>
-                    <div className={hasMultiList ? "col-3" : "col-4 col-md-5"}>
-                        <img src={imgurl} style={{ maxWidth: "100%" }} />
+                    <div className={hasEntityLinks ? "col-3" : "col-4 col-md-5"}>
+                        <img src={imgUrl} style={{ maxWidth: "100%" }} />
                     </div>
                 </div>
 
-                {hasMultiList && showInventoryControls && (
-                    <div className="row">
-                        <div className="col-12 col-md-6 ">{multiTagBlock()}</div>
-                        <div className="col-12 col-md-6 ">{inventoryBlock()}</div>
+                {!hasEntityLinks && showFavoriteControls && (
+                    <div className="mt-auto">{renderFavorite()}</div>
+                )}
+                {hasEntityLinks && showInventoryControls && (
+                    <div className="row mt-auto">
+                        <div className="col-12 col-md-6 ">{renderEntityLinks()}</div>
+                        <div className="col-12 col-md-6 ">{renderInventory()}</div>
                     </div>
                 )}
-                {hasMultiList && showFavoriteControls && (
-                    <div className="row">
-                        <div className="col-12 col-md-9 ">{multiTagBlock()}</div>
-                        <div className="col-12 col-md-3 ">{favoriteBlock()}</div>
+                {hasEntityLinks && showFavoriteControls && (
+                    <div className="row mt-auto">
+                        <div className="col-12 col-md-9 ">{renderEntityLinks()}</div>
+                        <div className="col-12 col-md-3  mt-auto">{renderFavorite()}</div>
                     </div>
                 )}
-                {hasMultiList && !showInventoryControls && !showFavoriteControls && (
-                    <div className="row">
-                        <div className="col d-flex flex-wrap">{multiTagBlock()}</div>
+                {hasEntityLinks && !showInventoryControls && !showFavoriteControls && (
+                    <div className="row mt-auto">
+                        <div className="col d-flex flex-wrap">{renderEntityLinks()}</div>
                     </div>
                 )}
             </div>

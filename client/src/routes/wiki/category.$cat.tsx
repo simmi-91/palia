@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useAuth } from "../../context/AuthContext";
 import { useState, useEffect } from "react";
+import { parseTimePhases } from "../../utils/clockPhases";
 import CustomCard from "../../components/display/CustomCard";
 import { LoadingState, ErrorState, EmptyCategoryState } from "../../components/CommonStates";
 import { selectItemsByCategory } from "../../api/items";
@@ -34,10 +35,16 @@ function WikiCategoryPage() {
 
             for (const [filterType, selected] of Object.entries(activeFilters)) {
                 if (selected && selected !== "all") {
-                    localData = localData.filter((item) => {
-                        const itemValue = (item as Record<string, unknown>)[filterType];
-                        return String(itemValue) === selected;
-                    });
+                    if (filterType === "time") {
+                        localData = localData.filter((item) =>
+                            parseTimePhases(item.time ?? "").includes(selected)
+                        );
+                    } else {
+                        localData = localData.filter((item) => {
+                            const itemValue = (item as Record<string, unknown>)[filterType];
+                            return String(itemValue) === selected;
+                        });
+                    }
                 }
             }
             setFilteredData(localData);
@@ -52,7 +59,11 @@ function WikiCategoryPage() {
         <div className="container-fluid">
             <div className="row mt-2">
                 <div className="col">
-                    <ItemFilters data={data} activeFilters={activeFilters} onChange={setActiveFilters} />
+                    <ItemFilters
+                        data={data}
+                        activeFilters={activeFilters}
+                        onChange={setActiveFilters}
+                    />
                 </div>
             </div>
 

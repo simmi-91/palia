@@ -115,7 +115,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const initializeAuth = async () => {
       const storedUser = localStorage.getItem("googleAuthUser");
       if (storedUser) {
-        const userWithTimestamp = JSON.parse(storedUser);
+        let userWithTimestamp;
+        try {
+          userWithTimestamp = JSON.parse(storedUser);
+        } catch {
+          localStorage.removeItem("googleAuthUser");
+          return;
+        }
         const { issuedAt, ...userToken } = userWithTimestamp;
 
         const expirationTime = issuedAt + TOKEN_LIFETIME_MS;

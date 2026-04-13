@@ -18,7 +18,7 @@ const Clock = ({ setBgColor }: { setBgColor: (text: string) => void }) => {
         now.getHours()
       );
       const millisecondsPassed = now.getTime() - startOfHour.getTime();
-      const virtualHours = ((millisecondsPassed - 1000) / 3600000) * 24;
+      const virtualHours = (millisecondsPassed / 3600000) * 24;
       setVirtualTime(virtualHours);
     }, 100);
 
@@ -26,10 +26,13 @@ const Clock = ({ setBgColor }: { setBgColor: (text: string) => void }) => {
   }, []);
 
   const phase = getCurrentPhase(virtualTime);
-  if (phase.text !== curPhase) {
-    setcurPhase(phase.text);
-  }
   const virtualMinutes = Math.floor((virtualTime % 1) * 60);
+
+  useEffect(() => {
+    if (phase.text !== curPhase) {
+      setcurPhase(phase.text);
+    }
+  }, [virtualTime]);
 
   return (
     <div className="">

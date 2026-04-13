@@ -27,6 +27,7 @@ env/
 *.sw?
 
 .cursorignore
+.ignore/
 
 #lowdb-changes
 server/json_db/

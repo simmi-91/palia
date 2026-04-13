@@ -71,6 +71,11 @@ export const useInventory = (profile: GoogleProfile | null) => {
       const response = await fetch(
         import.meta.env.VITE_API_URL + `/inventory/${profileId}`
       );
+      if (!response.ok) {
+        console.error("Failed to load inventory:", response.status);
+        setInventory([]);
+        return;
+      }
       const data: InventoryItem[] = await response.json();
       setInventory(data);
     } catch (error) {

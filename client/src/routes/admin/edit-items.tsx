@@ -41,7 +41,7 @@ const createBlankItem = (category: string): Item => ({
     url: "",
     image: "",
     category,
-    rarity: undefined,
+    rarity: 0,
     description: undefined,
     time: undefined,
     baseValue: undefined,

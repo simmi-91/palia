@@ -52,7 +52,7 @@ const CustomCard: React.FC<CustomCardProps> = ({
         imgUrl = dataObject.image;
     }
 
-    const rarity = dataObject.rarity ?? 0;
+    const rarity = dataObject.rarity;
     const bait = dataObject.bait ?? "";
     const family = dataObject.family ?? "";
     const time = parseTimePhases(dataObject.time ?? "").join(", ") ?? "";

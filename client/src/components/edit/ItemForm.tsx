@@ -52,7 +52,10 @@ const FormikInput = ({
 }) => (
     <div className="input-group my-2 flex-column">
         <div className="input-group">
-            <span className="input-group-text">{label}{required && <span className="text-danger ms-1">*</span>}</span>
+            <span className="input-group-text">
+                {label}
+                {required && <span className="text-danger ms-1">*</span>}
+            </span>
             <Field name={name} type={type} step={step} className="form-control" />
         </div>
         <ErrorMessage name={name} component="div" className="text-danger small" />
@@ -64,7 +67,9 @@ const UrlField = () => {
     return (
         <div className="input-group my-2 flex-column">
             <div className="input-group">
-                <span className="input-group-text">Wiki URL<span className="text-danger ms-1">*</span></span>
+                <span className="input-group-text">
+                    Wiki URL<span className="text-danger ms-1">*</span>
+                </span>
                 <Field name="url" type="text" className="form-control" />
                 <a
                     href={values.url || "#"}
@@ -108,7 +113,7 @@ const RarityField = () => {
             <div className="d-flex align-items-center gap-2">
                 <span className="input-group-text">Rarity</span>
                 <RarityNameDisplay />
-                <Field name="rarity" type="range" min="1" max="6" className="form-range" />
+                <Field name="rarity" type="range" min="0" max="6" className="form-range" />
                 <Field
                     name="rarity"
                     type="number"
@@ -123,10 +128,15 @@ const RarityField = () => {
 
 const RarityNameDisplay = () => {
     const { values } = useFormikContext<Item>();
-    if (values.rarity == null) return null;
     const rarity = selectRarityByNumber(values.rarity);
     return (
-        <span className="form-control w-auto" style={{ maxWidth: "120px" }}>
+        <span
+            className="form-control w-auto"
+            style={{
+                maxWidth: "120px",
+                backgroundColor: rarity?.color_hex ?? "transparent",
+                color: "#fff",
+            }}>
             {rarity?.name ?? "—"}
         </span>
     );
@@ -276,7 +286,9 @@ const CategoryField = () => {
     return (
         <div className="input-group my-2 flex-column">
             <div className="input-group">
-                <span className="input-group-text">Category<span className="text-danger ms-1">*</span></span>
+                <span className="input-group-text">
+                    Category<span className="text-danger ms-1">*</span>
+                </span>
                 <Field name="category" as="select" className="form-select">
                     {categories.map((cat) => (
                         <option key={cat.id} value={cat.id}>
@@ -349,7 +361,13 @@ const genericFields = (keys: string[]) => {
                             />
                         );
                     if (element === "baseValue")
-                        return <NullableNumberField key={element} label="Base Value" name="baseValue" />;
+                        return (
+                            <NullableNumberField
+                                key={element}
+                                label="Base Value"
+                                name="baseValue"
+                            />
+                        );
                     if (element === "time") return <TimeCheckboxField key={element} />;
                     if (element === "behavior")
                         return <ComboField key={element} element={element} />;
@@ -539,7 +557,9 @@ const ItemForm = ({
                             </h5>
                             <div className="card-body">
                                 {genericFields(genericKeys)}
-                                <small className="text-muted"><span className="text-danger">*</span> Required</small>
+                                <small className="text-muted">
+                                    <span className="text-danger">*</span> Required
+                                </small>
                             </div>
                         </div>
 

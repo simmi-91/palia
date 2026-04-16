@@ -11,7 +11,7 @@ export type Item = {
     name: string;
     image?: string;
     url?: string;
-    rarity?: number;
+    rarity: number;
     description?: string;
     time?: string;
     baseValue?: number;

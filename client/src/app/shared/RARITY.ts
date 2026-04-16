@@ -2,6 +2,11 @@ import type { RARITY_Entry } from "../../api/rarity";
 
 export const RARITY: RARITY_Entry[] = [
   {
+    name: "Unspecified",
+    value: 0,
+    color_hex: "#b9c3cb",
+  },
+  {
     name: "Abundant",
     value: 1,
     color_hex: "#4f6372",

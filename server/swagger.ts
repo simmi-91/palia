@@ -28,7 +28,7 @@ const options: Options = {
                         name: { type: "string" },
                         image: { type: "string", nullable: true },
                         url: { type: "string", nullable: true },
-                        rarity: { type: "integer", nullable: true },
+                        rarity: { type: "integer" },
                         description: { type: "string", nullable: true },
                         time: { type: "string", nullable: true },
                         baseValue: { type: "integer", nullable: true },

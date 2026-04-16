@@ -33,7 +33,7 @@ export const createDynamicValidationSchema = (item: Item) => {
         .typeError("Rarity must be a number")
         .nullable()
         .integer("Rarity must be a whole number")
-        .min(1, "Rarity must be at least 1")
+        .min(0, "Rarity must be at least 0")
         .max(6, "Rarity cannot exceed 6");
       continue;
     }

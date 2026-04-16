@@ -90,7 +90,7 @@ const CREATE_STATEMENTS = [
     name VARCHAR(255) NOT NULL,
     image VARCHAR(512),
     url VARCHAR(512),
-    rarity INT,
+    rarity INT NOT NULL DEFAULT 0,
     description TEXT,
     time VARCHAR(255),
     base_value INT,

@@ -31,7 +31,7 @@ export type RawItemRow = {
   name: string;
   image: string | null;
   url: string | null;
-  rarity: number | null;
+  rarity: number;
   description: string | null;
   time: string | null;
   baseValue: number | null;

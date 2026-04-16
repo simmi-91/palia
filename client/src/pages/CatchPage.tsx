@@ -180,7 +180,7 @@ const CatchPage = ({ profile }: { profile: GoogleProfile }) => {
                                                     </div>
 
                                                     <div className="m-0">
-                                                        <RarityTag number={item.rarity ?? 0} />
+                                                        <RarityTag number={item.rarity} />
                                                     </div>
 
                                                     <div className="row">

@@ -13,19 +13,21 @@ export interface ExtendedTokenResponse extends TokenResponse {
 
 export type GoogleProfile = BaseGoogleProfile & { isAdmin?: boolean };
 
+export type AuthSession = {
+  token: string;
+  profile: GoogleProfile;
+  expiresAt: number;
+};
+
 export interface TradeDisplayItem extends TradeOffer {
   offeringUsers: string[];
 }
 
 export type AuthContextType = {
-  user: ExtendedTokenResponse | null;
   profile: GoogleProfile | null;
-  setUser: (token: ExtendedTokenResponse | null) => void;
+  authSession: AuthSession | null;
+  login: (idToken: string | undefined) => void;
   logOut: () => void;
-  makeAuthenticatedRequest: (
-    url: string,
-    options?: RequestInit
-  ) => Promise<Response>;
   inventory: InventoryItem[] | [];
   loadInventory: () => Promise<void>;
   updateInventoryAmount: (item: InventoryItem) => void;

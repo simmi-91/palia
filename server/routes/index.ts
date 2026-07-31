@@ -8,9 +8,12 @@ import itemsRouter from "./items.js";
 import categoryRouter from "./categories.js";
 import entityRouter from "./entity.js";
 
+import authRouter from "./auth.js";
+
 const apiRouter = Router();
 
-// main routes
+apiRouter.use("/auth", authRouter);
+
 apiRouter.use("/users", usersRouter);
 apiRouter.use("/links", linksRouter);
 

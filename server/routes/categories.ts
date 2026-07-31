@@ -2,6 +2,7 @@ import { Router } from "express";
 import type { Request, Response } from "express";
 import { createDB } from "../db/db_categories.js";
 import type { IdParam, CreateCategoryBody, UpdateCategoryBody, PatchCategoryBody } from "../types/requests.js";
+import { requireAuth, verifyAdmin } from "../middleware/authMiddleware.js";
 
 const router = Router();
 
@@ -195,7 +196,7 @@ router.get("/", async (req: Request, res: Response) => {
     }
 });
 
-router.post("/:id", async (req: Request<IdParam, unknown, CreateCategoryBody>, res: Response) => {
+router.post("/:id", requireAuth, verifyAdmin, async (req: Request<IdParam, unknown, CreateCategoryBody>, res: Response) => {
     const { id } = req.params;
     const { newCategory } = req.body;
 
@@ -216,7 +217,7 @@ router.post("/:id", async (req: Request<IdParam, unknown, CreateCategoryBody>, r
     }
 });
 
-router.put("/:id", async (req: Request<IdParam, unknown, UpdateCategoryBody>, res: Response) => {
+router.put("/:id", requireAuth, verifyAdmin, async (req: Request<IdParam, unknown, UpdateCategoryBody>, res: Response) => {
     const { id } = req.params;
     const { newCategory } = req.body;
 
@@ -237,7 +238,7 @@ router.put("/:id", async (req: Request<IdParam, unknown, UpdateCategoryBody>, re
     }
 });
 
-router.patch("/:id", async (req: Request<IdParam, unknown, PatchCategoryBody>, res: Response) => {
+router.patch("/:id", requireAuth, verifyAdmin, async (req: Request<IdParam, unknown, PatchCategoryBody>, res: Response) => {
     const { id } = req.params;
 
     let db;
@@ -258,7 +259,7 @@ router.patch("/:id", async (req: Request<IdParam, unknown, PatchCategoryBody>, r
     }
 });
 
-router.delete("/:id", async (req: Request<IdParam>, res: Response) => {
+router.delete("/:id", requireAuth, verifyAdmin, async (req: Request<IdParam>, res: Response) => {
     const { id } = req.params;
 
     let db;

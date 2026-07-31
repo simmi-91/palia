@@ -30,14 +30,12 @@ const UserIcon = () => {
                     </div>
                 </div>
             ) : (
-                <>
-                    <GoogleLogin
-                        onSuccess={(credentialResponse) => {
-                            login(credentialResponse.credential);
-                        }}
-                        onError={() => console.error("Login failed")}
-                    />
-                </>
+                <GoogleLogin
+                    onSuccess={async (credentialResponse) => {
+                        await login(credentialResponse.credential);
+                    }}
+                    onError={() => console.error("Login failed")}
+                />
             )}
         </>
     );

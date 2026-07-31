@@ -1,8 +1,14 @@
 import { useQuery, type UseQueryResult } from "@tanstack/react-query";
-import type { FavoriteItem } from "../app/types/userTypes";
+import type { AuthContextType, FavoriteItem } from "../app/types/userTypes";
+import { useAuth } from "../context/AuthContext";
 
-const fetchFavorites = async (profileId: string): Promise<FavoriteItem[]> => {
-  const response = await fetch(
+type AuthFetch = AuthContextType["makeAuthenticatedRequest"];
+
+const fetchFavorites = async (
+  authFetch: AuthFetch,
+  profileId: string
+): Promise<FavoriteItem[]> => {
+  const response = await authFetch(
     import.meta.env.VITE_API_URL + `/favorites/${profileId}`
   );
   if (!response.ok) {
@@ -15,9 +21,10 @@ const fetchFavorites = async (profileId: string): Promise<FavoriteItem[]> => {
 export const selectAllFavorites = (
   profileId: string
 ): UseQueryResult<FavoriteItem[], Error> => {
+  const { makeAuthenticatedRequest } = useAuth();
   const query = useQuery({
     queryKey: ["FavoritesData", profileId],
-    queryFn: () => fetchFavorites(profileId),
+    queryFn: () => fetchFavorites(makeAuthenticatedRequest, profileId),
     enabled: Boolean(profileId),
     staleTime: 1000 * 60 * 5,
   });
@@ -28,9 +35,10 @@ export const selectFavoritesByCategory = (
   profileId: string,
   category: string
 ): UseQueryResult<FavoriteItem[], Error> => {
+  const { makeAuthenticatedRequest } = useAuth();
   return useQuery({
     queryKey: ["FavoritesData", profileId, category],
-    queryFn: () => fetchFavorites(profileId),
+    queryFn: () => fetchFavorites(makeAuthenticatedRequest, profileId),
     enabled: Boolean(profileId),
     staleTime: 1000 * 60 * 5,
     select: (data) => data.filter((item) => item.category === category),
@@ -38,11 +46,12 @@ export const selectFavoritesByCategory = (
 };
 
 export const addFavorite = async (
+  authFetch: AuthFetch,
   profileId: string,
   category: string,
   itemId: number
 ) => {
-  const response = await fetch(
+  const response = await authFetch(
     import.meta.env.VITE_API_URL + `/favorites/${profileId}`,
     {
       method: "POST",
@@ -57,8 +66,12 @@ export const addFavorite = async (
   return response.json();
 };
 
-export const removeFavorite = async (profileId: string, favoriteId: number) => {
-  const response = await fetch(
+export const removeFavorite = async (
+  authFetch: AuthFetch,
+  profileId: string,
+  favoriteId: number
+) => {
+  const response = await authFetch(
     import.meta.env.VITE_API_URL + `/favorites/${profileId}`,
     {
       method: "DELETE",

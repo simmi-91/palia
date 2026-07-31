@@ -1,5 +1,6 @@
 import { useQuery, useMutation, useQueryClient, type UseQueryResult } from "@tanstack/react-query";
 import type { Category } from "../app/types/wikiTypes";
+import { useAuth } from "../context/AuthContext";
 
 const QUERYKEY = "CategoryData";
 const BASE_URL = () => import.meta.env.VITE_API_URL + "/categories";
@@ -19,9 +20,10 @@ export const selectAllCategories = (): UseQueryResult<Category[], Error> =>
 
 export const useAddCategory = () => {
     const queryClient = useQueryClient();
+    const { makeAuthenticatedRequest } = useAuth();
     return useMutation({
         mutationFn: (newCategory: Category) =>
-            fetch(`${BASE_URL()}/${newCategory.id}`, {
+            makeAuthenticatedRequest(`${BASE_URL()}/${newCategory.id}`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ newCategory }),
@@ -32,9 +34,10 @@ export const useAddCategory = () => {
 
 export const useUpdateCategory = () => {
     const queryClient = useQueryClient();
+    const { makeAuthenticatedRequest } = useAuth();
     return useMutation({
         mutationFn: (category: Category) =>
-            fetch(`${BASE_URL()}/${category.id}`, {
+            makeAuthenticatedRequest(`${BASE_URL()}/${category.id}`, {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ newCategory: category }),
@@ -45,9 +48,10 @@ export const useUpdateCategory = () => {
 
 export const usePatchCategory = () => {
     const queryClient = useQueryClient();
+    const { makeAuthenticatedRequest } = useAuth();
     return useMutation({
         mutationFn: ({ id, data }: { id: string; data: Partial<Category> }) =>
-            fetch(`${BASE_URL()}/${id}`, {
+            makeAuthenticatedRequest(`${BASE_URL()}/${id}`, {
                 method: "PATCH",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(data),
@@ -58,9 +62,10 @@ export const usePatchCategory = () => {
 
 export const useDeleteCategory = () => {
     const queryClient = useQueryClient();
+    const { makeAuthenticatedRequest } = useAuth();
     return useMutation({
         mutationFn: (id: string) =>
-            fetch(`${BASE_URL()}/${id}`, { method: "DELETE" }).then((r) => r.json()),
+            makeAuthenticatedRequest(`${BASE_URL()}/${id}`, { method: "DELETE" }).then((r) => r.json()),
         onSuccess: () => queryClient.invalidateQueries({ queryKey: [QUERYKEY] }),
     });
 };

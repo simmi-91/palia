@@ -3,6 +3,7 @@ import type { Request, Response } from "express";
 import { createDB } from "../db/db_entity.js";
 import type { EntityType } from "../types/models.js";
 import type { EntityParam, CreateEntityBody, UpdateEntityBody, DeleteEntityBody } from "../types/requests.js";
+import { requireAuth, verifyAdmin } from "../middleware/authMiddleware.js";
 
 const router = Router();
 
@@ -147,7 +148,7 @@ router.get("/:entity", async (req: Request<EntityParam>, res: Response) => {
   res.json(result);
 });
 
-router.post("/:entity", async (req: Request<EntityParam, unknown, CreateEntityBody>, res: Response) => {
+router.post("/:entity", requireAuth, verifyAdmin, async (req: Request<EntityParam, unknown, CreateEntityBody>, res: Response) => {
   const entity = req.params.entity as EntityType;
   const { newItem } = req.body;
 
@@ -163,7 +164,7 @@ router.post("/:entity", async (req: Request<EntityParam, unknown, CreateEntityBo
   res.json(result);
 });
 
-router.put("/:entity", async (req: Request<EntityParam, unknown, UpdateEntityBody>, res: Response) => {
+router.put("/:entity", requireAuth, verifyAdmin, async (req: Request<EntityParam, unknown, UpdateEntityBody>, res: Response) => {
   const entity = req.params.entity as EntityType;
   const { id, newItem } = req.body;
 
@@ -184,7 +185,7 @@ router.put("/:entity", async (req: Request<EntityParam, unknown, UpdateEntityBod
   }
 });
 
-router.delete("/:entity", async (req: Request<EntityParam, unknown, DeleteEntityBody>, res: Response) => {
+router.delete("/:entity", requireAuth, verifyAdmin, async (req: Request<EntityParam, unknown, DeleteEntityBody>, res: Response) => {
   const entity = req.params.entity as EntityType;
   const { id } = req.body;
 

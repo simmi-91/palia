@@ -1,4 +1,3 @@
-import { type TokenResponse } from "@react-oauth/google";
 import type {
     GoogleProfile as BaseGoogleProfile,
     TradeOffer,
@@ -6,10 +5,6 @@ import type {
 } from "@palia/shared";
 
 export type { FavoriteItem, InventoryItem, TradeOffer } from "@palia/shared";
-
-export interface ExtendedTokenResponse extends TokenResponse {
-  refresh_token?: string;
-}
 
 export type GoogleProfile = BaseGoogleProfile & { isAdmin?: boolean };
 
@@ -26,8 +21,12 @@ export interface TradeDisplayItem extends TradeOffer {
 export type AuthContextType = {
   profile: GoogleProfile | null;
   authSession: AuthSession | null;
-  login: (idToken: string | undefined) => void;
+  login: (idToken: string | undefined) => Promise<AuthSession | null>;
   logOut: () => void;
+  makeAuthenticatedRequest: (
+    url: string,
+    options?: RequestInit
+  ) => Promise<Response>;
   inventory: InventoryItem[] | [];
   loadInventory: () => Promise<void>;
   updateInventoryAmount: (item: InventoryItem) => void;

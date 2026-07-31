@@ -1,5 +1,6 @@
 import { useQuery, useMutation, useQueryClient, type UseQueryResult } from "@tanstack/react-query";
 import type { EntityOption } from "../app/types/entityTypes";
+import { useAuth } from "../context/AuthContext";
 
 const BASE_URL = (entityType: string) =>
   import.meta.env.VITE_API_URL + `/entity/${entityType}`;
@@ -39,9 +40,10 @@ const entityQueryKey = (entityType: string) => {
 
 export const useAddEntity = (entityType: string) => {
   const queryClient = useQueryClient();
+  const { makeAuthenticatedRequest } = useAuth();
   return useMutation({
     mutationFn: (newItem: Omit<EntityOption, "id">) =>
-      fetch(BASE_URL(entityType), {
+      makeAuthenticatedRequest(BASE_URL(entityType), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ newItem }),
@@ -52,9 +54,10 @@ export const useAddEntity = (entityType: string) => {
 
 export const useUpdateEntity = (entityType: string) => {
   const queryClient = useQueryClient();
+  const { makeAuthenticatedRequest } = useAuth();
   return useMutation({
     mutationFn: ({ id, newItem }: { id: number; newItem: Omit<EntityOption, "id"> }) =>
-      fetch(BASE_URL(entityType), {
+      makeAuthenticatedRequest(BASE_URL(entityType), {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id, newItem }),
@@ -65,9 +68,10 @@ export const useUpdateEntity = (entityType: string) => {
 
 export const useDeleteEntity = (entityType: string) => {
   const queryClient = useQueryClient();
+  const { makeAuthenticatedRequest } = useAuth();
   return useMutation({
     mutationFn: (id: number) =>
-      fetch(BASE_URL(entityType), {
+      makeAuthenticatedRequest(BASE_URL(entityType), {
         method: "DELETE",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id }),

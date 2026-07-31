@@ -1,11 +1,13 @@
 import { useQuery, type UseQueryResult } from "@tanstack/react-query";
-import type { InventoryItem } from "../app/types/userTypes";
+import type { AuthContextType, InventoryItem } from "../app/types/userTypes";
+import { useAuth } from "../context/AuthContext";
 
 const fetchTradeable = async (
+  authFetch: AuthContextType["makeAuthenticatedRequest"],
   profileId: string
 ): Promise<InventoryItem[]> => {
   const url = `${import.meta.env.VITE_API_URL}/inventory/tradeable/${profileId}`;
-  const response = await fetch(url);
+  const response = await authFetch(url);
   if (!response.ok) {
     throw new Error("Network response was not ok");
   }
@@ -16,9 +18,10 @@ const fetchTradeable = async (
 export const selectAllTradeable = (
   profileId: string
 ): UseQueryResult<InventoryItem[], Error> => {
+  const { makeAuthenticatedRequest } = useAuth();
   const query = useQuery({
     queryKey: ["TradeableData", profileId],
-    queryFn: () => fetchTradeable(profileId),
+    queryFn: () => fetchTradeable(makeAuthenticatedRequest, profileId),
     staleTime: 1000 * 60 * 5,
     enabled: !!profileId,
   });

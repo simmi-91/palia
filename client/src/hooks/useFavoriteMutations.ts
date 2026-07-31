@@ -1,16 +1,18 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import type { FavoriteItem } from "../app/types/userTypes";
 import { addFavorite, removeFavorite } from "../api/favorites";
+import { useAuth } from "../context/AuthContext";
 
 type RemoveArgs = { favoriteId: number };
 type AddArgs = { category: string; itemId: number };
 
 export function useRemoveFavorite(profileId: string) {
   const queryClient = useQueryClient();
+  const { makeAuthenticatedRequest } = useAuth();
 
   const { mutate, isPending } = useMutation({
     mutationFn: ({ favoriteId }: RemoveArgs) =>
-      removeFavorite(profileId, favoriteId),
+      removeFavorite(makeAuthenticatedRequest, profileId, favoriteId),
     onMutate: async ({ favoriteId }) => {
       await queryClient.cancelQueries({
         queryKey: ["FavoritesData", profileId],
@@ -45,10 +47,11 @@ export function useRemoveFavorite(profileId: string) {
 
 export function useAddFavorite(profileId: string) {
   const queryClient = useQueryClient();
+  const { makeAuthenticatedRequest } = useAuth();
 
   const { mutate, isPending } = useMutation({
     mutationFn: ({ category, itemId }: AddArgs) =>
-      addFavorite(profileId, category, itemId),
+      addFavorite(makeAuthenticatedRequest, profileId, category, itemId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["FavoritesData", profileId] });
     },

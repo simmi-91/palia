@@ -7,6 +7,7 @@ import { useInventory } from "../hooks/useInventory";
 
 // --- Configuration ---
 const LOCAL_STORAGE_KEY = "palia_auth_session";
+const LEGACY_LOCAL_STORAGE_KEY = "googleAuthUser";
 
 // --- Context and Hook ---
 
@@ -23,7 +24,28 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const [authSession, setAuthSession] = useState<AuthSession | null>(null);
     const [profile, setProfile] = useState<GoogleProfile | null>(null);
 
-    // --- Token Refresh Function ---
+    useEffect(() => {
+        const initializeAuth = async () => {
+            localStorage.removeItem(LEGACY_LOCAL_STORAGE_KEY);
+            const storedSession = localStorage.getItem(LOCAL_STORAGE_KEY);
+            if (!storedSession) return;
+
+            try {
+                const session = JSON.parse(storedSession);
+
+                if (session.expiresAt && Date.now() < session.expiresAt) {
+                    setAuthSession(session);
+                    setProfile(session.profile);
+                } else {
+                    localStorage.removeItem(LOCAL_STORAGE_KEY);
+                }
+            } catch {
+                localStorage.removeItem(LOCAL_STORAGE_KEY);
+            }
+        };
+
+        initializeAuth();
+    }, []);
 
     const login = async (idToken: string | undefined) => {
         if (!idToken) return null;
@@ -51,34 +73,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         }
     };
 
-    // --- Persistence and Initialization ---
-
-    useEffect(() => {
-        const initializeAuth = async () => {
-            const storedSession = localStorage.getItem(LOCAL_STORAGE_KEY);
-
-            if (!storedSession) return;
-
-            try {
-                const session = JSON.parse(storedSession);
-
-                if (session.expiresAt && Date.now() < session.expiresAt) {
-                    setAuthSession(session);
-                    setProfile(session.profile);
-                } else {
-                    localStorage.removeItem(LOCAL_STORAGE_KEY);
-                }
-            } catch {
-                localStorage.removeItem(LOCAL_STORAGE_KEY);
-            }
-        };
-
-        initializeAuth();
-    }, []);
-
-    // --- Logout Function ---
     const logOut = (): void => {
         googleLogout();
+        localStorage.removeItem(LEGACY_LOCAL_STORAGE_KEY);
         localStorage.removeItem(LOCAL_STORAGE_KEY);
         setAuthSession(null);
         setProfile(null);
@@ -94,9 +91,23 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         }
     };
 
+    const makeAuthenticatedRequest = async (
+        url: string,
+        options: RequestInit = {}
+    ): Promise<Response> => {
+        if (!authSession?.token) {
+            throw new Error("No auth session available");
+        }
+
+        const headers = new Headers(options.headers);
+        headers.set("Authorization", `Bearer ${authSession.token}`);
+
+        return fetch(url, { ...options, headers });
+    };
+
     // --- Inventory hook ---
     const { inventory, loadInventory, updateInventoryAmount, bulkUpdateInventory } =
-        useInventory(profile);
+        useInventory(profile, authSession?.token);
 
     useEffect(() => {
         if (profile) {
@@ -109,6 +120,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         authSession,
         login,
         logOut,
+        makeAuthenticatedRequest,
         inventory,
         loadInventory,
         updateInventoryAmount: (item) => updateInventoryAmount(item),

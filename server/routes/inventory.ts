@@ -2,6 +2,7 @@ import { Router } from "express";
 import type { Request, Response } from "express";
 import { createDB } from "../db/db_inventory.js";
 import type { BulkUpdateInventoryBody, ProfileIdParam, UpdateInventoryBody } from "../types/requests.js";
+import { requireAuth } from "../middleware/authMiddleware.js";
 
 const router = Router();
 
@@ -131,7 +132,7 @@ const router = Router();
  *               $ref: '#/components/schemas/Error'
  */
 
-router.get("/:profileId", async (req: Request<ProfileIdParam>, res: Response) => {
+router.get("/:profileId", requireAuth, async (req: Request<ProfileIdParam>, res: Response) => {
   const { profileId } = req.params;
 
   let db;
@@ -146,7 +147,7 @@ router.get("/:profileId", async (req: Request<ProfileIdParam>, res: Response) =>
   res.json(data);
 });
 
-router.get("/tradeable/:profileId", async (req: Request<ProfileIdParam>, res: Response)=> {
+router.get("/tradeable/:profileId", requireAuth, async (req: Request<ProfileIdParam>, res: Response)=> {
   const { profileId } = req.params;
 
   let db;
@@ -161,7 +162,7 @@ router.get("/tradeable/:profileId", async (req: Request<ProfileIdParam>, res: Re
   res.json(data);
 });
 
-router.post("/", async (req: Request<ProfileIdParam, unknown, UpdateInventoryBody>, res: Response) => {
+router.post("/", requireAuth, async (req: Request<ProfileIdParam, unknown, UpdateInventoryBody>, res: Response) => {
   const { profileId, category, itemId, amount } = req.body;
 
   if (
@@ -190,7 +191,7 @@ router.post("/", async (req: Request<ProfileIdParam, unknown, UpdateInventoryBod
   }
 });
 
-router.post("/bulk-update", async (req: Request<ProfileIdParam, unknown, BulkUpdateInventoryBody>, res: Response) => {
+router.post("/bulk-update", requireAuth, async (req: Request<ProfileIdParam, unknown, BulkUpdateInventoryBody>, res: Response) => {
   const { profileId, items } = req.body;
   if (!profileId || !Array.isArray(items)) {
     return res

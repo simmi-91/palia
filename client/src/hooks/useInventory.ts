@@ -3,6 +3,7 @@ import type { GoogleProfile, InventoryItem } from "../app/types/userTypes";
 import { debounce } from "../utils/debounce";
 
 const callApiUpdate = async (
+  token: string,
   profileId: string,
   category: string,
   itemId: number,
@@ -11,7 +12,10 @@ const callApiUpdate = async (
   try {
     const response = await fetch(import.meta.env.VITE_API_URL + "/inventory/", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
       body: JSON.stringify({ profileId, category, itemId, amount }),
     });
     if (!response.ok) {
@@ -26,6 +30,7 @@ const callApiUpdate = async (
 };
 
 const callApiBulkUpdate = async (
+  token: string,
   profileId: string,
   items: Array<{ category: string; itemId: number; amount: number }>
 ): Promise<{ success: boolean; count?: number; error?: any }> => {
@@ -34,7 +39,10 @@ const callApiBulkUpdate = async (
       import.meta.env.VITE_API_URL + "/inventory/bulk-update",
       {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
         body: JSON.stringify({ profileId, items }),
       }
     );
@@ -49,27 +57,32 @@ const callApiBulkUpdate = async (
   }
 };
 
-export const useInventory = (profile: GoogleProfile | null) => {
+export const useInventory = (
+  profile: GoogleProfile | null,
+  token: string | undefined
+) => {
   const [inventory, setInventory] = useState<InventoryItem[]>([]);
   const profileId = profile?.id;
 
   const debouncedApiUpdate = useCallback(
     debounce((...args: Parameters<typeof callApiUpdate>) => {
-      if (profileId) {
+      if (profileId && token) {
         callApiUpdate(
+          token,
           profileId,
-          ...(args.slice(1) as [string, number, number])
+          ...(args.slice(2) as [string, number, number])
         );
       }
     }, 500),
-    [profileId]
+    [profileId, token]
   );
 
   const loadInventory = useCallback(async () => {
-    if (!profileId) return;
+    if (!profileId || !token) return;
     try {
       const response = await fetch(
-        import.meta.env.VITE_API_URL + `/inventory/${profileId}`
+        import.meta.env.VITE_API_URL + `/inventory/${profileId}`,
+        { headers: { Authorization: `Bearer ${token}` } }
       );
       if (!response.ok) {
         console.error("Failed to load inventory:", response.status);
@@ -82,7 +95,7 @@ export const useInventory = (profile: GoogleProfile | null) => {
       console.error("Error loading inventory:", error);
       setInventory([]);
     }
-  }, [profileId]);
+  }, [profileId, token]);
 
   const updateInventoryAmount = ({
     category,
@@ -107,21 +120,21 @@ export const useInventory = (profile: GoogleProfile | null) => {
       return newInventory.filter((item) => item.amount > 0);
     });
 
-    if (profileId) {
-      debouncedApiUpdate(profileId, category, itemId, amount);
+    if (profileId && token) {
+      debouncedApiUpdate(token, profileId, category, itemId, amount);
     }
   };
 
   const bulkUpdateInventory = useCallback(
     async (items: InventoryItem[]) => {
-      if (!profileId) return { success: false, count: 0 };
-      const result = await callApiBulkUpdate(profileId, items);
+      if (!profileId || !token) return { success: false, count: 0 };
+      const result = await callApiBulkUpdate(token, profileId, items);
       if (result.success) {
         await loadInventory();
       }
       return result;
     },
-    [profileId, loadInventory]
+    [profileId, token, loadInventory]
   );
 
   return {

@@ -2,6 +2,7 @@ import { Router } from "express";
 import type { Request, Response } from "express";
 import { createDB } from "../db/db_favorites.js";
 import type { AddFavoriteBody, DeleteFavoriteBody, ProfileIdParam } from "../types/requests.js";
+import { requireAuth } from "../middleware/authMiddleware.js";
 
 const router = Router();
 
@@ -89,7 +90,7 @@ const router = Router();
  *               $ref: '#/components/schemas/Error'
  */
 
-router.get("/:profileId", async (req: Request<ProfileIdParam>, res: Response) => {
+router.get("/:profileId", requireAuth, async (req: Request<ProfileIdParam>, res: Response) => {
   const { profileId } = req.params;
   let db;
   try {
@@ -103,7 +104,7 @@ router.get("/:profileId", async (req: Request<ProfileIdParam>, res: Response) =>
   res.json(favorites);
 });
 
-router.post("/:profileId", async (req: Request<ProfileIdParam, unknown, AddFavoriteBody>, res: Response) => {
+router.post("/:profileId", requireAuth, async (req: Request<ProfileIdParam, unknown, AddFavoriteBody>, res: Response) => {
   const { profileId } = req.params;
   const { category, itemId } = req.body;
   let db;
@@ -119,7 +120,7 @@ router.post("/:profileId", async (req: Request<ProfileIdParam, unknown, AddFavor
   res.json(result);
 });
 
-router.delete("/:profileId", async (req: Request<ProfileIdParam, unknown, DeleteFavoriteBody>, res: Response) => {
+router.delete("/:profileId", requireAuth, async (req: Request<ProfileIdParam, unknown, DeleteFavoriteBody>, res: Response) => {
   const { profileId } = req.params;
   const { favoriteId } = req.body;
   let db;

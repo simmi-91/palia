@@ -2,6 +2,7 @@ import { Router } from "express";
 import type { Request, Response } from "express";
 import { createDB } from "../db/db_items.js";
 import type { IdParam, CreateItemBody, UpdateItemBody } from "../types/requests.js";
+import { requireAuth, verifyAdmin } from "../middleware/authMiddleware.js";
 
 const router = Router();
 
@@ -147,7 +148,7 @@ router.get("/", async (req: Request, res: Response) => {
     res.json(items);
 });
 
-router.post("/", async (req: Request<unknown, unknown, CreateItemBody>, res: Response) => {
+router.post("/", requireAuth, verifyAdmin, async (req: Request<unknown, unknown, CreateItemBody>, res: Response) => {
     let db;
     try {
         db = await createDB();
@@ -166,7 +167,7 @@ router.post("/", async (req: Request<unknown, unknown, CreateItemBody>, res: Res
     }
 });
 
-router.put("/:id", async (req: Request<IdParam, unknown, UpdateItemBody>, res: Response) => {
+router.put("/:id", requireAuth, verifyAdmin, async (req: Request<IdParam, unknown, UpdateItemBody>, res: Response) => {
     const id = parseInt(req.params.id, 10);
     if (isNaN(id)) return res.status(400).json({ error: "Invalid id" });
 
@@ -188,7 +189,7 @@ router.put("/:id", async (req: Request<IdParam, unknown, UpdateItemBody>, res: R
     }
 });
 
-router.delete("/:id", async (req: Request<IdParam>, res: Response) => {
+router.delete("/:id", requireAuth, verifyAdmin, async (req: Request<IdParam>, res: Response) => {
     const id = parseInt(req.params.id, 10);
     if (isNaN(id)) return res.status(400).json({ error: "Invalid id" });
 
